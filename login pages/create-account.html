@@ -1,0 +1,132 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form | Dan Aleko</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-image: url('https://www.exeter.ac.uk/about/gardens/thegrounds/ponds/');
+            background-size: cover; /* Ensures the image covers the entire background */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            height: 100vh; /* Ensures the body takes the full viewport height */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+        background-color: rgba(0, 0, 0, 0.7); /* Transparent dark black background */
+        border: none;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+        color: white; /* Ensures text is visible on the dark background */
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background for inputs */
+            border: none;
+            border-radius: 5px;
+            color: #333; /* Dark text color for inputs */
+        }
+
+        .btn-primary {
+            background-color: #28a745; /* Green color for the button */
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        a {
+            color: #b3ffb3; /* Light green for links */
+        }
+
+        a:hover {
+            color: #99e699; /* Slightly darker green on hover */
+        }
+
+    </style>
+</head>
+
+<body style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;">
+    <div class="card">
+        <h2 class="text-center">Create a new account</h2>
+        <p class="text-center">It's quick and easy.</p>
+        <form>
+            <div class="mb-2 d-flex gap-2">
+                <input type="text" class="form-control" placeholder="First name" required>
+                <input type="text" class="form-control" placeholder="Surname" required>
+            </div>
+            <div class="mb-2">
+                <input type="email" class="form-control" placeholder="Email" required>
+            </div>
+            <div class="mb-2">
+                <input type="password" class="form-control" placeholder="Password" required>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Date of Birth</label>
+                <div class="d-flex gap-2">
+                    <!-- Days -->
+                    <div class="d-flex gap-2">
+                        <!-- Days -->
+                        <select class="form-select">
+                            <option selected>1</option>
+                        </select>
+                    
+                        <!-- Months -->
+                        <select class="form-select">
+                            <option selected>Jan</option>
+                        </select>
+                    
+                        <!-- Years -->
+                        <select class="form-select">
+                            <option selected>2025</option>
+                        </select>
+                    </div>
+                    
+                    <script>
+                        // Populate Days (1-31)
+                        const daysSelect = document.querySelectorAll(".form-select")[0];
+                        for (let i = 2 ; i <= 31; i++) {
+                            daysSelect.innerHTML += `<option>${i}</option>`;
+                        }
+                    
+                        // Populate Months
+                        const monthsSelect = document.querySelectorAll(".form-select")[1];
+                        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                        months.forEach(month => monthsSelect.innerHTML += `<option>${month}</option>`);
+                    
+                        // Populate Years (2025-1900)
+                        const yearsSelect = document.querySelectorAll(".form-select")[2];
+                        for (let y = 2024; y >= 1960; y--) {
+                            yearsSelect.innerHTML += `<option>${y}</option>`;
+                        }
+                    </script>
+                    
+                
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Gender</label>
+                <div class="d-flex gap-3">
+                    <div><input type="radio" name="gender"> Female</div>
+                    <div><input type="radio" name="gender"> Male</div>
+                    <div><input type="radio" name="gender"> Custom</div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+        </form>
+        <div class="text-center mt-2">
+            <a href="login.html" class="text-decoration-none">Already have an account?</a>
+        </div>
+    </div>
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
