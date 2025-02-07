@@ -1,7 +1,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form | Dan Aleko</title>
+    <title>Login Form</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -18,12 +18,12 @@
             align-items: center;
         }
         .card {
-        background-color: rgba(0, 0, 0, 0.7); /* Transparent dark black background */
-        border: none;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
-        color: white; /* Ensures text is visible on the dark background */
+            background-color: rgba(0, 0, 0, 0.7); /* Transparent dark black background */
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+            color: white; /* Ensures text is visible on the dark background */
         }
 
         .form-control {
@@ -59,85 +59,49 @@
     <div class="card">
         <h2 class="text-center">Create a new account</h2>
         <p class="text-center">It's quick and easy.</p>
+
+        <!-- Check for messages (e.g. validation errors or success messages) -->
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <form method="post">
             {% csrf_token %}
-            <div class="mb-2 d-flex gap-2">
-                <input type="text" class="form-control" placeholder="First name" name="firstname" required>
-                <input type="text" class="form-control" placeholder="Surname" name="surname" required>
+            
+            <!-- Username instead of First Name and Surname -->
+            <div class="mb-2">
+                <input type="text" class="form-control" placeholder="Username" name="username" required>
             </div>
+
+            <!-- Email input remains -->
             <div class="mb-2">
                 <input type="email" class="form-control" placeholder="Email" name="email" required>
             </div>
+
+            <!-- Password input remains -->
             <div class="mb-2">
                 <input type="password" class="form-control" placeholder="Password" name="password" required>
             </div>
+
+            <!-- Confirm Password input -->
             <div class="mb-2">
-                <!--I didnt connect the DOB stuff, I think it should be removed-->
-                <label class="form-label">Date of Birth</label>
-                <div class="d-flex gap-2">
-                    <!-- Days -->
-                    <div class="d-flex gap-2">
-                        <!-- Days -->
-                        <select class="form-select">
-                            <option selected>1</option>
-                        </select>
-                    
-                        <!-- Months -->
-                        <select class="form-select">
-                            <option selected>Jan</option>
-                        </select>
-                    
-                        <!-- Years -->
-                        <select class="form-select">
-                            <option selected>2025</option>
-                        </select>
-                    </div>
-                    
-                    <script>
-                        // Populate Days (1-31)
-                        const daysSelect = document.querySelectorAll(".form-select")[0];
-                        for (let i = 2 ; i <= 31; i++) {
-                            daysSelect.innerHTML += `<option>${i}</option>`;
-                        }
-                    
-                        // Populate Months
-                        const monthsSelect = document.querySelectorAll(".form-select")[1];
-                        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                        months.forEach(month => monthsSelect.innerHTML += `<option>${month}</option>`);
-                    
-                        // Populate Years (2025-1900)
-                        const yearsSelect = document.querySelectorAll(".form-select")[2];
-                        for (let y = 2024; y >= 1960; y--) {
-                            yearsSelect.innerHTML += `<option>${y}</option>`;
-                        }
-                    </script>
-                    
-                
+                <input type="password" class="form-control" placeholder="Confirm Password" name="confirm_password" required>
             </div>
-            <div class="mb-3">
-                <!--I didnt connect the gender stuff because I dont see why is nessesary-->
-                <label class="form-label">Gender</label>
-                <div class="d-flex gap-3">
-                    <div><input type="radio" name="gender"> Female</div>
-                    <div><input type="radio" name="gender"> Male</div>
-                    <div><input type="radio" name="gender"> Custom</div>
-                </div>
-            </div>
+
+            <!-- Submit Button -->
             <button type="submit" class="btn btn-primary w-100">Sign Up</button>
         </form>
+        
         <div class="text-center mt-2">
-            <a href="{% url 'login' %}" class="text-decoration-none">Already have an account?</a>
+            <a href="login.html" class="text-decoration-none">Already have an account?</a>
         </div>
     </div>
-    <!-- Bootstrap JS (Optional) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    {% if messages %}
-        <div class="alert alert-info">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
