@@ -1,0 +1,107 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-image: url('https://www.exeter.ac.uk/about/gardens/thegrounds/ponds/');
+            background-size: cover; /* Ensures the image covers the entire background */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            height: 100vh; /* Ensures the body takes the full viewport height */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            background-color: rgba(0, 0, 0, 0.7); /* Transparent dark black background */
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+            color: white; /* Ensures text is visible on the dark background */
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background for inputs */
+            border: none;
+            border-radius: 5px;
+            color: #333; /* Dark text color for inputs */
+        }
+
+        .btn-primary {
+            background-color: #28a745; /* Green color for the button */
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        a {
+            color: #b3ffb3; /* Light green for links */
+        }
+
+        a:hover {
+            color: #99e699; /* Slightly darker green on hover */
+        }
+
+    </style>
+</head>
+
+<body style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;">
+    <div class="card">
+        <h2 class="text-center">Create a new account</h2>
+        <p class="text-center">It's quick and easy.</p>
+
+        <!-- Check for messages (e.g. validation errors or success messages) -->
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Username instead of First Name and Surname -->
+            <div class="mb-2">
+                <input type="text" class="form-control" placeholder="Username" name="username" required>
+            </div>
+
+            <!-- Email input remains -->
+            <div class="mb-2">
+                <input type="email" class="form-control" placeholder="Email" name="email" required>
+            </div>
+
+            <!-- Password input remains -->
+            <div class="mb-2">
+                <input type="password" class="form-control" placeholder="Password" name="password" required>
+            </div>
+
+            <!-- Confirm Password input -->
+            <div class="mb-2">
+                <input type="password" class="form-control" placeholder="Confirm Password" name="confirm_password" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+        </form>
+        
+        <div class="text-center mt-2">
+            <a href="{% url 'login' %}" class="text-decoration-none">Already have an account?</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
