@@ -29,16 +29,20 @@ def logout_view(request):
 def register_view(request):
 
     if request.method == 'POST': #user clicked the Sign Up button
-        username = request.POST['firstname']# this is an issue with the html form and not my code
+        username = request.POST['username']# this is an issue with the html form and not my code
         password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
 
         email = request.POST['email']
 
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match')
+            return redirect('register')
         if UserAccount.objects.filter(username=username).exists():
-            messages.error(request, 'Username already taken.')
+            messages.error(request, 'Username already taken')
             return redirect('register')
         if UserAccount.objects.filter(email=email).exists():
-            messages.error(request, 'email already taken.')
+            messages.error(request, 'Email already taken')
             return redirect('register')
 
         # create a user account
