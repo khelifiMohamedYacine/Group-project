@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Videos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { 
+            background-color: #f0f8ff; 
+            font-family: 'Arial', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+        .top-navbar, .left-bottom-bar { 
+            background-color: #ffffff; 
+            color: white; 
+        }
+        .top-navbar {
+            background-color: #000;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1rem;
+        }
+        .top-navbar a:hover {
+            color: #ffcc00;
+        }
+        .navbar-custom {
+            background-color: rgba(0, 0, 0, 0.5); /* Black with transparency */
+            padding: 20px 0;
+        }
+        .login-btn {
+            background-color: #007bff;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            border: none;
+            font-weight: bold;
+        }
+
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .banner { 
+            height: 250px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 2.5rem; 
+            font-weight: bold; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
+            margin-bottom: 20px; 
+        }
+        .container { 
+            padding: 30px; 
+            display: flex; 
+            justify-content: center; /* Center align the video cards */
+            flex-wrap: wrap; /* Allow wrapping of the videos */
+        }
+        .video-card { 
+            border-radius: 15px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+            overflow: hidden; 
+            width: 45%; /* Adjusted width for smaller size */
+            margin: 15px; /* Adjust the margin */
+            background-color: white; 
+        }
+        .video-card:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
+        }
+        .video-card iframe { 
+            width: 100%; 
+            height: 180px; /* Reduced height */
+            border-radius: 15px 15px 0 0; 
+        }
+        .card-body { 
+            text-align: center; 
+            padding: 15px; 
+        }
+        .card-title { 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            color: #000000; 
+            margin-bottom: 5px; 
+        }
+        .card-text { 
+            font-size: 0.9rem; 
+            color: #555; 
+        }
+        .icon-badge { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background-color: rgba(255, 255, 255, 0.8); 
+            padding: 5px 10px; 
+            border-radius: 20px; 
+            font-size: 1rem; 
+            color: #333; 
+        }
+        .side-menu { 
+            position: fixed; 
+            left: 20px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background-color: #02020266; 
+            padding: 15px; 
+            border-radius: 15px; 
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); 
+            width: 200px; 
+        }
+        .side-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 10px; 
+            background-color: white; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+            text-decoration: none; 
+            color: black; 
+            font-weight: bold; 
+            transition: background 0.3s, color 0.3s; 
+            font-size: 1rem; 
+        }
+        .side-menu a:hover { 
+            background-color: #ff4081; 
+            color: white; 
+        }
+        .side-menu a.active { 
+            background-color: black; 
+            color: white; 
+        }
+        .side-menu a i { 
+            margin-right: 10px; 
+        }
+        .navbar-brand, 
+        .navbar-text, 
+        .login-btn {
+        color: white !important; /* Ensures text color is white */
+        }
+    </style>
+</head>
+<body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;">
+    <nav class="navbar navbar-custom navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">EcoMind</a>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <button class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Logout</button>
+                    </li>
+                </ul>
+                <span class="navbar-text">
+                    The Earth does not belong to us: we belong to the Earth.
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="banner">Environmental Awareness Videos</div>
+
+    <div class="container">
+        <!-- Video 1 -->
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/X5Z-VV-x9wI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="card-body">
+                <p class="card-text">How to Save the Planet</p>
+                <h5 class="card-title">Environmental Impact</h5>
+            </div>
+        </div>
+
+        <!-- Video 2 -->
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/Og0tWb0ApE8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="card-body">
+                <p class="card-text">Climate Change Explained</p>
+                <h5 class="card-title">Understanding Global Warming</h5>
+            </div>
+        </div>
+
+        <!-- Video 3 -->
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/IDjA3g-zNYk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="card-body">
+                <p class="card-text">Protecting the Rainforests</p>
+                <h5 class="card-title">The Amazon Crisis</h5>
+            </div>
+        </div>
+
+        <!-- Video 4 -->
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/XXvFZ3w1nM0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="card-body">
+                <p class="card-text">Reduce Plastic Pollution</p>
+                <h5 class="card-title">The Plastic Problem</h5>
+            </div>
+        </div>
+
+        <!-- Video 5 -->
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/f4Rs4wFji5E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="card-body">
+                <p class="card-text">The Impact of Fast Fashion</p>
+                <h5 class="card-title">Sustainability Issues</h5>
+            </div>
+        </div>
+
+        <!-- Video 6 -->
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/CzvClJb01H4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="card-body">
+                <p class="card-text">Deforestation and its Effects</p>
+                <h5 class="card-title">Impact on the Ecosystem</h5>
+            </div>
+        </div>
+
+        <!-- Video 7 -->
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/8ghTTqCoBHY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="card-body">
+                <p class="card-text">Saving the Oceans</p>
+                <h5 class="card-title">Ocean Conservation</h5>
+            </div>
+        </div>
+
+        <!-- Video 8 -->
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/wzexnqWgFCM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="card-body">
+                <p class="card-text">The Role of Bees in Our Ecosystem</p>
+                <h5 class="card-title">Saving the Pollinators</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="side-menu">
+        <a href="#" class="active"><i class="fas fa-star"></i>menu</a>
+        <a href="home-page.html"><i class="fas fa-gamepad"></i> Games</a>
+        <a href="video.html"><i class="fas fa-play-circle"></i> Videos</a>
+        <a href="home-page.html"><i class="fas fa-question-circle"></i> Quizzes</a>
+        <a href="maps.html"><i class="fas fa-globe"></i> Uni map</a>
+        <a href="#"><i class="fas fa-mobile-alt"></i> Score</a>
+    </div>
+
+</body>
+</html>

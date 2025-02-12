@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Full-screen background image */
+        body {
+            background: url('https://source.unsplash.com/1920x1080/?nature,landscape') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+        }
+
+        /* Transparent navbar */
+        .navbar-custom {
+            background-color: rgba(0, 0, 0, 0.5); /* Black with transparency */
+            padding: 10px 0;
+        }
+
+        .navbar-custom .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .navbar-custom .nav-link {
+            color: white;
+            margin: 0 10px;
+        }
+
+        .navbar-custom .navbar-text {
+            font-style: italic;
+            margin-left: auto;
+            color: white;
+        }
+
+        .login-btn {
+            background-color: #007bff;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            border: none;
+            font-weight: bold;
+        }
+
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        /* Transparent category bar */
+        .category-bar {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .category-bar .nav-link {
+            color: white;
+        }
+    </style>
+
+    <style>
+        /* Smooth color transition on hover */
+        .category-bar .nav-link {
+            color: white;
+            transition: color 0.3s ease-in-out;
+        }
+    
+        .category-bar .nav-link:hover {
+            color: #ffc107; /* Gold color on hover */
+        }
+    </style>    
+</head>
+
+<body  style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;"></body>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-custom navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">EcoMind</a>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <button class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Sign in</button>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                The Earth does not belong to us: we belong to the Earth.
+            </span>
+        </div>
+    </div>
+</nav>
+
+<!-- Category Bar -->
+<div class="container-fluid category-bar py-2">
+    <div class="row">
+        <div class="col">
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Today's news</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Gifts</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
