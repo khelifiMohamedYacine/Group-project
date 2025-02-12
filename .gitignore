@@ -3,6 +3,9 @@
 # python virtual environments
 venv
 
+# vscode stuff
+.vscode/
+
 ### OSX ###
 .DS_Store
 .AppleDouble

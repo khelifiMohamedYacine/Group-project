@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views # Import all views from core_app
-from .views import logout_view  # Import the logout view
 
 from django.shortcuts import redirect
 
@@ -12,5 +11,13 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('home/', views.home_view, name='home'),
     path('register/', views.register_view, name='register'),
-    path('logout/', logout_view, name='logout'),
+    path('logout/', views.logout_view, name='logout'),
+    path('forgot_password/', views.forgot_password_view, name='forgot_password'),
+    path('privacy_policy/', views.privacy_policy_view, name="privacy_policy"),
+
+    # Commented for easy removal. Based on group decision
+    path('quizzes/', views.quizzes_view, name="quizzes"),
+    path('videos/', views.videos_view, name="videos"),
+    path('maps/', views.maps_view, name="maps"),
+    # End comment
 ]
