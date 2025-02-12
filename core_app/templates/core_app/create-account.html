@@ -1,7 +1,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Form</title>
+    <title>Login Form </title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -51,57 +51,38 @@
         a:hover {
             color: #99e699; /* Slightly darker green on hover */
         }
-
     </style>
 </head>
 
-<body style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;">
+<body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;">
     <div class="card">
         <h2 class="text-center">Create a new account</h2>
         <p class="text-center">It's quick and easy.</p>
-
-        <!-- Check for messages (e.g. validation errors or success messages) -->
-        {% if messages %}
-            <div class="alert alert-danger">
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
+        <form>
+            <div class="mb-2 d-flex gap-2">
+                <input type="text" class="form-control" placeholder="First name (Optional)">
+                <input type="text" class="form-control" placeholder="Surname (Optional)">
             </div>
-        {% endif %}
-
-        <form method="post">
-            {% csrf_token %}
-            
-            <!-- Username instead of First Name and Surname -->
             <div class="mb-2">
-                <input type="text" class="form-control" placeholder="Username" name="username" required>
+                <input type="text" class="form-control" placeholder="Username" required>
             </div>
-
-            <!-- Email input remains -->
             <div class="mb-2">
-                <input type="email" class="form-control" placeholder="Email" name="email" required>
+                <input type="email" class="form-control" placeholder="Email" required>
             </div>
-
-            <!-- Password input remains -->
             <div class="mb-2">
-                <input type="password" class="form-control" placeholder="Password" name="password" required>
+                <input type="password" class="form-control" placeholder="Password" required>
             </div>
-
-            <!-- Confirm Password input -->
             <div class="mb-2">
-                <input type="password" class="form-control" placeholder="Confirm Password" name="confirm_password" required>
+                <input type="password" class="form-control" placeholder="Confirm Password" required>
             </div>
-
-            <!-- Submit Button -->
             <button type="submit" class="btn btn-primary w-100">Sign Up</button>
         </form>
-        
         <div class="text-center mt-2">
-            <a href="{% url 'login' %}" class="text-decoration-none">Already have an account?</a>
+            <a href="login.html" class="text-decoration-none">Already have an account?</a>
+            <p><a href="privacy-policy.html" class="text-decoration-none">Privacy Policy</a></p>
         </div>
     </div>
-
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS (Optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
