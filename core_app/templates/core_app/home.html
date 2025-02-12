@@ -3,40 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navigation Bar</title>
-    <!-- Bootstrap CSS -->
+    <title>Home Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Full-screen background image */
-        body {
-            background: url('https://source.unsplash.com/1920x1080/?nature,landscape') no-repeat center center fixed;
-            background-size: cover;
-            height: 100vh;
+        body { 
+            background-color: #f0f8ff; 
+            font-family: 'Arial', sans-serif; 
+            margin: 0; 
+            padding: 0; 
         }
-
-        /* Transparent navbar */
+        .top-navbar, .left-bottom-bar { 
+            background-color: #ffffff; 
+            color: white; 
+        }
+        .top-navbar {
+            background-color: #000;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1rem;
+        }
+        .top-navbar a:hover {
+            color: #ffcc00;
+        }
         .navbar-custom {
             background-color: rgba(0, 0, 0, 0.5); /* Black with transparency */
-            padding: 10px 0;
+            padding: 20px 0;
         }
-
-        .navbar-custom .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .navbar-custom .nav-link {
-            color: white;
-            margin: 0 10px;
-        }
-
-        .navbar-custom .navbar-text {
-            font-style: italic;
-            margin-left: auto;
-            color: white;
-        }
-
         .login-btn {
             background-color: #007bff;
             color: white;
@@ -50,71 +50,258 @@
             background-color: #0056b3;
         }
 
-        .modal-content {
-            border-radius: 10px;
+        .banner { 
+            height: 250px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 2.5rem; 
+            font-weight: bold; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
+            margin-bottom: 20px; 
         }
-
-        /* Transparent category bar */
-        .category-bar {
-            background-color: rgba(0, 0, 0, 0.5);
+        .container { 
+            padding: 50px; 
+            display: flex; 
+            flex-wrap: wrap; /* Allow wrapping of the cards */
+            justify-content: space-between; /* Ensure 2 cards per line */
         }
-
-        .category-bar .nav-link {
+        
+        .card { 
+            border-radius: 15px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+            overflow: hidden; 
+            width: 48%; /* Ensure 2 cards per row */
+            margin: 10px 0; /* Adjust margin for spacing */
+            background-color: white; 
+        }
+        
+        .card:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
+        }
+        .card img { 
+            height: 150px; 
+            object-fit: cover; 
+            border-radius: 15px 15px 0 0; 
+        }
+        .card-body { 
+            text-align: center; 
+            padding: 15px; 
+        }
+        .card-title { 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            color: #000000; 
+            margin-bottom: 5px; 
+        }
+        .card-text { 
+            font-size: 0.9rem; 
+            color: #555; 
+        }
+        .icon-badge { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background-color: rgba(255, 255, 255, 0.8); 
+            padding: 5px 10px; 
+            border-radius: 20px; 
+            font-size: 1rem; 
+            color: #333; 
+        }
+        .side-menu { 
+            position: fixed; 
+            left: 20px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background-color: #02020266; 
+            padding: 15px; 
+            border-radius: 15px; 
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); 
+            width: 200px; 
+        }
+        .side-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 10px; 
+            background-color: white; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+            text-decoration: none; 
+            color: black; 
+            font-weight: bold; 
+            transition: background 0.3s, color 0.3s; 
+            font-size: 1rem; 
+        }
+        .side-menu a:hover { 
+            background-color: #052e01; 
+            color: white; 
+        }
+        .side-menu a.active { 
+            background-color: black; 
+            color: white; 
+        }
+        .side-menu a i { 
+            margin-right: 10px; 
+        }
+        .navbar-brand, 
+        .navbar-text, 
+        .login-btn {
+        color: white !important; 
+        }
+        .quiz-modal {
+            max-width: 350px;
+        }
+        /* New button for certificate */
+        .certificate-btn {
+            position: relative;
+            bottom: 40px;
+            background-color: #28a745;
             color: white;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: background-color 0.3s;
+        }
+
+        .certificate-btn:hover {
+            background-color: #218838;
         }
     </style>
-
-    <style>
-        /* Smooth color transition on hover */
-        .category-bar .nav-link {
-            color: white;
-            transition: color 0.3s ease-in-out;
-        }
-    
-        .category-bar .nav-link:hover {
-            color: #ffc107; /* Gold color on hover */
-        }
-    </style>    
 </head>
 
-<body  style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;"></body>
-<!-- Navigation Bar -->
-<nav class="navbar navbar-custom navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">EcoMind</a>
+{% load static %}
+<body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center">
+    <nav class="navbar navbar-custom navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">EcoMind</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="login-btn">Logout</button>
+                        </form>
+                        
+                    </li>
+                </ul>
+                <span class="navbar-text">
+                    The Earth does not belong to us: we belong to the Earth.
+                </span>
+            </div>
+        </div>
+    </nav>
+    <div class="banner">Lets Have Some Fun</div>
+    <div class="container">
+        <div class="container">
+            <div class="card game-card">
+                <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="wu">
+                <div class="card-body text-center">
+                  <h5 class="card-title">wu</h5>
+                  <p class="card-text">Click to take the game!</p>
+                </div>
+            </div>
+            <div class="card quiz-card" onclick="openQuiz1()">
+                <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Sharon">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Sharon</h5>
+                  <p class="card-text">Click to take the quiz!</p>
+                </div>
+            </div>
+            <div class="card game-card">
+                <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="wu">
+                <div class="card-body text-center">
+                  <h5 class="card-title">wu</h5>
+                  <p class="card-text">Click to take the game!</p>
+                </div>
+            </div>
+            <div class="card quiz-card" onclick="openQuiz2()">
+                <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Sharon">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Sharon</h5>
+                  <p class="card-text">Click to take the quiz!</p>
+                </div>
+            </div>
+            <div class="card game-card">
+                <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="wu">
+                <div class="card-body text-center">
+                  <h5 class="card-title">wu</h5>
+                  <p class="card-text">Click to take the game!</p>
+                </div>
+            </div>
+            <div class="card quiz-card" onclick="openQuiz3()">
+                <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Sharon">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Sharon</h5>
+                  <p class="card-text">Click to take the quiz!</p>
+                </div>
+            </div>
+            <div class="card game-card">
+                <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="wu">
+                <div class="card-body text-center">
+                  <h5 class="card-title">wu</h5>
+                  <p class="card-text">Click to take the game!</p>
+                </div>
+            </div>
+            <div class="card quiz-card" onclick="openQuiz4()">
+                <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Sharon">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Sharon</h5>
+                  <p class="card-text">Click to take the quiz!</p>
+                </div>
+            </div>
+            <div class="card game-card">
+                <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="wu">
+                <div class="card-body text-center">
+                  <h5 class="card-title">wu</h5>
+                  <p class="card-text">Click to take the game!</p>
+                </div>
+            </div>
+            <div class="card quiz-card" onclick="openQuiz5()">
+                <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Sharon">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Sharon</h5>
+                  <p class="card-text">Click to take the quiz!</p>
+                </div>
+            </div>
+
+            <p><a href="{% url 'privacy_policy' %}" class="text-decoration-none">Privacy Policy</a></p>
+            <button class="certificate-btn" onclick="window.location.href='certificate.html'">Get Your Certificate</button>
+
+
+    <div class="side-menu">
+        <a href="#" class="active"><i class="fas fa-star"></i>menu</a>
+        <a href="{% url 'home' %}"><i class="fas fa-play-circle"></i> Games</a>
+        <a href="{% url 'videos' %}"><i class="fas fa-play-circle"></i> Videos</a>
+        <a href="{% url 'home' %}"><i class="fas fa-play-circle"></i> Quizzes</a>
+        <a href="{% url 'maps' %}"><i class="fas fa-play-circle"></i> Uni map</a>
         
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <button class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Sign in</button>
-                </li>
-            </ul>
-            <span class="navbar-text">
-                The Earth does not belong to us: we belong to the Earth.
-            </span>
-        </div>
+        <a href="#"><i class="fas fa-mobile-alt"></i> Score</a>
     </div>
-</nav>
 
-<!-- Category Bar -->
-<div class="container-fluid category-bar py-2">
-    <div class="row">
-        <div class="col">
-            <ul class="nav justify-content-center">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Today's news</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Gifts</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap JS and dependencies -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        function openQuiz1() {
+          window.location.href = 'Quiz-1.html';
+        }
+        function openQuiz2() {
+            window.location.href = 'Quiz-2.html';
+        }
+        function openQuiz3() {
+            window.location.href = 'Quiz-3.html';
+        }
+        function openQuiz4() {
+            window.location.href = 'Quiz-4.html';
+        }
+        function openQuiz5() {
+            window.location.href = 'Quiz-5.html';
+        }
+        
+    </script>
 
 </body>
 </html>
