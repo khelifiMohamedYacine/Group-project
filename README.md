@@ -27,13 +27,13 @@ https://trello.com/b/ISL0gIqD/my-trello-board
 
 ### How To Set Up And Use The App:
 **Instructions for setting up the app locally:**  
-[STUFF GOES HERE]
+[stuff goes here]
 
 **How to run the app (+ basic functionalities):**  
-[STUFF GOES HERE]
+[stuff goes here]
 
 **How to run the Django Tests:**  
-[STUFF GOES HERE]
+[stuff goes here]
 
 ---
 
@@ -42,25 +42,28 @@ We have used the Trello website to create and maintain our Kanban board:
 https://trello.com/b/ISL0gIqD/my-trello-board
 
 We have also taken regular snapshots of our Kanban board since 6/2/25, archiving them here:  
-[INSERT LINK]
+[insert link]
 
 We have kept a detailed record of our group meetings here:  
-[INSERT LINK]
+[insert link]
 
 ---
 
 ### Technical Documents:
 Our frontend technical documentation explains our HTML, CSS and JavaScript code:  
-[INSERT LINK]
+[insert link]
 
 Our backend technical documentation explains our Python and Django code, as well as our tests:  
-[INSERT LINK]
+[insert link]
 
 Source code snapshot (still unsure of what this actually is):  
-[INSERT LINK]
+[insert link]
 
 ---
 
 ### Product Documents:
+Our requirements analysis documentation is here:  
+[insert link]
+
 Our User Interface (UI) design mockups are here:  
-[INSERT LINK]
+[insert link]
