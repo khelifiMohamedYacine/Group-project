@@ -13,6 +13,21 @@
             margin: 0; 
             padding: 0; 
         }
+
+        .privacy-policy {
+            color: #ffffff; /* Bootstrap primary blue */
+            font-weight: bold;
+            text-align: center;
+            display: block;
+            margin-top: 30px; /* Adjusts spacing */
+            font-size: 1rem;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .privacy-policy:hover {
+            color: #044815; 
+            text-decoration: underline;
+        }
         .top-navbar, .left-bottom-bar { 
             background-color: #ffffff; 
             color: white; 
@@ -51,38 +66,42 @@
         }
 
         .banner { 
-            height: 250px; 
+            height: 350px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             color: white; 
             font-size: 2.5rem; 
             font-weight: bold; 
+            text-align: center;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
-            margin-bottom: 20px; 
+            margin-bottom: -100px; 
         }
         .container { 
-            padding: 30px; 
+            padding: 50px; 
             display: flex; 
-            justify-content: center; /* Center align the video cards */
-            flex-wrap: wrap; /* Allow wrapping of the videos */
+            flex-wrap: wrap; /* Allow wrapping of the cards */
+            justify-content: space-between; /* Ensure 2 cards per line */
         }
-        .video-card { 
+        
+        .card { 
             border-radius: 15px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
             overflow: hidden; 
-            width: 45%; /* Adjusted width for smaller size */
-            margin: 15px; /* Adjust the margin */
+            width: 48%; /* Ensure 2 cards per row */
+            margin: 10px 0; /* Adjust margin for spacing */
             background-color: white; 
+            margin-bottom: 60px;
         }
-        .video-card:hover { 
+        
+        .card:hover { 
             transform: scale(1.05); 
             box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
         }
-        .video-card iframe { 
-            width: 100%; 
-            height: 180px; /* Reduced height */
+        .card img { 
+            height: 150px; 
+            object-fit: cover; 
             border-radius: 15px 15px 0 0; 
         }
         .card-body { 
@@ -134,7 +153,7 @@
             font-size: 1rem; 
         }
         .side-menu a:hover { 
-            background-color: #ff4081; 
+            background-color: #052e01; 
             color: white; 
         }
         .side-menu a.active { 
@@ -147,24 +166,84 @@
         .navbar-brand, 
         .navbar-text, 
         .login-btn {
-        color: white !important; /* Ensures text color is white */
+        color: white !important; 
+        }
+        .quiz-modal {
+            max-width: 350px;
+        }
+        /* New button for certificate */
+        .certificate-btn {
+            position: relative;
+            bottom: 0px;
+            background-color: #28a745;
+            color: white;
+            padding: 0px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: background-color 0.3s;
+        }
+
+        .certificate-btn:hover {
+            background-color: #218838;
+        }
+
+        .navbar-custom {
+            background-color: #000; /* Black background */
+            padding: 15px 0;
+            opacity: 1;
+        }
+
+        .navbar-nav .nav-item {
+            margin: 0 10px;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffcc00 !important;
+        }
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
         }
     </style>
 </head>
-<body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;">
+<body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center">
     <nav class="navbar navbar-custom navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">EcoMind</a>
-            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <button class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Logout</button>
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-play-circle"></i> Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'videos' %}"><i class="fas fa-play-circle"></i> Videos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-play-circle"></i> Quizzes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-mobile-alt"></i> Score</a>
                     </li>
                 </ul>
-                <span class="navbar-text">
-                    The Earth does not belong to us: we belong to the Earth.
-                </span>
+                <form method="post" action="{% url 'logout' %}">
+                    <button type="submit" class="login-btn">Logout</button>
+                </form>
             </div>
         </div>
     </nav>
@@ -172,7 +251,6 @@
     <div class="banner">Environmental Awareness Videos</div>
 
     <div class="container">
-        <!-- Video 1 -->
         <div class="video-card">
             <iframe src="https://www.youtube.com/embed/X5Z-VV-x9wI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             <div class="card-body">
@@ -244,15 +322,11 @@
             </div>
         </div>
     </div>
+    <p><a href="{% url 'privacy_policy' %}" class="privacy-policy">Privacy Policy</a></p>
 
-    <div class="side-menu">
-        <a href="#" class="active"><i class="fas fa-star"></i>menu</a>
-        <a href="home-page.html"><i class="fas fa-gamepad"></i> Games</a>
-        <a href="video.html"><i class="fas fa-play-circle"></i> Videos</a>
-        <a href="home-page.html"><i class="fas fa-question-circle"></i> Quizzes</a>
-        <a href="maps.html"><i class="fas fa-globe"></i> Uni map</a>
-        <a href="#"><i class="fas fa-mobile-alt"></i> Score</a>
-    </div>
 
+    <!-- Add the following Bootstrap JS scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
