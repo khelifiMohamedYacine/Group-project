@@ -21,5 +21,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Admin route
-    path('', include('core_app.urls')),  # Include core_app URLs
+    path('', include('core_app.urls')),
+    path('', include('jumping_game.urls')),
 ]
