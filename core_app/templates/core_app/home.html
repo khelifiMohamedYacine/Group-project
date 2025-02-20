@@ -244,6 +244,7 @@
                     </li>
                 </ul>
                 <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
                     <button type="submit" class="login-btn">Logout</button>
                 </form>
             </div>
@@ -257,19 +258,21 @@
                 <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="wu">
                 <div class="card-body text-center">
                   <h5 class="card-title">wu</h5>
-                  <p class="card-text">Click to take the game!</p>
+                  <p class="card-text">Click to play the game!</p>
                 </div>
             </div>
             <div class="card quiz-card" onclick="openQuiz1()">
                 <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Sharon">
                 <div class="card-body text-center">
                   <h5 class="card-title">Sharon</h5>
-                  <p class="card-text">Click to take the quiz!</p>
+                  <p class="card-text">Click to play the quiz!</p>
                 </div>
             </div>
 
             <p><a href="{% url 'privacy_policy' %}" class="privacy-policy">Privacy Policy</a></p>
-            <button class="certificate-btn" onclick="window.location.href='certificate.html'">Get Your Certificate</button>
+            <button class="certificate-btn" onclick="window.location.href='certificate.html'">Get Your Certificate</button
+            {# This is not django suitable but wont fix now need to decide when we are giving certificates #}
+
 
 
 
