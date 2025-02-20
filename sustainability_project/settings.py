@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core_app',
+    'jumping_game',
 ]
 
 MIDDLEWARE = [
