@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jumping Game</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'jumping_game/css/jumping_game.css' %}">
+</head>
+<body>
+
+    <canvas id="canvas1"></canvas>
+    <img id="playerImage" src="{% static 'jumping_game/images/dog.png' %}" alt="">
+    <img id="backgroundImage" src="{% static 'jumping_game/images/Background%20city%20Seamless.png' %}" alt="">
+    <img id="bottleImage" src="{% static 'jumping_game/images/enemy1.png' %}" alt="">
+    <img id="enemyImage" src="{% static 'jumping_game/images/trash-bin.png' %}" alt="">
+    <img id="enemyImage2" src="{% static 'jumping_game/images/smoke3.png' %}" alt="">
+
+    <script src="{% static 'jumping_game/js/jumping_game.js' %}"></script>
+</body>
+</html>
