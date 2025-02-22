@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <title>Privacy Policy</title>
   <style>
     body {
@@ -14,39 +16,56 @@
       background-position: center center; 
       height: 100vh;
     }
+
     .container {
-      max-width: 800px;
+      max-width: 70vw;
       margin: 50px auto;
       padding: 30px;
       background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
       color: white;
       border-radius: 8px; /* Optional: Adds rounded corners */
     }
-    h1 {
-      font-size: 2.5rem;
-      font-weight: bold;
-    }
+
     p, a {
-      font-size: 1rem;
       line-height: 1.6;
     }
-    a {
-      color: #0078e7;
+    p > a {
+      color: #359dff;
       text-decoration: none;
     }
-    a:hover {
+    p > a:hover {
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Privacy Policy</h1>
+    <h1 class="display-6 fw-bold">Privacy Policy</h1>
+    <br>
     <p><strong>Effective Date: February 22, 2025</strong></p>
-    <p>Thank you for visiting our website. We respect your privacy and are committed to protecting your personal data.</p>
-    <p>By using our services, you agree to our <a href="#">Terms of Service.</a></p>
-    <!--We don't need a cookie policy because we aren't using cookies at the moment.-->
-    <p>For further details, please contact us at <a href="mailto:info@example.com">info@example.com</a>.</p>
+
+    <p>Thank you for visiting our website. We respect your privacy and are committed to upholding GDPR regulations:</p>
+    <ul>
+      <li>We will never expose or transfer your information to a third party without your permission.</li>
+      <li>All forms on the site use CSRF tokens to guarantee secure data transfer.</li>
+      <li>Pssswords are hashed before being stored in the database.</li>
+    </ul>
+
+    <p>By using this website, you agree to our Terms of Service:</p>
+    <ul>
+      <li>For certain features of our website to work, we require access to your device's GPS location.
+        This information is not directly stored or shared with anyone else.
+      </li>
+      <li>You are not allowed to upload inappropriate material to the website in any way.</li>
+    </ul>
+    
+    <p>For further details or to report a problem, you can contact us at <a href="mailto:info@example.com">info@example.com</a>.</p>
+
+    <a class="btn btn-primary fw-bold" href="{% url 'home' %}">Return Home</a>
   </div>
+
+  <!-- Add the following Bootstrap JS scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
