@@ -45,12 +45,19 @@ def logout_view(request):
 def register_view(request):
 
     if request.method == 'POST': #user clicked the Sign Up button
-        username = request.POST['username']# this is an issue with the html form and not my code
+        username = request.POST['username']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
         email = request.POST['email']
 
+        # check if details entered are valid
+        if '@' in username:
+            messages.error(request, 'Usernames cannot contain @ character')
+            return redirect('register')
+        if '@' not in email:
+            messages.error(request, 'Valid emails must contain @ character')
+            return redirect('register')
         if password != confirm_password:
             messages.error(request, 'Passwords do not match')
             return redirect('register')
