@@ -240,7 +240,7 @@
                         <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-mobile-alt"></i> Score</a>
+                        <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fas fa-mobile-alt"></i> Leaderboard</a>
                     </li>
                 </ul>
                 <a class="nav-item nav-link login-btn" href="{% url 'logout' %}">Logout</a> 
@@ -270,18 +270,18 @@
 
         <div class="card game-card" onclick="window.location.href='{% url 'jumping_game' %}';" style="cursor: pointer;">
             <!--My editior complains about the previous line but won't fix because the application works properly-->
-            <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="wu">
+            <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="Jumping Game">
             <div class="card-body text-center">
-                <h5 class="card-title">wu</h5>
+                <h5 class="card-title">Jumping Game</h5>
                 <p class="card-text">Click to play the game!</p>
             </div>
         </div>
 
         <div class="card quiz-card" onclick="openQuiz1()">
-            <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Sharon">
+            <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Quiz 1">
             <div class="card-body text-center">
-                <h5 class="card-title">Sharon</h5>
-                <p class="card-text">Click to play the quiz!</p>
+                <h5 class="card-title">Quiz 1</h5>
+                <p class="card-text">Click to try the quiz!</p>
             </div>
         </div>
 

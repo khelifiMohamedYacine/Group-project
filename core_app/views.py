@@ -6,7 +6,6 @@ from django.contrib.auth import authenticate, login, logout
 from core_app.models import UserAccount
 
 
-
 def login_view(request):
     if request.method == 'POST':
         username_or_email = request.POST['username_or_email']
@@ -89,11 +88,26 @@ def forgot_password_view(request):
 def privacy_policy_view(request):
     return render(request, 'core_app/privacy-policy.html')
 
+def maps_view(request):
+    return render(request, 'core_app/maps.html')
+
+def videos_view(request):
+    return render(request, 'core_app/video.html')
+
+def leaderboard_view(request):
+    # This is simply dummy data for now.
+    leaderboard_data = [
+        {'username' : 'Dummy User 3', 'reward_pts' : 75},
+        {'username' : 'Dummy User 1', 'reward_pts' : 54},
+        {'username' : 'Dummy User 4', 'reward_pts' : 54},
+        {'username' : 'Dummy User 5', 'reward_pts' : 48},
+        {'username' : 'Dummy User 2', 'reward_pts' : 39},
+    ]
+    return render(request, 'core_app/leaderboard.html', {'leaderboard_data' : leaderboard_data})
+
 # commented for easy removal. Based on group decision
 def quizzes_view(request):
     return render(request, 'core_app/Quiz-1.html')
-def videos_view(request):
-    return render(request, 'core_app/video.html')
-def maps_view(request):
-    return render(request, 'core_app/maps.html')
+
+
 # Endcomment
