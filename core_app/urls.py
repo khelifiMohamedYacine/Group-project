@@ -14,6 +14,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('forgot_password/', views.forgot_password_view, name='forgot_password'),
     path('privacy_policy/', views.privacy_policy_view, name="privacy_policy"),
+    path('leaderboard', views.leaderboard_view, name='leaderboard'),
 
     # Commented for easy removal. Based on group decision
     path('quizzes/', views.quizzes_view, name="quizzes"),

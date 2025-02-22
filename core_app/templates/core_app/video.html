@@ -214,6 +214,7 @@
         }
     </style>
 </head>
+
 <body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center">
     <nav class="navbar navbar-custom navbar-expand-lg">
         <div class="container-fluid">
@@ -237,7 +238,7 @@
                         <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-mobile-alt"></i> Score</a>
+                        <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fas fa-mobile-alt"></i> Leaderboard</a>
                     </li>
                 </ul>
                 <a class="nav-item nav-link login-btn" href="{% url 'logout' %}">Logout</a> 
@@ -246,7 +247,6 @@
         </div>
     </nav>
 
-    <div class="banner"></div>
     <div class="main-banner">
         <p class="display-5 fw-bold">Environmental Awareness Videos</p>
     </div>
