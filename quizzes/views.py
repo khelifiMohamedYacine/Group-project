@@ -1,25 +1,26 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 import random
 from .models import Quiz, TrueFalse
 
 def quiz_view(request):
     # Initialize session variables
-    if 'quiz_number' not in request.session:
-        request.session['quiz_number'] = 0
+    if 'question_number' not in request.session:
+        request.session['question_number'] = 0
     if 'quiz_result' not in request.session:
         request.session['quiz_result'] = 0
     if 'quiz_finished' not in request.session:
         request.session['quiz_finished'] = False
 
-    quiz_number = request.session['quiz_number']
+    question_number = request.session['question_number']
     quiz_finished = request.session['quiz_finished']
 
-    print(f"Question Number: {quiz_number}") #DEBUG
+    print(f"Question Number: {question_number}") #DEBUG
     print(f"Current Score: {request.session['quiz_result']}") #DEBUG
 
     # If quiz is finished, redirect to results
     if quiz_finished:
-        return redirect('quiz:quiz_result')
+        return redirect('quizzes:quiz_result')
 
     # Select unique questions if not already chosen
     if 'selected_questions' not in request.session:
@@ -28,8 +29,12 @@ def quiz_view(request):
         request.session['selected_questions'] = [q.id for q in all_questions[:11]]  
         request.session.modified = True
 
+    # Check for missing questions in database "indexError" and provide clearer error message
+    if len(request.session['selected_questions']) < 11:
+        return HttpResponse("Error: missing quiz questions in the database. Probably because db.sqlite3 is not tracked by git. Add some questions to make it work")
+
     # Retrieve the current question by ID
-    question_id = request.session['selected_questions'][quiz_number]
+    question_id = request.session['selected_questions'][question_number]
     question = Quiz.objects.filter(id=question_id).first() or TrueFalse.objects.filter(id=question_id).first()
 
     if request.method == "POST":
@@ -49,27 +54,27 @@ def quiz_view(request):
                 print(f"Correct Answer! Updated Score: {request.session['quiz_result']}") #DEBUG
 
             # Move to the next question
-            request.session['quiz_number'] += 1
+            request.session['question_number'] += 1
             request.session.modified = True
 
             # Check if quiz is completed
-            if request.session['quiz_number'] >= 10:
+            if request.session['question_number'] >= 10:
                 request.session['quiz_finished'] = True
                 return redirect('quiz:quiz_result')
 
-            return redirect('quiz:quiz')
+            return redirect('quizzes:quiz')
 
-    return render(request, 'quiz/quiz.html', {'question': question, 'quiz_number': quiz_number})
+    return render(request, 'quizzes/quiz.html', {'question': question, 'question_number': question_number})
 
-def quiz_result_view(request):
+def quiz_results_view(request):
     score = request.session.get('quiz_result', 0)
     print(f"Score at Result Page: {score}")
 
     # After showing the result, reset the session for a new quiz
     if 'quiz_finished' in request.session and request.session['quiz_finished']:
-        del request.session['quiz_number'] 
+        del request.session['question_number'] 
         del request.session['quiz_result'] 
         del request.session['quiz_finished']  
         del request.session['selected_questions']
         
-    return render(request, 'quiz/quiz_result.html', {'score': score})
+    return render(request, 'quizzes/quiz_result.html', {'score': score})
