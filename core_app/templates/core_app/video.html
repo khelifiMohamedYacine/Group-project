@@ -20,14 +20,14 @@
             text-align: center;
             display: block;
             margin-top: 30px; /* Adjusts spacing */
-            transition: color 0.3s ease-in-out;
+            transition: color 0.2s ease-in-out;
             text-decoration: none;
         }
         .privacy-policy:hover {
-            color: #93ff96; /* Changed for contrast reasons */
+            color: #ffbb00; /* Changed for better contrast */
             text-decoration: underline;
         }
-        
+
         .top-navbar, .left-bottom-bar { 
             background-color: #ffffff; 
             color: white; 
@@ -66,18 +66,16 @@
             background-color: #0056b3;
         }
 
-        .banner { 
-            height: 350px; 
+        .main-banner { 
+            padding-top: 10vh;
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            color: white; 
-            font-size: 2.5rem; 
-            font-weight: bold; 
-            text-align: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
-            margin-bottom: -100px; 
+            color: rgb(255, 255, 255); 
+            text-shadow: 4px 4px 4px rgba(0,0,0,0.9); 
+            flex-direction: column;
         }
+        
         .container { 
             padding: 50px; 
             display: flex; 
@@ -248,7 +246,11 @@
         </div>
     </nav>
 
-    <div class="banner">Environmental Awareness Videos</div>
+    <div class="banner"></div>
+    <div class="main-banner">
+        <p class="display-5 fw-bold">Environmental Awareness Videos</p>
+    </div>
+
 
     <div class="container">
         <div class="video-card">

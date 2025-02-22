@@ -21,11 +21,11 @@
             text-align: center;
             display: block;
             margin-top: 30px; /* Adjusts spacing */
-            transition: color 0.3s ease-in-out;
+            transition: color 0.2s ease-in-out;
             text-decoration: none;
         }
         .privacy-policy:hover {
-            color: #93ff96; /* Changed for better contrast */
+            color: #ffbb00; /* Changed for better contrast */
             text-decoration: underline;
         }
 
@@ -66,17 +66,16 @@
             background-color: #0056b3;
         }
 
-        .banner { 
-            height: 350px; 
+        .main-banner { 
+            padding-top: 10vh;
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            color: white; 
-            font-size: 2.5rem; 
-            font-weight: bold; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
-            margin-bottom: -100px; 
+            color: rgb(255, 255, 255); 
+            text-shadow: 4px 4px 4px rgba(0,0,0,0.9); 
+            flex-direction: column;
         }
+
         .container { 
             padding: 50px; 
             display: flex; 
@@ -249,7 +248,22 @@
         </div>
     </nav>
     
-    <div class="banner">Lets Have Some Fun</div>
+    <div class="main-banner">
+        <p class="display-5 fw-bold">
+        {% if user %} <!--If the user is logged in-->
+            Welcome, {{ user }}! 
+        {% else %} <!--If the user is not logged in-->
+            Welcome! 
+        {% endif %}
+        </p>
+
+        {% if user %} <!--If the user is logged in-->
+            <p class="h3 fw-bold">Reward Points: {{ user.reward_pts }}</p>
+        {% else %} <!--If the user is not logged in-->
+            <p class="h5 fw-bold">Log In To See Your Reward Points</p>
+        {% endif %}
+        
+    </div>
 
     <div class="container">
 
