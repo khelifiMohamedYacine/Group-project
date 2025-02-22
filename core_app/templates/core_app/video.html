@@ -15,19 +15,19 @@
         }
 
         .privacy-policy {
-            color: #ffffff; /* Bootstrap primary blue */
+            color: #ffffff; 
             font-weight: bold;
             text-align: center;
             display: block;
             margin-top: 30px; /* Adjusts spacing */
-            font-size: 1rem;
             transition: color 0.3s ease-in-out;
+            text-decoration: none;
         }
-
         .privacy-policy:hover {
-            color: #044815; 
+            color: #93ff96; /* Changed for contrast reasons */
             text-decoration: underline;
         }
+        
         .top-navbar, .left-bottom-bar { 
             background-color: #ffffff; 
             color: white; 
@@ -59,6 +59,7 @@
             padding: 5px 15px;
             border: none;
             font-weight: bold;
+            text-decoration: none;
         }
 
         .login-btn:hover {
@@ -241,9 +242,8 @@
                         <a class="nav-link" href="#"><i class="fas fa-mobile-alt"></i> Score</a>
                     </li>
                 </ul>
-                <form method="post" action="{% url 'logout' %}">
-                    <button type="submit" class="login-btn">Logout</button>
-                </form>
+                <a class="nav-item nav-link login-btn" href="{% url 'logout' %}">Logout</a> 
+                <!--For some reason, the logout button had an entire form attached to it-->
             </div>
         </div>
     </nav>
@@ -322,7 +322,8 @@
             </div>
         </div>
     </div>
-    <p><a href="{% url 'privacy_policy' %}" class="privacy-policy">Privacy Policy</a></p>
+
+    <p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
 
 
     <!-- Add the following Bootstrap JS scripts -->
