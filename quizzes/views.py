@@ -70,9 +70,9 @@ def quiz_view(request):
             # Check if quiz is completed
             if request.session['question_number'] >= len(request.session['selected_questions']):
                 request.session['quiz_finished'] = True
-                return redirect('quiz:quiz_results')
+                return redirect('quizzes:quiz_results')
 
-            return redirect('quiz:quiz')
+            return redirect('quizzes:quiz')
 
     print("Debug the question ", Question.objects.get(id=question_id))
     return render(request, 'quizzes/quiz.html', {'question': question, 'question_number': question_number})
