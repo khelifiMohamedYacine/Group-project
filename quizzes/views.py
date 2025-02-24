@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import random
-from .models import Quiz, TrueFalse
+from .models import Quiz, TrueFalse, Question
 
 def quiz_view(request):
     # Initialize session variables
@@ -15,6 +15,7 @@ def quiz_view(request):
     question_number = request.session['question_number']
     quiz_finished = request.session['quiz_finished']
 
+
     print(f"Question Number: {question_number}") #DEBUG
     print(f"Current Score: {request.session['quiz_result']}") #DEBUG
 
@@ -24,18 +25,27 @@ def quiz_view(request):
 
     # Select unique questions if not already chosen
     if 'selected_questions' not in request.session:
-        all_questions = list(Quiz.objects.all()) + list(TrueFalse.objects.all())
-        random.shuffle(all_questions)  
-        request.session['selected_questions'] = [q.id for q in all_questions[:11]]  
+        quiz_id = 1 # hardcoded (temporaily) value for the quiz we are going to play
+
+        # Get all the questions belonging to that quiz
+        quiz = Quiz.objects.get(quizID=quiz_id)
+        all_questions = list(Question.objects.filter(quiz=quiz)) + list(TrueFalse.objects.filter(quiz=quiz))
+
+        
+
+        random.shuffle(all_questions) 
+
+        # Store IDs of the questions we selected
+        request.session['selected_questions'] = [q.id for q in all_questions]
         request.session.modified = True
 
-    # Check for missing questions in database "indexError" and provide clearer error message
-    if len(request.session['selected_questions']) < 11:
-        return HttpResponse("Error: missing quiz questions in the database. Probably because db.sqlite3 is not tracked by git. Add some questions to make it work")
+    # Inform the user if there are no questions in that quiz
+    if len(request.session['selected_questions']) <= 0:
+        return HttpResponse("There are no questions selected in the quiz. Add some")
 
     # Retrieve the current question by ID
     question_id = request.session['selected_questions'][question_number]
-    question = Quiz.objects.filter(id=question_id).first() or TrueFalse.objects.filter(id=question_id).first()
+    question = Question.objects.filter(id=question_id).first() or TrueFalse.objects.filter(id=question_id).first()
 
     if request.method == "POST":
         print("POST data:", request.POST)  # DEBUG 
@@ -44,7 +54,7 @@ def quiz_view(request):
 
         if selected_answer:
             # Check if the answer is correct
-            if isinstance(question, Quiz) and selected_answer.strip() == question.correct_choice.strip():
+            if isinstance(question, Question) and selected_answer.strip() == question.correct_choice.strip():
                 print(f"Checking Quiz Question: {question.correct_choice} vs {selected_answer}") #DEBUG
                 request.session['quiz_result'] += 1
                 print(f"Correct Answer! Updated Score: {request.session['quiz_result']}") #DEBUG
@@ -58,16 +68,18 @@ def quiz_view(request):
             request.session.modified = True
 
             # Check if quiz is completed
-            if request.session['question_number'] >= 10:
+            if request.session['question_number'] >= len(request.session['selected_questions']):
                 request.session['quiz_finished'] = True
                 return redirect('quiz:quiz_results')
 
             return redirect('quiz:quiz')
 
+    print("Debug the question ", Question.objects.get(id=question_id))
     return render(request, 'quizzes/quiz.html', {'question': question, 'question_number': question_number})
 
 def quiz_results_view(request):
     score = request.session.get('quiz_result', 0)
+    total_questions = len(request.session.get('selected_questions', []))
     print(f"Score at Result Page: {score}")
 
     # After showing the result, reset the session for a new quiz
@@ -77,4 +89,4 @@ def quiz_results_view(request):
         del request.session['quiz_finished']  
         del request.session['selected_questions']
         
-    return render(request, 'quizzes/quiz_result.html', {'score': score})
+    return render(request, 'quizzes/quiz_result.html', {'score': score, 'total_questions' : total_questions})
