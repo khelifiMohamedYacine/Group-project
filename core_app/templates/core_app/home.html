@@ -234,7 +234,7 @@
                         <a class="nav-link" href="{% url 'videos' %}"><i class="fas fa-play-circle"></i> Videos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'quiz' %}"><i class="fas fa-play-circle"></i> Quizzes</a>
+                        <a class="nav-link" href="{% url 'quizzes:quiz' %}"><i class="fas fa-play-circle"></i> Quizzes</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
@@ -277,7 +277,7 @@
             </div>
         </div>
 
-        <div class="card quiz-card" onclick="window.location.href='{% url 'quiz' %}';" style="cursor: pointer;">
+        <div class="card quiz-card" onclick="window.location.href='{% url 'quizzes:quiz' %}';" style="cursor: pointer;">
             <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Quiz 1">
             <div class="card-body text-center">
                 <h5 class="card-title">Quiz 1</h5>
