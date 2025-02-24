@@ -17,7 +17,6 @@ urlpatterns = [
     path('leaderboard', views.leaderboard_view, name='leaderboard'),
 
     # Commented for easy removal. Based on group decision
-    path('quizzes/', views.quizzes_view, name="quizzes"),
     path('videos/', views.videos_view, name="videos"),
     path('maps/', views.maps_view, name="maps"),
     # End comment
