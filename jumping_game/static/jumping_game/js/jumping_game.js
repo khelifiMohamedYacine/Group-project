@@ -5,15 +5,16 @@ window.addEventListener('load', function () {
     canvas.height = 800;
     let enemys = [];
     let score = 0;
-
-      this.sound = new Audio();
-      this.sound.src = 'backgrorund.wav';
-      this.sound.play();
+    let gameOver = false;
+   // const fullScreenButton = document.getElementById('fullScreenButton');
 
 
     class InputHandler {
         constructor() {
             this.keys = [];
+            this.touchY = '';
+            this.touchTreshold = 30;//the minimum pixel needed to trigger
+            this.touchX = '';
             window.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') {
                     paused = !paused; // Toggle Pause
@@ -67,6 +68,37 @@ window.addEventListener('load', function () {
                 if (e.key === ' ' && gameOver) { // Press spacebar to restart the game
                     restartGame();
                 }
+            });
+
+            window.addEventListener('touchstart', e=> {
+                this.touchY = e.changedTouches[0].pageY;
+                this.touchX = e.changedTouches[0].pageX;
+            });
+
+             window.addEventListener('touchmove', e=> {
+                const swipeDistanceY = e.changedTouches[0].pageY - this.touchY;
+                const swipeDistanceX = e.changedTouches[0].pageX - this.touchX;
+
+                if(swipeDistanceX < -this.touchTreshold && this.keys.indexOf('swipe left') === -1){//check the swipe direction
+                    this.keys.push('swipe left');
+                }
+                else if(swipeDistanceX > this.touchTreshold && this.keys.indexOf('swipe right') === -1){//check the swipe direction
+                    this.keys.push('swipe right');
+                }
+
+                if(swipeDistanceY < -this.touchTreshold && this.keys.indexOf('swipe up') === -1){//check the swipe direction
+                    this.keys.push('swipe up');
+                }
+                else if(swipeDistanceY > this.touchTreshold && this.keys.indexOf('swipe down') === -1){//check the swipe direction
+                    this.keys.push('swipe down');
+                    if(gameOver) restartGame(); //for mobile to restart the game
+                }
+            });
+             window.addEventListener('touchend', e=> {
+                this.keys.splice(this.keys.indexOf('swipe up'), 1);
+                this.keys.splice(this.keys.indexOf('swipe down'), 1);
+                this.keys.splice(this.keys.indexOf('swipe left'), 1);
+                this.keys.splice(this.keys.indexOf('swipe right'), 1);
             });
 
 
@@ -126,21 +158,21 @@ window.addEventListener('load', function () {
             }
 
             // **Controls left and right movement**
-            if (input.keys.includes('ArrowRight') || input.keys.includes('d')) {
+            if (input.keys.includes('ArrowRight') || input.keys.includes('d') || input.keys.includes('swipe right')) {
                 this.speed = 5;
-            } else if (input.keys.includes('ArrowLeft') || input.keys.includes('a')) {
+            } else if (input.keys.includes('ArrowLeft') || input.keys.includes('a') || input.keys.includes('swipe left')) {
                 this.speed = -5;
             } else {
                 this.speed = 0;
             }
 
             // **jump**
-            if ((input.keys.includes('ArrowUp') || input.keys.includes('w')) && this.onGround()) {
+            if ((input.keys.includes('ArrowUp') || input.keys.includes('w') || input.keys.includes('swipe up'))  && this.onGround()) {
                 this.vy -= 35;
             }
 
             // **sit down**
-            if ((input.keys.includes('ArrowDown') || input.keys.includes('s')) && this.onGround()) {
+            if ((input.keys.includes('ArrowDown') || input.keys.includes('s') || input.keys.includes('swipe down')) && this.onGround() && !gameOver) {
                 this.sitting = true;
                 this.frameY = 6;
                 this.maxFrame = 5;
@@ -370,7 +402,6 @@ window.addEventListener('load', function () {
 
 
     let paused = false; // Whether the game is paused
-    let gameOver = false;
 
     function animate(timeStamp) {
         if (gameOver) {
@@ -379,7 +410,7 @@ window.addEventListener('load', function () {
             ctx.font = '50px Helvetica';
             ctx.fillText('Game Over', canvas.width / 2 - 120, canvas.height / 2 - 20);
             ctx.font = '30px Helvetica';
-            ctx.fillText('Press SPACE or Click to Restart', canvas.width / 2 - 180, canvas.height / 2 + 40);
+            ctx.fillText('Press SPACE or Swipe down to Restart', canvas.width / 2 - 180, canvas.height / 2 + 40);
             return;
         }
 
