@@ -1,90 +1,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form</title>
+    <title>Login Page</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
         body {
             background-image: url('https://www.exeter.ac.uk/about/gardens/thegrounds/ponds/');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
+            background-size: cover; /* Ensures the image covers the entire background */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            height: 100vh; /* Ensures the body takes the full viewport height */
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .card {
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.7); /* Transparent dark black background */
             border: none;
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+            color: white; /* Ensures text is visible on the dark background */
         }
 
         .form-control {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background for inputs */
             border: none;
             border-radius: 5px;
-            color: #333;
+            color: #333; /* Dark text color for inputs */
         }
 
         .btn-primary {
-            background-color: #28a745;
+            background-color: #28a745; /* Green color for the button */
             border: none;
             padding: 10px;
             font-size: 16px;
         }
 
         .btn-primary:hover {
-            background-color: #218838;
+            background-color: #218838; /* Darker green on hover */
         }
 
         a {
-            color: #b3ffb3;
+            color: #b3ffb3; /* Light green for links */
         }
 
         a:hover {
-            color: #99e699;
+            color: #99e699; /* Slightly darker green on hover */
         }
 
-        .error-message {
-            background-color: #f8d7da; /* Light red background */
-            color: #721c24; /* Dark red text */
-            border: 1px solid #f5c6cb; /* Red border */
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .home-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: rgba(14, 14, 14, 0.7); /* Slightly transparent dark background */
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-        }
-        
-        .home-btn:hover {
-            background-color: rgba(51, 51, 51, 0.9); /* More opaque when hovered */
-        }
-        
     </style>
 </head>
 
-<body style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;">
-    <!-- Home Button -->
-    <a href="{% url 'home' %}" class="home-btn">Home</a>
+<body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center; height: 100vh;">
 
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
@@ -102,27 +73,29 @@
                 {% endif %}
 
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Username Or Email" name="username" required>
+                    <input type="text" class="form-control" placeholder="Username Or Email" name="username_or_email" required>
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" placeholder="Password" name="password" required>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
                         <label class="form-check-label" for="rememberMe">Remember Me</label>
                     </div>
-                    <a href="#" class="text-decoration-none">Forgot Password?</a> <!--placeholder as reset password not implemented-->
-                    {% comment %} <!--<a href="{% url 'forgot_password' %}" class="text-decoration-none">Forgot Password?</a>--> {% endcomment %}
+                    <a href="{% url 'forgot_password' %}" class="text-decoration-none">Forgot Password?</a>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
                 <div class="text-center">
                     <p>Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none">Register</a></p>
+                    <!-- Privacy Policy Link -->
+                    <p><a href="{% url 'privacy_policy' %}" class="text-decoration-none">Privacy Policy</a></p>
                 </div>
-            </form>
+            </form>            
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS (Optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>
