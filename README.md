@@ -3,12 +3,12 @@
 ### Group Name: Syntax Squad 2
 
 ### Group Members:
-1) Khelifi Mohamed Yacine
-2) David Muoneke
-3) Renchengkun Wu
-4) Jerry Sharon Jenova Raju
-5) Daniel Komarov
-6) Jonathan Young
+1) Khelifi Mohamed Yacine (myk204-dev / yacine)
+2) David Muoneke (DM7935-GH)
+3) Renchengkun Wu (renchengkunwu)
+4) Jerry Sharon Jenova Raju (jsharonjr)
+5) Daniel Komarov (ZonateWhisper5)
+6) Jonathan Young (JonathanY234)
 7) Joshua Masih
 
 ### Our GitHub Repository:
@@ -20,8 +20,6 @@ https://drive.google.com/drive/folders/17ponXwzY-ukLank_L8885Snnm2IQpFjj?usp=dri
 Trello Link:  
 https://trello.com/b/ISL0gIqD/my-trello-board
 
-
-(IGNORE EVERYTHING BELOW THIS FOR NOW)
 
 ---
 
@@ -44,25 +42,25 @@ https://trello.com/b/ISL0gIqD/my-trello-board
 We have also taken regular snapshots of our Kanban board since 6/2/25, archiving them here:  
 [insert link]
 
-We have kept a detailed record of our group meetings here:  
+We have kept a detailed record of our group meetings here:    
 [insert link]
 
 ---
 
 ### Technical Documents:
-Our frontend technical documentation explains our HTML, CSS and JavaScript code:  
+Our Architecture Overview explains our web application's front-end, back-end, use of Django, and database structure:    
 [insert link]
 
-Our backend technical documentation explains our Python and Django code, as well as our tests:  
-[insert link]
-
-Source code snapshot (still unsure of what this actually is):  
+Our Testing Documentation explains our Django unit tests and manual validation tests:    
 [insert link]
 
 ---
 
 ### Product Documents:
-Our requirements analysis documentation is here:  
+Our Requirements Analysis documentation is here:  
+[insert link]
+
+Our Design Plan documentation is here:  
 [insert link]
 
 Our User Interface (UI) design mockups are here:  
