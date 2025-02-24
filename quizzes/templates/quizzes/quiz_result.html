@@ -28,7 +28,7 @@
       style="background-color: rgba(0, 0, 0, 0.7); color: white"
     >
       <h1>Game Over</h1>
-      <h3>Your result: {{ score }} / 10</h3>
+      <h3>Your result: {{ score }} / {{ total_questions }}</h3>
       <a href="{% url 'quiz:quiz' %}" class="btn btn-primary mt-4">
         Play Again</a
       >
