@@ -22,9 +22,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),  # Admin route
     path('', include('core_app.urls')),
-<<<<<<< HEAD
     path('', include('jumping_game.urls')),
-=======
     path('', include('quizzes.urls')),
->>>>>>> quiz-page
 ]
