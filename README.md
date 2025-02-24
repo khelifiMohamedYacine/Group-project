@@ -38,8 +38,6 @@ Given that Python and PIP are present, Django can be installed using the command
 **How to run the app (+ basic functionalities):**  
 First, navigate to the source code directory within a command line/terminal. This should be the one containing 'manage.py'.  
 
-Before running the application, use the command `python manage.py migrate` to apply all database migrations.
-
 Run the web application using the command `python manage.py runserver`.  
 If there are no problems, you should see the line "Starting development server at http://127.0.0.1:8000/".
 This indicates that the application is running locally.  
