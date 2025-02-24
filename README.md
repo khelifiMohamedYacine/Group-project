@@ -34,8 +34,7 @@ It can be found [here](./Technical%20Documents/Link%20To%20GitHub%20Repository.t
 Alternatively, you can download the source code from the 'main' branch of our GitHub repo (linked above).
 
 Python, PIP and Django must be installed to run the application.  
-Given that Python and PIP are present, Django can be installed using the command `python -m pip install Django`
-(on UNIX systems, you may have to use `py` instead of `python`).  
+Given that Python and PIP are present, Django can be installed using the command `python -m pip install Django`.    
 
 #### **How to run the app (+ basic functionalities):**  
 First, navigate to the source code directory within a command line/terminal. This should be the one containing 'manage.py'.  
