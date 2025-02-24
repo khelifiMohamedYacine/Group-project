@@ -105,9 +105,5 @@ def leaderboard_view(request):
     ]
     return render(request, 'core_app/leaderboard.html', {'leaderboard_data' : leaderboard_data})
 
-# commented for easy removal. Based on group decision
-def quizzes_view(request):
-    return render(request, 'core_app/Quiz-1.html')
-
 
 # Endcomment
