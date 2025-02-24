@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    {% load static %} <!--To use anything within the static folder, this needs to be present-->
+    <style>
+        body { 
+            background-color: #f0f8ff; 
+            font-family: 'Arial', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        .privacy-policy {
+            color: #ffffff; 
+            font-weight: bold;
+            text-align: center;
+            display: block;
+            margin-top: 30px; /* Adjusts spacing */
+            transition: color 0.2s ease-in-out;
+            text-decoration: none;
+        }
+        .privacy-policy:hover {
+            color: #ffbb00; /* Changed for better contrast */
+            text-decoration: underline;
+        }
+
+        .top-navbar, .left-bottom-bar { 
+            background-color: #ffffff; 
+            color: white; 
+        }
+        .top-navbar {
+            background-color: #000;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1rem;
+        }
+        .top-navbar a:hover {
+            color: #ffcc00;
+        }
+        .navbar-custom {
+            background-color: rgba(0, 0, 0, 0.5); /* Black with transparency */
+            padding: 20px 0;
+        }
+        .login-btn {
+            background-color: #007bff;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            border: none;
+            font-weight: bold;
+        }
+
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .main-banner { 
+            padding-top: 10vh;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: rgb(255, 255, 255); 
+            text-shadow: 4px 4px 4px rgba(0,0,0,0.9); 
+            flex-direction: column;
+        }
+
+        .container { 
+            padding: 50px; 
+            display: flex; 
+            flex-wrap: wrap; /* Allow wrapping of the cards */
+            justify-content: space-between; /* Ensure 2 cards per line */
+        }
+        
+        .card { 
+            border-radius: 15px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+            overflow: hidden; 
+            width: 48%; /* Ensure 2 cards per row */
+            margin: 10px 0; /* Adjust margin for spacing */
+            background-color: white; 
+            margin-bottom: 60px;
+        }
+        
+        .card:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
+        }
+        .card img { 
+            height: 150px; 
+            object-fit: cover; 
+            border-radius: 15px 15px 0 0; 
+        }
+        .card-body { 
+            text-align: center; 
+            padding: 15px; 
+        }
+        .card-title { 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            color: #000000; 
+            margin-bottom: 5px; 
+        }
+        .card-text { 
+            font-size: 0.9rem; 
+            color: #555; 
+        }
+        .icon-badge { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background-color: rgba(255, 255, 255, 0.8); 
+            padding: 5px 10px; 
+            border-radius: 20px; 
+            font-size: 1rem; 
+            color: #333; 
+        }
+        .side-menu { 
+            position: fixed; 
+            left: 20px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background-color: #02020266; 
+            padding: 15px; 
+            border-radius: 15px; 
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); 
+            width: 200px; 
+        }
+        .side-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 10px; 
+            background-color: white; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+            text-decoration: none; 
+            color: black; 
+            font-weight: bold; 
+            transition: background 0.3s, color 0.3s; 
+            font-size: 1rem; 
+        }
+        .side-menu a:hover { 
+            background-color: #052e01; 
+            color: white; 
+        }
+        .side-menu a.active { 
+            background-color: black; 
+            color: white; 
+        }
+        .side-menu a i { 
+            margin-right: 10px; 
+        }
+        .navbar-brand, 
+        .navbar-text, 
+        .login-btn {
+        color: white !important; 
+        }
+        .quiz-modal {
+            max-width: 350px;
+        }
+        /* New button for certificate */
+        .certificate-btn {
+            position: relative;
+            bottom: 0px;
+            background-color: #28a745;
+            color: white;
+            padding: 0px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: background-color 0.3s;
+        }
+
+        .certificate-btn:hover {
+            background-color: #218838;
+        }
+
+        .navbar-custom {
+            background-color: #000; /* Black background */
+            padding: 15px 0;
+            opacity: 1;
+        }
+
+        .navbar-nav .nav-item {
+            margin: 0 10px;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffcc00 !important;
+        }
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+    </style>
+</head>
+
+<body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center">
+    <nav class="navbar navbar-custom navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">EcoMind</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto"> <!-- Centering items -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-play-circle"></i> Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'videos' %}"><i class="fas fa-play-circle"></i> Videos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'quizzes:quiz' %}"><i class="fas fa-play-circle"></i> Quizzes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fas fa-mobile-alt"></i> Leaderboard</a>
+                    </li>
+                </ul>
+                <a class="nav-item nav-link login-btn" href="{% url 'logout' %}">Logout</a> 
+                <!--For some reason, the logout button had an entire form attached to it-->
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main-banner">
+        <p class="display-5 fw-bold">
+        {% if user %} <!--If the user is logged in-->
+            Welcome, {{ user }}! 
+        {% else %} <!--If the user is not logged in-->
+            Welcome! 
+        {% endif %}
+        </p>
+
+        {% if user %} <!--If the user is logged in-->
+            <p class="h3 fw-bold">Reward Points: {{ user.reward_pts }}</p>
+        {% else %} <!--If the user is not logged in-->
+            <p class="h5 fw-bold">Log In To See Your Reward Points</p>
+        {% endif %}
+        
+    </div>
+
+    <div class="container">
+
+        <div class="card game-card" onclick="window.location.href='{% url 'jumping_game' %}';" style="cursor: pointer;">
+            <!--My editior complains about the previous line but won't fix because the application works properly-->
+            <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="Jumping Game">
+            <div class="card-body text-center">
+                <h5 class="card-title">Jumping Game</h5>
+                <p class="card-text">Click to play the game!</p>
+            </div>
+        </div>
+
+        <div class="card quiz-card" onclick="window.location.href='{% url 'quizzes:quiz' %}';" style="cursor: pointer;">
+            <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Quiz 1">
+            <div class="card-body text-center">
+                <h5 class="card-title">Quiz 1</h5>
+                <p class="card-text">Click to try the quiz!</p>
+            </div>
+        </div>
+
+
+            <p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
+            <!--
+            <a class="certificate-btn" href="#">Get Your Certificate</a>
+            Commented this out because there's no view function for the certificate page, so it doesn't open when 
+            the website is run with Django.
+            There probably shouldn't even be a button to the certificate page from the Home page, users are meant to
+            get the certificate by actually doing something.
+            -->
+
+    </div>
+    <!-- dont open quizes like this do it on the backend
+
+        <script>
+        function openQuiz1() {
+          window.location.href = 'Quiz-1.html';
+        }
+        function openQuiz2() {
+            window.location.href = 'Quiz-2.html';
+        }
+        function openQuiz3() {
+            window.location.href = 'Quiz-3.html';
+        }
+        function openQuiz4() {
+            window.location.href = 'Quiz-4.html';
+        }
+        function openQuiz5() {
+            window.location.href = 'Quiz-5.html';
+        }
+        </script>
+    -->
+
+    <!-- Add the following Bootstrap JS scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
