@@ -60,9 +60,9 @@ def quiz_view(request):
             # Check if quiz is completed
             if request.session['question_number'] >= 10:
                 request.session['quiz_finished'] = True
-                return redirect('quiz:quiz_result')
+                return redirect('quiz:quiz_results')
 
-            return redirect('quizzes:quiz')
+            return redirect('quiz:quiz')
 
     return render(request, 'quizzes/quiz.html', {'question': question, 'question_number': question_number})
 
