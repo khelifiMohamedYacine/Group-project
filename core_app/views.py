@@ -36,6 +36,7 @@ def login_view(request):
 
     return render(request, 'core_app/login.html')
 
+
 def logout_view(request):
     logout(request)
     return redirect('login')
@@ -79,20 +80,26 @@ def register_view(request):
 
     return render(request, 'core_app/create-account.html')
 
+
 def home_view(request):
     return render(request, 'core_app/home.html', {'user': request.user})
+
 
 def forgot_password_view(request):
     return render(request, 'core_app/forgot-password.html')
 
+
 def privacy_policy_view(request):
     return render(request, 'core_app/privacy-policy.html')
+
 
 def maps_view(request):
     return render(request, 'core_app/maps.html')
 
+
 def videos_view(request):
     return render(request, 'core_app/video.html')
+
 
 def leaderboard_view(request):
     # This is simply dummy data for now.
@@ -103,6 +110,7 @@ def leaderboard_view(request):
         {'username' : 'Dummy User 5', 'reward_pts' : 48},
         {'username' : 'Dummy User 2', 'reward_pts' : 39},
     ]
+
     return render(request, 'core_app/leaderboard.html', {'leaderboard_data' : leaderboard_data})
 
 
