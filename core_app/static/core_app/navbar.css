@@ -1,0 +1,42 @@
+
+.login-btn {
+    background-color: #007bff;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 15px;
+    border: none;
+    font-weight: bold;
+}
+
+.login-btn:hover {
+    background-color: #0056b3;
+}
+
+.navbar-brand, .navbar-text, .login-btn {
+    color: white !important; 
+}
+
+.navbar-custom {
+    background-color: #000; /* Black background */
+    padding: 15px 0;
+    opacity: 1;
+}
+
+.navbar-nav .nav-item {
+    margin: 0 10px;
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffcc00 !important;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
