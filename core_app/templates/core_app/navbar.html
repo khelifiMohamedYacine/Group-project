@@ -7,21 +7,37 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
+                {% if request.path != "/home/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-play-circle"></i> Games</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'videos' %}"><i class="fas fa-play-circle"></i> Videos</a>
-                </li>
+
+                {% if request.path != "/videos/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'videos' %}"><i class="fas fa-play-circle"></i> Videos</a>
+                    </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'quizzes:quiz' %}"><i class="fas fa-play-circle"></i> Quizzes</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fas fa-mobile-alt"></i> Leaderboard</a>
-                </li>
+
+                {% if request.path != "/maps/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
+                    </li>
+                {% endif %}
+
+                {% if request.path != "/leaderboard/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fas fa-mobile-alt"></i> Leaderboard</a>
+                    </li>
+                {% endif %}
             </ul>
 
             {% if user.is_authenticated %}
