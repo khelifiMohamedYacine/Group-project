@@ -23,8 +23,12 @@
                     <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fas fa-mobile-alt"></i> Leaderboard</a>
                 </li>
             </ul>
-            <a class="nav-item nav-link login-btn" href="{% url 'logout' %}">Logout</a> 
-            <!--For some reason, the logout button had an entire form attached to it-->
+
+            {% if user.is_authenticated %}
+                <a class="nav-item nav-link login-btn" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a class="nav-item nav-link login-btn" href="{% url 'login' %}">Log In</a>
+            {% endif %}
         </div>
     </div>
 </nav>
