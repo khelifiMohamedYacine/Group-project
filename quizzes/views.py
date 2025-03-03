@@ -1,9 +1,19 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import random
-from .models import Quiz, TrueFalse, Question
+from .models import Quiz, TrueFalse, Question, UserQuizScore
+
+def save_quiz_results():
+    pass
 
 def quiz_view(request):
+    # Refuse access to users not logged in (defensive programming)
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+
+    quiz_id = 1 # hardcoded (temporaily) value that determines which quiz we are going to play
+
     # Initialize session variables
     if 'question_number' not in request.session:
         request.session['question_number'] = 0
@@ -19,20 +29,36 @@ def quiz_view(request):
     print(f"Question Number: {question_number}") #DEBUG
     print(f"Current Score: {request.session['quiz_result']}") #DEBUG
 
-    # If quiz is finished, redirect to results
+    # If quiz is finished, save and redirect to results
     if quiz_finished:
-        return redirect('quizzes:quiz_result')
+        print("hello we finished the quiz")
+        user = request.user
+
+        if UserQuizScore.objects.filter(user=user, quiz_id=quiz_id).exists():
+            # handle case where the results already exists (defensive programming)
+
+            # these lines update the old results to the new ones, need to agree what to actually do in this case
+            user_quiz_score = UserQuizScore.objects.get(user=user, quiz_id=quiz_id)
+            user_quiz_score.score = request.session['quiz_result']
+            user_quiz_score.save()
+        else:
+            # Record the results in UserQuizScore model if none exists
+            UserQuizScore.objects.create(
+                user=user,
+                quiz_id=quiz_id,
+                score=request.session['quiz_result']
+            )
+        
+        return redirect('quizzes:quiz_results')
 
     # Select unique questions if not already chosen
     if 'selected_questions' not in request.session:
-        quiz_id = 1 # hardcoded (temporaily) value for the quiz we are going to play
 
         # Get all the questions belonging to that quiz
         quiz = Quiz.objects.get(quizID=quiz_id)
         all_questions = list(Question.objects.filter(quiz=quiz)) + list(TrueFalse.objects.filter(quiz=quiz))
 
         
-
         random.shuffle(all_questions) 
 
         # Store IDs of the questions we selected
@@ -70,7 +96,7 @@ def quiz_view(request):
             # Check if quiz is completed
             if request.session['question_number'] >= len(request.session['selected_questions']):
                 request.session['quiz_finished'] = True
-                return redirect('quizzes:quiz_results')
+                #return redirect('quizzes:quiz_results')
 
             return redirect('quizzes:quiz')
 
