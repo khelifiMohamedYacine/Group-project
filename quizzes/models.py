@@ -1,4 +1,5 @@
 from django.db import models
+from core_app.models import UserAccount
 
 
 # Quiz Model (A quiz is a collection of questions)
@@ -42,3 +43,12 @@ class TrueFalse(models.Model):
     @property
     def get_choices(self):
         return ['True', 'False']
+
+class UserQuizScore(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    quiz = models.ForeignKey('quizzes.Quiz', on_delete=models.CASCADE)
+    score = models.IntegerField()
+    #date_taken = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.quiz.name} - {self.score}"
