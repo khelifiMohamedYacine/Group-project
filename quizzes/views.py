@@ -104,6 +104,9 @@ def quiz_view(request):
     return render(request, 'quizzes/quiz.html', {'question': question, 'question_number': question_number})
 
 def quiz_results_view(request):
+    if 'quiz_result' not in request.session or 'selected_questions' not in request.session:
+        return redirect('core_app:home')
+
     score = request.session.get('quiz_result', 0)
     total_questions = len(request.session.get('selected_questions', []))
     print(f"Score at Result Page: {score}")
