@@ -114,4 +114,5 @@ def leaderboard_view(request):
     return render(request, 'core_app/leaderboard.html', {'leaderboard_data' : leaderboard_data})
 
 
-# Endcomment
+def admin_view(request):
+    return render(request, 'core_app/admin.html')
