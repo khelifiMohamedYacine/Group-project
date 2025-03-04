@@ -14,19 +14,19 @@
     <style>
         /* Apply smaller font size and less spacing for quiz feedback text */
         .quiz-feedback {
-          font-size: 0.8rem;
-          line-height: 1.3;
+          font-size: 1rem;
+          line-height: 1.4;
         }
         .quiz-feedback .question-text {
-          font-size: 0.9rem;
+          font-size: 1.1rem;
           margin-bottom: 0.2rem;
         }
         .quiz-feedback .answer {
-          font-size: 0.8rem;
+          font-size: 1rem;
           margin-bottom: 0.2rem;
         }
         .quiz-feedback .correct-answer {
-          font-size: 0.8rem;
+          font-size: 1rem;
           margin-bottom: 0.5rem;
         }
       </style>
@@ -63,7 +63,7 @@
               <span class="text-warning">No answer selected</span>
             {% endif %}
           </p>
-          <p><b>Correct Answer:</b> <span class="text-success">{{ detail.correct_answer }}</span></p>
+          <p><b>Correct Answer:</b> <span class="text-white">{{ detail.correct_answer }}</span></p>
         </div>
         {% endfor %}
       </div>
