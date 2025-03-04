@@ -31,7 +31,6 @@ def quiz_view(request):
 
     # If quiz is finished, save and redirect to results
     if quiz_finished:
-        print("hello we finished the quiz")
         user = request.user
 
         if UserQuizScore.objects.filter(user=user, quiz_id=quiz_id).exists():
@@ -65,7 +64,7 @@ def quiz_view(request):
         request.session['selected_questions'] = [q.id for q in all_questions]
         request.session.modified = True
 
-    # Inform the user if there are no questions in that quiz
+    # Inform the user if there are no questions in that quiz somethings gone wrong
     if len(request.session['selected_questions']) <= 0:
         return HttpResponse("There are no questions selected in the quiz. Add some")
 
@@ -79,6 +78,9 @@ def quiz_view(request):
         print("Selected Answer:", selected_answer)  # DEBUG
 
         if selected_answer:
+            #store the users answer in session
+            request.session[f"answer_{question_id}"] = selected_answer
+
             # Check if the answer is correct
             if isinstance(question, Question) and selected_answer.strip() == question.correct_choice.strip():
                 print(f"Checking Quiz Question: {question.correct_choice} vs {selected_answer}") #DEBUG
@@ -111,11 +113,36 @@ def quiz_results_view(request):
     total_questions = len(request.session.get('selected_questions', []))
     print(f"Score at Result Page: {score}")
 
-    # After showing the result, reset the session for a new quiz
-    if 'quiz_finished' in request.session and request.session['quiz_finished']:
-        del request.session['question_number'] 
-        del request.session['quiz_result'] 
-        del request.session['quiz_finished']  
-        del request.session['selected_questions']
+    # Construct the quiz answer feedback data
+    quiz_feedback = []
+    for question_id in request.session.get('selected_questions', []):
         
-    return render(request, 'quizzes/quiz_result.html', {'score': score, 'total_questions' : total_questions})
+        question = Question.objects.filter(id=question_id).first() or TrueFalse.objects.filter(id=question_id).first()
+        print("Question:", question)
+        selected_answer = request.session.get(f"answer_{question_id}")
+        print("selected Answer:", selected_answer)
+        correct_answer = question.correct_choice if isinstance(question, Question) else ("True" if question.is_true else "False")
+        print("correct Answer:", correct_answer)
+
+        quiz_feedback.append({
+            "question_text": question.question_text,
+            "selected_answer": selected_answer,
+            "correct_answer": correct_answer
+        })
+    
+    response = render(request, 'quizzes/quiz_result.html', {
+        'score': score, 
+        'total_questions': total_questions, 
+        'quiz_feedback': quiz_feedback
+    })
+
+    # After showing the result, reset the session for a new quiz
+    for question_id in request.session.get('selected_questions', []):
+        request.session.pop(f"answer_{question_id}", None)
+
+    del request.session['question_number'] 
+    del request.session['quiz_result'] 
+    del request.session['quiz_finished']  
+    del request.session['selected_questions']
+        
+    return response
