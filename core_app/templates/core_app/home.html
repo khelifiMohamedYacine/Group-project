@@ -121,15 +121,6 @@
 
 <div class="container">
 
-    <div class="card game-card" onclick="window.location.href='{% url 'jumping_game' %}';" style="cursor: pointer;">
-        <!--My editior complains about the previous line but won't fix because the application works properly-->
-        <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="Jumping Game">
-        <div class="card-body text-center">
-            <h5 class="card-title">Jumping Game</h5>
-            <p class="card-text">Click to play the game!</p>
-        </div>
-    </div>
-
     <div class="card quiz-card" onclick="window.location.href='{% url 'quizzes:quiz' %}';" style="cursor: pointer;">
         <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Quiz 1">
         <div class="card-body text-center">

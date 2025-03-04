@@ -12,10 +12,12 @@
                         <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
                     </li>
                 {% endif %}
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-play-circle"></i> Games</a>
-                </li>
+                
+                {% if request.path != "/games/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'games_page' %}"><i class="fas fa-play-circle"></i> Games</a>
+                    </li>
+                {% endif %}
 
                 {% if request.path != "/videos/" %}
                     <li class="nav-item">
@@ -39,8 +41,7 @@
                     </li>
                 {% endif %}
 
-                {% if request.path != "/admin_page/" %}
-                {# In the future this should be ' if request.path != "/admin_page/" and request.user.account_type == "admin" ' #}
+                {% if request.path != "/admin_page/" and request.user.account_type == "admin" %}
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'admin_page' %}"><i class="fas fa-user-cog"></i> Admin Dashboard</a>
                     </li>

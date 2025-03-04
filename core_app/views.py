@@ -93,6 +93,10 @@ def privacy_policy_view(request):
     return render(request, 'core_app/privacy-policy.html')
 
 
+def games_view(request):
+    return render(request, 'core_app/games-page.html')
+
+
 def maps_view(request):
     return render(request, 'core_app/maps.html')
 
@@ -115,4 +119,14 @@ def leaderboard_view(request):
 
 
 def admin_view(request):
-    return render(request, 'core_app/admin.html')
+    if request.user.is_authenticated:
+        if request.user.account_type == "admin":
+            # Allow the user to access the admin page if they are logged into an admin account
+            return render(request, 'core_app/admin.html')
+        else:
+            # Return the user to the home page if they are logged in but not into an admin account
+            return redirect('home')
+    else:
+        # Return the user to the login page if they are not logged in.
+        return redirect('login')
+    
