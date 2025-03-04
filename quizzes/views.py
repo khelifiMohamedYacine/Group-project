@@ -3,8 +3,6 @@ from django.http import HttpResponse
 import random
 from .models import Quiz, TrueFalse, Question, UserQuizScore
 
-def save_quiz_results():
-    pass
 
 def quiz_view(request):
     # Refuse access to users not logged in (defensive programming)
@@ -106,6 +104,9 @@ def quiz_view(request):
     return render(request, 'quizzes/quiz.html', {'question': question, 'question_number': question_number})
 
 def quiz_results_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
     if 'quiz_result' not in request.session or 'selected_questions' not in request.session:
         return redirect('core_app:home')
 
