@@ -3,7 +3,7 @@
 
 
 {% block head_content %} <!--Header content for HTML files extending base.html goes in here-->
-<title>Home Page</title>
+<title>Games Page</title>
 
 <style>
     body { 
@@ -78,24 +78,6 @@
         font-size: 0.9rem; 
         color: #555; 
     }
-    
-    /* New button for certificate */
-    .certificate-btn {
-        position: relative;
-        bottom: 0px;
-        background-color: #28a745;
-        color: white;
-        padding: 0px 25px;
-        font-size: 1rem;
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        transition: background-color 0.3s;
-    }
-
-    .certificate-btn:hover {
-        background-color: #218838;
-    }
 </style>
 {% endblock %}
 
@@ -104,40 +86,21 @@
 {% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
 
 <div class="main-banner">
-    <p class="display-5 fw-bold" style="text-align: center;">
-    {% if user.is_authenticated %} <!--If the user is logged in-->
-        Welcome, {{ user }}! 
-    {% else %} <!--If the user is not logged in-->
-        Welcome! 
-    {% endif %}
-    </p>
-
-    {% if user.is_authenticated %} <!--If the user is logged in-->
-        <p class="h3 fw-bold" style="text-align: center;">Reward Points: {{ user.reward_pts }}</p>
-    {% else %} <!--If the user is not logged in-->
-        <p class="h5 fw-bold" style="text-align: center;">Log In To See Your Reward Points</p>
-    {% endif %}     
+    <p class="display-5 fw-bold" style="text-align: center;">Games Page</p>
 </div>
 
 <div class="container">
 
-    <div class="card quiz-card" onclick="window.location.href='{% url 'quizzes:quiz' %}';" style="cursor: pointer;">
-        <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Quiz 1">
+    <div class="card game-card" onclick="window.location.href='{% url 'jumping_game' %}';" style="cursor: pointer;">
+        <!--My editior complains about the previous line but won't fix because the application works properly-->
+        <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="Jumping Game">
         <div class="card-body text-center">
-            <h5 class="card-title">Quiz 1</h5>
-            <p class="card-text">Click to try the quiz!</p>
+            <h5 class="card-title">Jumping Game</h5>
+            <p class="card-text">Click to play the game!</p>
         </div>
     </div>
 
-
-        <p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
-        <!--
-        <a class="certificate-btn" href="#">Get Your Certificate</a>
-        Commented this out because there's no view function for the certificate page, so it doesn't open when 
-        the website is run with Django.
-        There probably shouldn't even be a button to the certificate page from the Home page, users are meant to
-        get the certificate by actually doing something.
-        -->
-
+    <p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
 </div>
+
 {% endblock %}
