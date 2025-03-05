@@ -82,7 +82,20 @@ def register_view(request):
 
 
 def home_view(request):
-    return render(request, 'core_app/home.html', {'user': request.user})
+
+    # This is dummy data for now.
+    # For each task in task_data: [category, task, location, URL name]
+    task_data = [
+        ['Jumping Game', 'Complete Level 1', 'The Forum', 'jumping_game'],
+        ['Quiz', 'Complete Quiz 1', 'The Forum', 'quizzes:quiz'],
+        ['Jumping Game', 'Complete Level 2', 'The Forum', 'jumping_game'],
+        ['Quiz', 'Complete Quiz 2', 'The Amory', 'quizzes:quiz'],
+        ['Quiz', 'Complete Quiz 3', 'The Amory', 'quizzes:quiz'],
+        ['Jumping Game', 'Complete Level 3', 'The Amory', 'jumping_game'],
+        ['Quiz', 'Complete Quiz 4', 'Streatham Court', 'quizzes:quiz'],
+    ]
+
+    return render(request, 'core_app/home.html', {'user': request.user, 'task_data' : task_data})
 
 
 def forgot_password_view(request):
@@ -106,7 +119,7 @@ def videos_view(request):
 
 
 def leaderboard_view(request):
-    # This is simply dummy data for now.
+    # This is also dummy data for now.
     leaderboard_data = [
         {'username' : 'Dummy User 3', 'reward_pts' : 75},
         {'username' : 'Dummy User 1', 'reward_pts' : 54},

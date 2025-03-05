@@ -35,48 +35,33 @@
         color: rgb(255, 255, 255); 
         text-shadow: 4px 4px 4px rgba(0,0,0,0.9); 
         flex-direction: column;
+        margin-bottom: 75px;
     }
 
-    .container { 
-        padding: 50px; 
-        display: flex; 
-        flex-wrap: wrap; /* Allow wrapping of the cards */
-        justify-content: space-between; /* Ensure 2 cards per line */
+    .task-container {
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        padding: 20px;
+        width: 85%;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        text-align: center;
     }
-    
-    .card { 
-        border-radius: 15px; 
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
-        overflow: hidden; 
-        width: 48%; /* Ensure 2 cards per row */
-        margin: 10px 0; /* Adjust margin for spacing */
-        background-color: white; 
-        margin-bottom: 60px;
+
+    .task-table {
+        width: 100%;
+        margin: 20px 0px;
     }
-    
-    .card:hover { 
-        transform: scale(1.05); 
-        box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
+
+    .task-table th, .task-table td {
+        padding: 8px;
+        text-align: center;
+        color: rgb(255, 255, 255)
     }
-    .card img { 
-        height: 150px; 
-        object-fit: cover; 
-        border-radius: 15px 15px 0 0; 
-    }
-    .card-body { 
-        text-align: center; 
-        padding: 15px; 
-    }
-    .card-title { 
-        font-size: 1.1rem; 
-        font-weight: bold; 
-        color: #000000; 
-        margin-bottom: 5px; 
-    }
-    .card-text { 
-        font-size: 0.9rem; 
-        color: #555; 
+    .task-table td {
+        font-size: 0.9rem;
+        border-top: 2px solid #616161;
     }
     
     /* New button for certificate */
@@ -95,6 +80,13 @@
 
     .certificate-btn:hover {
         background-color: #218838;
+    }
+
+    /* Styles for the modal window */
+    .modal-content { 
+        background-color: rgb(50, 50, 50) !important; 
+        border-radius: 30px !important;
+        padding: 0px 20px;
     }
 </style>
 {% endblock %}
@@ -119,25 +111,101 @@
     {% endif %}     
 </div>
 
-<div class="container">
 
-    <div class="card quiz-card" onclick="window.location.href='{% url 'quizzes:quiz' %}';" style="cursor: pointer;">
-        <img src="{% static 'core_app/images/cc.png' %}" class="card-img-top" alt="Quiz 1">
-        <div class="card-body text-center">
-            <h5 class="card-title">Quiz 1</h5>
-            <p class="card-text">Click to try the quiz!</p>
-        </div>
-    </div>
+<div class="task-container">
+    <h3 class="mb-3 fw-bold text-white">Pending Tasks</h3>
 
+    <table class="task-table">
+        <thead>
+            <tr class="py-2">
+                <th scope="col">Category</th>
+                <th scope="col">Task</th>
+                <th scope="col">Location</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--Will show the first four of the user's tasks.-->
+            {% for task in task_data|slice:"4" %}
+                <tr>
+                    <td>{{ task.0 }}</td>
+                    <td>{{ task.1 }}</td>
+                    <td>{{ task.2 }}</td>
+                    {% url task.3 as go_url %}
+                    <td><a class="btn btn-sm btn-secondary fw-bold rounded-pill" href="{{ go_url }}">Go</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        <p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
-        <!--
-        <a class="certificate-btn" href="#">Get Your Certificate</a>
-        Commented this out because there's no view function for the certificate page, so it doesn't open when 
-        the website is run with Django.
-        There probably shouldn't even be a button to the certificate page from the Home page, users are meant to
-        get the certificate by actually doing something.
-        -->
-
+    <!--Clicking this button will open a Bootstrap modal window with the user's full list of tasks-->
+    <button type="button" class="btn btn-primary rounded-pill my-1" data-bs-toggle="modal" data-bs-target="#taskModal">
+        See All of Your Tasks
+    </button>
 </div>
+
+
+<!-- Modal window containing full list of tasks -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3 fw-bold text-white" id="exampleModalLabel">All Pending Tasks</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <br>
+                
+            </div>
+
+            <div class="modal-body">
+                <p class="fs-6 text-white">
+                    Any uncompleted task that is associated with a location you've unlocked will show up here.
+                </p>
+
+                <table class="task-table">
+                    <thead>
+                        <tr class="py-2">
+                            <th scope="col">Category</th>
+                            <th scope="col">Task</th>
+                            <th scope="col">Location</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--Will show all of the user's tasks-->
+                        {% for task in task_data %}
+                            <tr>
+                                <td>{{ task.0 }}</td>
+                                <td>{{ task.1 }}</td>
+                                <td>{{ task.2 }}</td>
+                                {% url task.3 as go_url %}
+                                <td><a class="btn btn-sm btn-secondary fw-bold rounded-pill" href="{{ go_url }}">Go</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <!--This button closes the window-->
+                <button type="button" class="btn btn-danger rounded-pill fw-bold" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+  
+  
+
+
+
+<!--
+<a class="certificate-btn" href="#">Get Your Certificate</a>
+Commented this out because there's no view function for the certificate page, so it doesn't open when 
+the website is run with Django.
+There probably shouldn't even be a button to the certificate page from the Home page, users are meant to
+get the certificate by actually doing something.
+-->
+
+<p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
 {% endblock %}
