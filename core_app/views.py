@@ -119,16 +119,9 @@ def videos_view(request):
 
 
 def leaderboard_view(request):
-    # This is also dummy data for now.
-    leaderboard_data = [
-        {'username' : 'Dummy User 3', 'reward_pts' : 75},
-        {'username' : 'Dummy User 1', 'reward_pts' : 54},
-        {'username' : 'Dummy User 4', 'reward_pts' : 54},
-        {'username' : 'Dummy User 5', 'reward_pts' : 48},
-        {'username' : 'Dummy User 2', 'reward_pts' : 39},
-    ]
-
-    return render(request, 'core_app/leaderboard.html', {'leaderboard_data' : leaderboard_data})
+    
+    leaderboard_data = UserAccount.objects.order_by('-reward_pts').values('username', 'reward_pts')[:10]
+    return render(request, 'core_app/leaderboard.html', {'leaderboard_data': leaderboard_data})
 
 
 def admin_view(request):
