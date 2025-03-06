@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url('../img/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#yxbox {
+    padding: 0;
+    margin: 0 auto;
+    margin-top: 128px;
+    list-style: none;
+    position: relative;
+
+}
+
+#yxbox li {
+    width: 128px;
+    height: 128px;
+    float: left;
+}
+
+#yxbox .pos0 {
+    background: url('../img/wall2.png') no-repeat;
+    z-index: 1;
+}
+
+#yxbox .pos1 {
+    background: url('../img/wall.png') no-repeat;
+    z-index: 1;
+}
+
+#yxbox .pos2 {
+    background: url('../img/ground.png') no-repeat;
+    z-index: 1;
+}
+
+#yxbox .pos3 {
+    background: url('../img/target2.png') no-repeat;
+    z-index: 999;
+}
+
+#yxbox .person1, #yxbox .person2, #yxbox .person3, #yxbox .person4 {
+    width: 128px;
+    height: 128px;
+    position: absolute;
+    background-image: url('../img/person2.png');
+    background-repeat: no-repeat;
+    z-index: 9999;
+}
+
+#yxbox .box {
+    width: 128px;
+    height: 128px;
+    position: absolute;
+    background-image: url('../img/box2.png');
+    background-repeat: no-repeat;
+    z-index: 9999;
+}
+
+#yxbox .person1 {
+    background-position: 0;
+}
+
+#yxbox .person2 {
+    background-position: -128px 0;
+}
+
+#yxbox .person3 {
+    background-position: -256px 0;
+}
+
+#yxbox .person4 {
+    background-position: -384px 0;
+}
+
+#yxbox .box.onTarget {
+    background-image: url('../img/onTarget2.png');
+}
