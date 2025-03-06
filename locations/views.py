@@ -11,14 +11,19 @@ def map_view(request):
 @csrf_exempt
 def add_location(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        postcode = data.get("postcode")
-        address = data.get("address")
-        location_name = data.get("location_name")
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
+        try:
+            data = json.loads(request.body)
+            latitude = data.get('latitude')
+            longitude = data.get('longitude')
+            postcode = data.get('postcode')
+            address = data.get('address')
+            location_name = data.get('location_name')
 
-        if postcode and address and location_name and latitude and longitude:
+            # Check if a location already exists with the same coordinates
+            if Location.objects.filter(latitude=latitude, longitude=longitude).exists():
+                return JsonResponse({"error": "Location with these coordinates already exists"}, status=400)
+
+            # Save the new location
             Location.objects.create(
                 postcode=postcode,
                 address=address,
@@ -26,10 +31,12 @@ def add_location(request):
                 latitude=latitude,
                 longitude=longitude
             )
-            return JsonResponse({"message": "Location saved successfully"}, status=201)
 
-    return JsonResponse({"error": "Invalid data"}, status=400)
+            return JsonResponse({"success": "Location added successfully!"}, status=201)
 
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+        
 def get_locations(request):
     locations = list(Location.objects.values("postcode", "latitude", "longitude", "task1_id", "task2_id", "task3_id"))
     return JsonResponse(locations, safe=False)
