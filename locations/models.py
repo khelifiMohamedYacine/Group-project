@@ -1,7 +1,8 @@
 from django.db import models
 
 class Location(models.Model):
-    postcode = models.CharField(max_length=10, unique=True, primary_key=True)
+    locID = models.AutoField(primary_key=True, default=None)
+    postcode = models.CharField(max_length=10)
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.TextField(default="Exeter")  # Stores the full address
@@ -16,4 +17,4 @@ class Location(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.postcode}"
+        return f"{self.location_name}"
