@@ -1,0 +1,31 @@
+
+ #level-selector {
+            padding: 8px 12px;
+            font-size: 20px;
+            border-radius: 5px;
+            border: 1px solid greenyellow;
+            background-color: white;
+            color: grey;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #level-selector:hover {
+            border-color: lightgreen;
+        }
+
+        #level-selector:focus {
+            outline: none;
+            box-shadow: 0 0 5px #ADFF2F;
+        }
+ul {
+    background-color: #000;
+    border: 4px solid greenyellow;
+    border-radius: 10px;
+    box-shadow: 0 0 15px greenyellow, 0 0 30px greenyellow, 0 0 45px greenyellow;
+}
+
+li:hover, .person1:hover, .box:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}
