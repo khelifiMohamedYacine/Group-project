@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import UserAccount
+from .models import UserAccount, AccountType
 from django.urls import reverse
 
 """
@@ -12,7 +12,7 @@ IMPORTANT NOTES:
 # Create your tests here.
 
 
-def create_user(username:str, email:str, password:str):
+def create_user(username:str, email:str, password:str, account_type:AccountType=AccountType.USER.value):
     """
     This is a helper function that adds a user account to the (temporary testing) database using the given parameters.
     It can be called by the test functions to create a test user for them.
@@ -22,7 +22,7 @@ def create_user(username:str, email:str, password:str):
     """
     try:
         # Tries to create a new account with the parameters.
-        testUser = UserAccount(username=username, email=email)
+        testUser = UserAccount(username=username, email=email, account_type=account_type)
         testUser.set_password(password)
         testUser.save() # Saves the account to the testing database.
         return True
@@ -226,3 +226,32 @@ class LogoutViewTests(TestCase):
 
         self.assertRedirects(response, "/login/", status_code=302, target_status_code=200)
         # The user should still be redirected to the login page, and the status code should be 302.
+
+
+class NavbarTests(TestCase):
+    """
+    This is the class for the navbar tests.
+    These check that the navbar displays the buttons its meant to, given the page and login status.
+    """
+
+    def test_login_logout_button(self):
+        """
+        Tests that the blue button within the right-side of the navbar is a log in button when the user is logged out,
+        and a log out button when the user is logged in.
+        """
+        # First, access the home page while not logged in.
+        url = reverse("home")
+        response1 = self.client.get(url)
+
+        self.assertContains(response1, '<a class="nav-item nav-link login-btn" href="/login/">Log In</a>')
+        # assertContains() asserts that its first argument contains (is a superstring of) its second argument.
+        # The HTML for the login button should be present within the HTML code for the Home Page
+
+        # Then, access the Home page while logged into an account.
+        create_user("user001", "001@email.com", "password001")
+        self.client.login(username="user001", password="password001")
+
+        response2 = self.client.get(url)
+
+        self.assertContains(response2, '<a class="nav-item nav-link login-btn" href="/logout/">Logout</a>')
+        # Now, the HTML for the logout button should be present within the HTML code for the Home Page
