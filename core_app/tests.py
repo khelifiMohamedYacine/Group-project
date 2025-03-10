@@ -144,13 +144,34 @@ class RegisterViewTests(TestCase):
         # The email given is already being used by an existing account.
         # Therefore, the registration should fail, and the status code should be 302.
 
+    def test_register_using_at_symbol(self):
+        """
+        Tests that users cannot register for an account using an username with a '@', or an email without a '@'.
+        They should be redirected to the register page, and the response should have a status code of 302.
+        """
+        url = reverse("register")
+        data1 = {"username" : "user@001", "email" : "001@email.com", "password" : "password001", "confirm_password" : "password001"}
+
+        response1 = self.client.post(url, data1)
+
+        self.assertRedirects(response1, "/register/", status_code=302, target_status_code=200)
+        # The username contains the @ symbol, making it invalid.
+        # Therefore, the registration should fail, and the status code should be 302.
+
+        data2 = {"username" : "user001", "email" : "001email.com", "password" : "password001", "confirm_password" : "password001"}
+
+        response2 = self.client.post(url, data2)
+
+        self.assertRedirects(response2, "/register/", status_code=302, target_status_code=200)
+        # The email does not contain the @ symbol, making it invalid.
+        # Therefore, the registration should fail, and the status code should be 302.
+
+
     def test_register_with_non_matching_passwords(self):
         """
         Tests that users cannot register for an account if their inputted passwords do not match.
         They should be redirected to the register page, and the response should have a status code of 302.
         """
-        create_user("user001", "001@email.com", "password001")
-
         url = reverse("register")
         data = {"username" : "user001", "email" : "001@email.com", "password" : "password001", "confirm_password" : "password002"}
 
@@ -165,8 +186,6 @@ class RegisterViewTests(TestCase):
         Tests that users can register for an account if they give a unique username and email, along with matching passwords.
         They should be redirected to the login page, and the response should have a status code of 302.
         """
-        create_user("user001", "001@email.com", "password001")
-
         url1 = reverse("register")
         data1 = {"username" : "user002", "email" : "002@email.com", "password" : "password002", "confirm_password" : "password002"}
 
