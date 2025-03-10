@@ -109,9 +109,6 @@ class LoginViewTests(TestCase):
 class RegisterViewTests(TestCase):
     """
     This is the class for the register_view() tests
-
-    Validation that should be implemented into register_view():
-    = Check that the inputted username does not have the '@' character (so an email cannot be used for the username and vice versa)
     """
 
     def test_register_with_taken_username(self):
@@ -236,10 +233,10 @@ class NavbarTests(TestCase):
 
     def test_login_logout_button(self):
         """
-        Tests that the blue button within the right-side of the navbar is a log in button when the user is logged out,
-        and a log out button when the user is logged in.
+        Tests that the 'Log In' button is shown in the navbar when the user is logged out,
+        and the 'Logout' button is shown when the user is logged in.
         """
-        # First, access the home page while not logged in.
+        # First, access the Home page while not logged in.
         url = reverse("home")
         response1 = self.client.get(url)
 
@@ -255,3 +252,75 @@ class NavbarTests(TestCase):
 
         self.assertContains(response2, '<a class="nav-item nav-link login-btn" href="/logout/">Logout</a>')
         # Now, the HTML for the logout button should be present within the HTML code for the Home Page
+
+    def test_admin_button(self):
+        """
+        Tests that the 'Admin Dashboard' button only appears in the navbar if the user is logged into an admin account.
+        Otherwise, it should be hidden.
+        Note that this does not test access to the Admin page itself.
+        """
+         # First, access the Home page while not logged in.
+        url = reverse("home")
+        response1 = self.client.get(url)
+
+        self.assertNotContains(response1, '<a class="nav-link active" href="/admin_page/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        # assertNotContains() asserts that its first argument does not contain its second argument.
+        # The HTML for the admin button should NOT be present within the HTML code for the Home Page
+
+        # Then, access the Home page while logged into a non-admin account.
+        create_user("user001", "001@email.com", "password001", AccountType.USER.value)
+        self.client.login(username="user001", password="password001")
+
+        response2 = self.client.get(url)
+
+        self.assertNotContains(response2, '<a class="nav-link active" href="/admin_page/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        # The HTML for the admin button still should not be present within the HTML code for the Home Page
+
+        # Finally, access the Home page while logged into an admin account.
+        self.client.logout()
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value)
+        self.client.login(username="user002", password="password002")
+
+        response3 = self.client.get(url)
+
+        self.assertContains(response3, '<a class="nav-link active" href="/admin_page/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        # Now, the HTML for the admin button should be present within the HTML code for the Home page
+
+    def test_other_buttons(self):
+        """
+        Tests that each navbar button leading to page X does not appear when the user is on page X.
+        This behaviour was manually implemented in navbar.html using Django template coding. 
+        """
+        response1 = self.client.get(reverse("home"))
+
+        self.assertNotContains(response1, '<a class="nav-link" href="/home/"><i class="fas fa-home"></i> Home</a>')
+        # The HTML for the home button should not be present on the Home page
+
+        response2 = self.client.get(reverse("games_page"))
+
+        self.assertNotContains(response2, '<a class="nav-link" href="/games/"><i class="fas fa-play-circle"></i> Games</a>')
+        # The HTML for the games button should not be present on the Games page
+
+        response3 = self.client.get(reverse("videos"))
+
+        self.assertNotContains(response3, '<a class="nav-link" href="/videos/"><i class="fas fa-play-circle"></i> Videos</a>')
+        # The HTML for the videos button should not be present on the Sustainability Videos page
+
+        response4 = self.client.get(reverse("maps"))
+
+        self.assertNotContains(response4, '<a class="nav-link" href="/maps/"><i class="fas fa-map-marker-alt"></i> Uni map</a>')
+        # The HTML for the map button should not be present on the University Map page
+
+        response5 = self.client.get(reverse("leaderboard"))
+
+        self.assertNotContains(response5, '<a class="nav-link" href="/leaderboard/"><i class="fas fa-mobile-alt"></i> Leaderboard</a>')
+        # The HTML for the leaderboard button should not be present on the Leaderboard page
+
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value)
+        self.client.login(username="user002", password="password002")
+
+        response6 = self.client.get(reverse("admin_page"))
+
+        self.assertNotContains(response5, '<a class="nav-link active" href="/admin_page/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        # The HTML for the admin button should not be present on the Admin Dashboard page
+
