@@ -24,4 +24,5 @@ urlpatterns = [
     path('', include('core_app.urls')),
     path('', include('jumping_game.urls')),
     path('', include('sokoban_game.urls')),
+    path('', include('quizzes.urls')),
 ]
