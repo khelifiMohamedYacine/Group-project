@@ -15,7 +15,7 @@
                 
                 {% if request.path != "/games/" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'games_page' %}"><i class="fas fa-play-circle"></i> Games</a>
+                        <a class="nav-link" href="{% url 'games_page' %}"><i class="fa fa-gamepad"></i> Games</a>
                     </li>
                 {% endif %}
 
@@ -26,7 +26,7 @@
                 {% endif %}
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'quizzes:quiz' %}"><i class="fas fa-play-circle"></i> Quizzes</a>
+                    <a class="nav-link" href="{% url 'quizzes:quiz' %}"><i class="far fa-question-circle"></i> Quizzes</a>
                 </li>
 
                 {% if request.path != "/maps/" %}
@@ -37,7 +37,7 @@
 
                 {% if request.path != "/leaderboard/" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fas fa-mobile-alt"></i> Leaderboard</a>
+                        <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fa fa-list-ol"></i> Leaderboard</a>
                     </li>
                 {% endif %}
 
