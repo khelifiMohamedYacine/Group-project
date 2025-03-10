@@ -3,6 +3,9 @@
 # python virtual environments
 venv
 
+# vscode stuff
+.vscode/
+
 ### OSX ###
 .DS_Store
 .AppleDouble
@@ -40,4 +43,4 @@ __pycache__/
 local_settings.py
 
 .env
-db.sqlite3
+#db.sqlite3

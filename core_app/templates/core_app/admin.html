@@ -1,0 +1,101 @@
+{% extends 'core_app/base.html' %}
+{% load static %} <!--To use anything within the static folder, this needs to be present-->
+
+
+{% block head_content %} <!--Header content for HTML files extending base.html goes in here-->
+<title>Admin Page</title>
+
+<style>
+body { 
+    background-color: #f0f8ff; 
+    font-family: 'Arial', sans-serif; 
+    margin: 0; 
+    padding: 0; 
+}
+
+.main-banner { 
+    padding-top: 10vh;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: rgb(255, 255, 255); 
+    text-shadow: 4px 4px 4px rgba(0,0,0,0.9); 
+    flex-direction: column;
+}
+
+.container { 
+    padding: 50px; 
+    display: flex; 
+    flex-wrap: wrap; /* Allow wrapping of the cards */
+    justify-content: space-between; /* Ensure 2 cards per line */
+}
+
+.admin-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease-in-out;
+    overflow: hidden;
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.admin-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.admin-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 15px;
+}
+
+.admin-content {
+    font-size: 1rem;
+    color: #555;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-radius: 20px;
+    padding: 10px 15px;
+    border: none;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+</style>
+{% endblock %}
+
+
+{% block body_content %} <!--Body content for HTML files extending base.html goes in here-->
+{% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
+
+<div class="main-banner">
+    <p class="display-5 fw-bold" style="text-align: center;">Admin Dashboard</p>
+</div>
+
+<div class="container">
+
+    <div class="admin-card">
+        <h2 class="admin-title">Manage Users</h2>
+        <p class="admin-content">View and manage user accounts, roles, and permissions.</p>
+        <button class="btn btn-primary">Manage</button>
+    </div>
+    <div class="admin-card">
+        <h2 class="admin-title">Content Management</h2>
+        <p class="admin-content">Add, edit, or remove games, quizzes, and videos.</p>
+        <button class="btn btn-primary">Edit Content</button>
+    </div>
+    <div class="admin-card">
+        <h2 class="admin-title">Reports & Analytics</h2>
+        <p class="admin-content">View site usage statistics and generate reports.</p>
+        <button class="btn btn-primary">View Reports</button>
+    </div>
+
+</div>
+{% endblock %}

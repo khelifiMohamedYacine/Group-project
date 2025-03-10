@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'core_app',
     'jumping_game',
     'sokoban_game',
+    'quizzes',
+
 ]
 
 MIDDLEWARE = [
