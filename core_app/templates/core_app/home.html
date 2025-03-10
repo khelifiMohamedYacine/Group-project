@@ -32,10 +32,10 @@
         display: flex; 
         align-items: center; 
         justify-content: center; 
-        color: rgb(255, 255, 255); 
+        color: #ffffff;
         text-shadow: 2px 2px 8px rgba(0,0,0,0.9); 
         flex-direction: column;
-        margin-bottom: 75px;
+        margin-bottom: 50px;
     }
 
     .task-container {
@@ -59,7 +59,10 @@
     .task-table th, .task-table td {
         padding: 8px;
         text-align: center;
-        color: rgb(255, 255, 255)
+        color: rgb(255, 255, 255);
+    }
+    .task-table th {
+        font-size: 1.1rem;
     }
     .task-table td {
         font-size: 0.9rem;
@@ -101,16 +104,16 @@
 <div class="main-banner">
     <p class="display-5 fw-bold" style="text-align: center;">
     {% if user.is_authenticated %} <!--If the user is logged in-->
-        Welcome, {{ user }}! 
+        Welcome, {{ user }}!
     {% else %} <!--If the user is not logged in-->
-        Welcome! 
+        Welcome!
     {% endif %}
     </p>
 
     {% if user.is_authenticated %} <!--If the user is logged in-->
-        <p class="h3 fw-bold" style="text-align: center;">Reward Points: {{ user.reward_pts }}</p>
+        <p class="h4 fw-bold" style="text-align: center;">Reward Points: {{ user.reward_pts }}</p>
     {% else %} <!--If the user is not logged in-->
-        <p class="h5 fw-bold" style="text-align: center;">Log In To See Your Reward Points</p>
+        <p class="h4 fw-bold" style="text-align: center;">Log In To See Your Reward Points</p>
     {% endif %}     
 </div>
 

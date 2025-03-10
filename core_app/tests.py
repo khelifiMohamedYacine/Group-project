@@ -12,7 +12,7 @@ IMPORTANT NOTES:
 # Create your tests here.
 
 
-def create_user(username:str, email:str, password:str, account_type:AccountType=AccountType.USER.value):
+def create_user(username:str, email:str, password:str, account_type:AccountType=AccountType.USER.value, points:int=0):
     """
     This is a helper function that adds a user account to the (temporary testing) database using the given parameters.
     It can be called by the test functions to create a test user for them.
@@ -22,7 +22,7 @@ def create_user(username:str, email:str, password:str, account_type:AccountType=
     """
     try:
         # Tries to create a new account with the parameters.
-        testUser = UserAccount(username=username, email=email, account_type=account_type)
+        testUser = UserAccount(username=username, email=email, account_type=account_type, reward_pts=points)
         testUser.set_password(password)
         testUser.save() # Saves the account to the testing database.
         return True
@@ -340,6 +340,56 @@ class NavbarTests(TestCase):
 
         response6 = self.client.get(reverse("admin_page"))
 
-        self.assertNotContains(response5, '<a class="nav-link active" href="/admin_page/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        self.assertNotContains(response6, '<a class="nav-link active" href="/admin_page/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
         # The HTML for the admin button should not be present on the Admin Dashboard page
 
+
+class HomeViewTests(TestCase):
+    """
+    This is the class for the home_view() tests.
+    """
+
+    def test_welcome_message(self):
+        """
+        Tests that the welcome message on the Home Page is different depending on whether the user is logged in or not.
+        """
+        # First, access the Home page while not logged in.
+        url = reverse("home")
+        response1 = self.client.get(url)
+        
+        self.assertContains(response1, 'Welcome!')
+        self.assertContains(response1, '<p class="h4 fw-bold" style="text-align: center;">Log In To See Your Reward Points</p>')
+        # The Home page should display "Welcome" and "Log In To See Your Reward Points"
+
+        # Then, access the Home page while logged into an account.
+        create_user("user001", "001@email.com", "password001")
+        self.client.login(username="user001", password="password001")
+
+        response2 = self.client.get(url)
+
+        self.assertContains(response2, 'Welcome, user001!')
+        # The welcome message on the home page should now include the user's name
+
+    def test_reward_points(self):
+        """
+        Tests that the Home page displays the user's current number of reward points, given they have logged into an account.
+        """
+        # When an account is first created, it has 0 reward points by default.
+        create_user("user001", "001@email.com", "password001", AccountType.USER.value)
+        self.client.login(username="user001", password="password001")
+
+        url = reverse("home")
+        response1 = self.client.get(url)
+        
+        self.assertContains(response1, '<p class="h4 fw-bold" style="text-align: center;">Reward Points: 0</p>')
+        # The Home page should display that the user has 0 reward points.
+
+        # This time, create an account and manually give it 25 reward points.
+        self.client.logout()
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value, 25)
+        self.client.login(username="user002", password="password002")
+
+        response2 = self.client.get(url)
+
+        self.assertContains(response2, '<p class="h4 fw-bold" style="text-align: center;">Reward Points: 25</p>')
+        # The Home page should now display that the user has 25 reward points.
