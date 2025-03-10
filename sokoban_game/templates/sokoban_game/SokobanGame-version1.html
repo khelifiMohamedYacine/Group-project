@@ -36,7 +36,7 @@
         var score = steps < 40 ? 100 : 50;
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/game/", true);
+        xhr.open("POST", "/sokoban_game/", true);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -91,9 +91,9 @@
 
             // Sound effects
             this.sounds = {
-                bgm: new Audio("{% static 'game/mp3/background.mp3' %}"), // Background music
-                push: new Audio("{% static 'game/mp3/moveBox.wav' %}"), // Pushing box sound
-                place: new Audio("{% static 'game/mp3/target.wav' %}"), // Box placed on target sound
+                bgm: new Audio("{% static 'sokoban_game/mp3/background.mp3' %}"), // Background music
+                push: new Audio("{% static 'sokoban_game/mp3/moveBox.wav' %}"), // Pushing box sound
+                place: new Audio("{% static 'sokoban_game/mp3/target.wav' %}"), // Box placed on target sound
             };
 
             // Set background music to loop
@@ -123,7 +123,7 @@
         // Load level data from external JSON
         async loadLevels() {
             try {
-                const response = await fetch('{% static "game/levels_admin.json" %}?t=' + Date.now()); // Fetch external JSON file
+                const response = await fetch('{% static "sokoban_game/levels_admin.json" %}?t=' + Date.now()); // Fetch external JSON file
                 this.levels = await response.json();
                 this.initLevel(this.currentLevel);
             } catch (error) {
@@ -283,7 +283,7 @@
 
         // Move to next level
         nextLevel() {
-            sendData('user_10086', this.currentLevel + 1, this.steps);
+            sendData('user_10086', this.currentLevel + 1, this.steps);//wait to change it to actual user_id or username...
             this.currentLevel++;
             if (this.currentLevel < this.levels.length) {
                 this.initLevel(this.currentLevel);
@@ -358,13 +358,13 @@
         let startX, startY, endX, endY;
 
         document.addEventListener("touchstart", function (event) {
-            // 记录起始点
+            // record the starting point
             startX = event.touches[0].clientX;
             startY = event.touches[0].clientY;
         });
 
         document.addEventListener("touchend", function (event) {
-            // 记录结束点
+            // record the ending point
             endX = event.changedTouches[0].clientX;
             endY = event.changedTouches[0].clientY;
 
@@ -377,7 +377,7 @@
             let absDeltaX = Math.abs(deltaX);
             let absDeltaY = Math.abs(deltaY);
 
-            // 判断滑动方向
+            // Determine the sliding direction
             if (absDeltaX > absDeltaY) {
                 if (deltaX > 50) {//swipe right
                     moveRight();

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core_app',
     'jumping_game',
+    'sokoban_game',
 ]
 
 MIDDLEWARE = [
