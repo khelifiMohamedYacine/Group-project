@@ -8,9 +8,8 @@ class Location(models.Model):
     address = models.TextField(default="Exeter")  # Stores the full address
     location_name = models.CharField(max_length=100, default="Location Name")  # User-defined name
 
-    task1_id = models.IntegerField(null=True, blank=True)
-    task2_id = models.IntegerField(null=True, blank=True)
-    task3_id = models.IntegerField(null=True, blank=True)
+    task1_id = models.CharField(null=True, blank=True, max_length=100)
+    task2_id = models.CharField(null=True, blank=True, max_length=100)
 
     def save(self, *args, **kwargs):
         self.postcode = self.postcode.upper()  # Convert postcode to uppercase
