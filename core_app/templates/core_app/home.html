@@ -39,8 +39,9 @@
     }
 
     .task-container {
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: rgba(0, 0, 0, 0.6);
         border-radius: 10px;
+        border: 3px dashed #ffffff;
         padding: 20px;
         width: 85%;
         max-width: 800px;
@@ -115,7 +116,7 @@
 
 
 <div class="task-container">
-    <h3 class="mb-3 fw-bold text-white">Pending Tasks</h3>
+    <h3 class="mb-3 fw-bold text-white"><i class="fa fa-tasks"></i> Pending Tasks</h3>
 
     <table class="task-table">
         <thead>
@@ -130,10 +131,10 @@
             <!--Will show the first four of the user's tasks.-->
             {% for task in task_data|slice:"4" %}
                 <tr>
-                    <td>{{ task.0 }}</td>
-                    <td>{{ task.1 }}</td>
+                    <td><i class="{{ task.0 }}"></i> {{ task.1 }}</td>
                     <td>{{ task.2 }}</td>
-                    {% url task.3 as go_url %}
+                    <td>{{ task.3 }}</td>
+                    {% url task.4 as go_url %}
                     <td><a class="btn btn-sm btn-secondary fw-bold rounded-pill" href="{{ go_url }}">Go</a></td>
                 </tr>
             {% endfor %}
@@ -153,7 +154,7 @@
 
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-3 fw-bold text-white" id="exampleModalLabel">All Pending Tasks</h1>
+                <h1 class="modal-title fs-3 fw-bold text-white" id="exampleModalLabel"><i class="fa fa-tasks"></i> All Pending Tasks</h1>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 <br>
                 
@@ -177,10 +178,10 @@
                         <!--Will show all of the user's tasks-->
                         {% for task in task_data %}
                             <tr>
-                                <td>{{ task.0 }}</td>
-                                <td>{{ task.1 }}</td>
+                                <td><i class="{{ task.0 }}"></i> {{ task.1 }}</td>
                                 <td>{{ task.2 }}</td>
-                                {% url task.3 as go_url %}
+                                <td>{{ task.3 }}</td>
+                                {% url task.4 as go_url %}
                                 <td><a class="btn btn-sm btn-secondary fw-bold rounded-pill" href="{{ go_url }}">Go</a></td>
                             </tr>
                         {% endfor %}
