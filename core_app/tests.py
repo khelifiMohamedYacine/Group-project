@@ -368,7 +368,7 @@ class HomeViewTests(TestCase):
         response2 = self.client.get(url)
 
         self.assertContains(response2, 'Welcome, user001!')
-        # The welcome message on the home page should now include the user's name
+        # The welcome message on the home page should now include the user's username
 
     def test_reward_points(self):
         """
@@ -393,3 +393,56 @@ class HomeViewTests(TestCase):
 
         self.assertContains(response2, '<p class="h4 fw-bold" style="text-align: center;">Reward Points: 25</p>')
         # The Home page should now display that the user has 25 reward points.
+
+
+class LeaderboardViewTests(TestCase):
+    """
+    This is the class for the leaderboard_view() tests.
+    """
+
+    def test_leaderboard_with_no_accounts(self):
+        """
+        Tests that there are no errors when the Leaderboard page is displayed without any accounts existing.
+        The header of the leaderboard table should still be present, but there should be no other rows.
+        """
+        # Obviously by default there are no accounts in the test database.
+        url = reverse("leaderboard")
+        response1 = self.client.get(url)
+        
+        self.assertContains(response1, '<tbody>\n            \n        </tbody>')
+        # Note: as we are testing the HTML code directly, the whitespaces and newline characters are necessary.
+        # No <tr> tags or other text between the <tbody> tags indicates that the leaderboard works as intended..
+
+    def test_leaderboard_with_one_account(self):
+        """
+        Tests that the leaderboard displays what it should when only one account exists.
+        """
+        create_user("user001", "001@email.com", "password001", AccountType.USER.value, 77)
+
+        url = reverse("leaderboard")
+        response1 = self.client.get(url)
+        
+        self.assertContains(response1, '<tr>\n                    <td>1</td>\n                    <td>user001</td>\n                    <td>77</td>\n                </tr>')
+        # The leaderboard table should contain one (non-header) row: 1 - user001 - 77.
+
+    def test_leaderboard_with_multiple_accounts(self):
+        """
+        Tests that the leaderboard displays what it should when multiple accounts exist.
+        This includes properly ranking the accounts by the number of reward points they have.
+        """
+        # Create five different accounts with different numbers of reward points.
+        create_user("user001", "001@email.com", "password001", AccountType.USER.value, 20)
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value, 40)
+        create_user("user003", "003@email.com", "password003", AccountType.USER.value, 50)
+        create_user("user004", "004@email.com", "password004", AccountType.USER.value, 10)
+        create_user("user005", "005@email.com", "password005", AccountType.ADMIN.value, 30)
+
+        url = reverse("leaderboard")
+        response1 = self.client.get(url)
+
+        self.assertContains(response1, '<tr>\n                    <td>1</td>\n                    <td>user003</td>\n                    <td>50</td>\n                </tr>')
+        self.assertContains(response1, '<tr>\n                    <td>2</td>\n                    <td>user002</td>\n                    <td>40</td>\n                </tr>')
+        self.assertContains(response1, '<tr>\n                    <td>3</td>\n                    <td>user005</td>\n                    <td>30</td>\n                </tr>')
+        self.assertContains(response1, '<tr>\n                    <td>4</td>\n                    <td>user001</td>\n                    <td>20</td>\n                </tr>')
+        self.assertContains(response1, '<tr>\n                    <td>5</td>\n                    <td>user004</td>\n                    <td>10</td>\n                </tr>')
+        # The users should be ordered based on their reward points, not based on the order they were created
