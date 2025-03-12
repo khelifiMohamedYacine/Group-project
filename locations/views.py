@@ -4,10 +4,17 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import Location
 from .forms import LocationForm
+import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+from django.http import HttpResponse
 
 def map_view(request):
-    """Render the map template."""
-    return render(request, "locations/map.html")  # Ensure the path to your template is correct
+    return render(request, "locations/map.html") 
+
+def user_map_view(request):
+   return render(request, "locations/user_map.html") 
 
 @csrf_exempt
 def add_location(request):
@@ -20,8 +27,15 @@ def add_location(request):
             postcode = data.get('postcode')
             address = data.get('address')
             location_name = data.get('location_name')
-            task1 = data.get('task1_id')  # Get task1
-            task2 = data.get('task2_id')  # Get task2
+            task1 = data.get('task1_id')  
+            task2 = data.get('task2_id')  
+            locked_by = data.get("locked_by")
+            checked_in = data.get("checked_in")
+
+            # Ensure locked_by is valid if provided
+            if locked_by:
+               if not Location.objects.filter(locID=locked_by).exists():
+                    return JsonResponse({"error": "Parent location does not exist"}, status=400)
 
             # Check if a location already exists with the same coordinates
             if Location.objects.filter(latitude=latitude, longitude=longitude).exists():
@@ -35,14 +49,20 @@ def add_location(request):
                 latitude=latitude,
                 longitude=longitude,
                 task1_id=task1 if task1 else None,  # Save only if provided
-                task2_id=task2 if task2 else None   # Save only if provided
+                task2_id=task2 if task2 else None,  # Save only if provided
+                locked_by=locked_by,
+                checked_in=checked_in
             )
 
             return JsonResponse({"success": "Location added successfully!"}, status=201)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
-
+        
+def check_parent_location(request, locID):
+    # Check if the location exists
+    location_exists = Location.objects.filter(locID=locID).exists()
+    return JsonResponse({"exists": location_exists})
         
 def get_locations(request):
     locations =locations = list(Location.objects.values(
@@ -51,9 +71,46 @@ def get_locations(request):
         "longitude", 
         "task1_id", 
         "task2_id", 
-        "location_name",  # Add location_name
-        "locID"))
+        "location_name",  
+        "locID",
+        "locked_by",
+        "checked_in"))
     return JsonResponse(locations, safe=False)
+
+def get_locations_with_lock_status(request):
+    locations = Location.objects.all()
+    location_data = []
+
+    for loc in locations:
+        # Determine lock status
+        is_locked = False
+        if loc.locked_by:
+            parent_location = Location.objects.filter(locID=loc.locked_by).first()
+            if parent_location and not parent_location.checked_in:
+                is_locked = True
+
+        # Determine marker color based on task status
+        if is_locked:
+            status = "locked"  # Red marker
+        elif not loc.checked_in:
+            status = "pending"  # Blue marker (unlocked but not checked-in)
+        else:
+            status = "completed"  # Green marker (checked-in)
+
+        location_data.append({
+            "locID": loc.locID,
+            "postcode": loc.postcode,
+            "latitude": loc.latitude,
+            "longitude": loc.longitude,
+            "location_name": loc.location_name,
+            "checked_in": loc.checked_in,
+            "task1_id": loc.task1_id,
+            "task2_id": loc.task2_id,
+            "locked": is_locked,
+            "status": status  # New field to determine marker color
+        })
+
+    return JsonResponse(location_data, safe=False)
 
 def delete_location_view(request):
     if request.method == "POST":
@@ -83,4 +140,50 @@ def update_location(request, locID):
 
     return render(request, 'locations/location_form.html', {'form': form, 'location': location})
 
+def generate_location_graph(request):
+    # Create a directed graph
+    G = nx.DiGraph()
 
+    locations = Location.objects.all()
+
+    # Add nodes to the graph
+    for location in locations:
+        G.add_node(location.locID, name=location.location_name)
+
+    # Add edges based on locked_by relationships
+    for location in locations:
+        if location.locked_by:
+            G.add_edge(location.locked_by, location.locID)
+
+    plt.figure(figsize=(10, 8))
+    pos = nx.spring_layout(G, seed=42)
+    nx.draw(G, pos, with_labels=True, node_size=2000, node_color='green', font_size=10, font_weight='bold', arrows=True)
+   
+    # Save the graph to a BytesIO object so it can be sent in HTTP response
+    from io import BytesIO
+    img_io = BytesIO()
+    plt.savefig(img_io, format='PNG')
+    img_io.seek(0)
+
+    # Serve the image in HTTP response
+    return HttpResponse(img_io, content_type='image/png')
+
+@csrf_exempt
+def check_in(request, loc_id):
+    if request.method == "POST":
+        try:
+            location = Location.objects.get(locID=loc_id) 
+            print(f"Location found: {location}")
+            
+            if not location.checked_in:
+                location.checked_in = True
+                location.save()
+                return JsonResponse({'message': 'Check-in successful!', 'checked_in': True})
+            else:
+                return JsonResponse({'message': 'Already checked in.', 'checked_in': True})
+        except Location.DoesNotExist:
+            return JsonResponse({'error': 'Location not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON.'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
