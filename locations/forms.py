@@ -4,7 +4,7 @@ from .models import Location
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
-        fields = ['location_name', 'task1_id', 'task2_id', 'postcode', 'address']  # Add address back
+        fields = ['location_name', 'task1_id', 'task2_id', 'postcode', 'address', 'locked_by', 'checked_in']  # Add address back
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,7 +25,7 @@ class LocationForm(forms.ModelForm):
         if current_postcode != "NOT AVAILABLE":
             self.fields['postcode'] = forms.CharField(
                 initial=current_postcode,
-                disabled=True,  # Read-only if not "NOT AVAILABLE"
+                disabled=True,  
                 required=False
             )
         
@@ -33,6 +33,6 @@ class LocationForm(forms.ModelForm):
         if current_address != "Address not available":
             self.fields['address'] = forms.CharField(
                 initial=current_address,
-                disabled=True,  # Read-only if not "Address not available"
+                disabled=True,  
                 required=False
             )
