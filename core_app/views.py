@@ -29,7 +29,6 @@ def login_view(request):
 
         if user:
             login(request, user)
-            messages.success(request, f'Welcome, {user.username}!')
             return redirect('home')
         else:
             messages.error(request, 'Invalid username, email or password')
@@ -128,8 +127,8 @@ def leaderboard_view(request):
 def admin_view(request):
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
-            # Allow the user to access the admin page if they are logged into an admin account
-            return render(request, 'core_app/admin.html')
+            # Allow the user to access the admin dashboard page if they are logged into an admin account
+            return render(request, 'core_app/admin-dashboard.html')
         else:
             # Return the user to the home page if they are logged in but not into an admin account
             return redirect('home')
