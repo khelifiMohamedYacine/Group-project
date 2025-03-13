@@ -41,9 +41,9 @@
                     </li>
                 {% endif %}
 
-                {% if request.path != "/admin_page/" and request.user.account_type == "admin" %}
+                {% if "/admin_pages/" not in request.path and request.user.account_type == "admin" %}
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'admin_page' %}"><i class="fas fa-user-cog"></i> Admin Dashboard</a>
+                        <a class="nav-link active" href="{% url 'admin_dashboard' %}"><i class="fas fa-user-cog"></i> Admin Dashboard</a>
                     </li>
                 {% endif %}
             </ul>
