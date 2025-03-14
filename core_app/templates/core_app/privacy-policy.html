@@ -1,0 +1,67 @@
+{% extends 'core_app/base.html' %}
+{% load static %} <!--To use anything within the static folder, this needs to be present-->
+
+
+{% block head_content %} <!--Header content for HTML files extending base.html goes in here-->
+<title>Privacy Policy</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); 
+    background-size: cover; 
+    background-position: center center; 
+    height: 100vh;
+  }
+
+  .container {
+    max-width: 70vw;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
+    color: white;
+    border-radius: 8px; /* Optional: Adds rounded corners */
+  }
+
+  p, a {
+    line-height: 1.6;
+  }
+  p > a {
+    color: #359dff;
+    text-decoration: none;
+  }
+  p > a:hover {
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}
+
+
+{% block body_content %} <!--Body content for HTML files extending base.html goes in here-->
+
+<div class="container">
+  <h1 class="display-6 fw-bold">Privacy Policy</h1>
+  <br>
+  <p><strong>Effective Date: February 22, 2025</strong></p>
+
+  <p>Thank you for visiting our website. We respect your privacy and are committed to upholding GDPR regulations:</p>
+  <ul>
+    <li>We will never expose or transfer your information to a third party without your permission.</li>
+    <li>We use modern security practices to keep your data secure, such as CSRF tokens and password hashing.</li>
+  </ul>
+
+  <p>By using this website, you agree to our Terms of Service:</p>
+  <ul>
+    <li>For certain features of our website to work, we require access to your device's GPS location.
+      This information is not directly stored or shared with anyone else.
+    </li>
+    <li>You are not allowed to upload inappropriate material to the website in any way.</li>
+  </ul>
+  
+  <p>For further details or to report a problem, you can contact us at <a href="mailto:info@example.com">info@example.com</a>.</p>
+
+  <a class="btn btn-primary fw-bold" onclick="history.back()">Go Back</a>
+</div>
+{% endblock %}

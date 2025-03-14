@@ -1,0 +1,180 @@
+{% extends 'core_app/base.html' %}
+{% load static %} <!--To use anything within the static folder, this needs to be present-->
+
+
+{% block head_content %} <!--Header content for HTML files extending base.html goes in here-->
+<title>Leaderboard Page</title>
+
+<style>
+    body { 
+        background-color: #f0f8ff; 
+        font-family: 'Arial', sans-serif; 
+        margin: 0; 
+        padding: 0; 
+    }
+
+    .privacy-policy {
+        color: #ffffff; 
+        font-weight: bold;
+        text-align: center;
+        display: block;
+        margin-top: 30px; /* Adjusts spacing */
+        transition: color 0.2s ease-in-out;
+        text-decoration: none;
+    }
+    .privacy-policy:hover {
+        color: #ffbb00; /* Changed for better contrast */
+        text-decoration: underline;
+    }
+
+    .main-banner { 
+        padding-top: 10vh;
+        padding-bottom: 5vh;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        color: rgb(255, 255, 255); 
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.9); 
+        flex-direction: column;
+    }
+
+    .container { 
+        padding: 50px; 
+        display: flex; 
+        flex-wrap: wrap; /* Allow wrapping of the cards */
+        justify-content: space-between; /* Ensure 2 cards per line */
+    }
+    
+    .card { 
+        border-radius: 15px; 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+        overflow: hidden; 
+        width: 48%; /* Ensure 2 cards per row */
+        margin: 10px 0; /* Adjust margin for spacing */
+        background-color: white; 
+        margin-bottom: 60px;
+    }
+    
+    .card:hover { 
+        transform: scale(1.05); 
+        box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
+    }
+    .card img { 
+        height: 150px; 
+        object-fit: cover; 
+        border-radius: 15px 15px 0 0; 
+    }
+    .card-body { 
+        text-align: center; 
+        padding: 15px; 
+    }
+    .card-title { 
+        font-size: 1.1rem; 
+        font-weight: bold; 
+        color: #000000; 
+        margin-bottom: 5px; 
+    }
+    .card-text { 
+        font-size: 0.9rem; 
+        color: #555; 
+    }
+    
+    .quiz-modal {
+        max-width: 350px;
+    }
+    /* New button for certificate */
+    .certificate-btn {
+        position: relative;
+        bottom: 0px;
+        background-color: #28a745;
+        color: white;
+        padding: 0px 25px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        transition: background-color 0.3s;
+    }
+
+    .certificate-btn:hover {
+        background-color: #218838;
+    }
+
+    .leaderboard-container {
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        padding: 20px;
+        width: 80%;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+
+    .leaderboard-title {
+        font-size: 1.3rem;
+        color: #ffffff;
+        margin-bottom: 20px;
+    }
+
+    .leaderboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .leaderboard-table th, .leaderboard-table td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #444;
+        color: rgb(255, 255, 255)
+    }
+
+    .leaderboard-table th {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+
+    .leaderboard-table tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .leaderboard-table tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.03);
+    }
+</style>
+{% endblock %}
+
+
+{% block body_content %} <!--Body content for HTML files extending base.html goes in here-->
+{% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
+
+<div class="main-banner">
+    <p class="display-5 fw-bold" style="text-align: center;">Leaderboard</p>
+</div>
+
+<div class="leaderboard-container">
+    <h2 class="leaderboard-title">Collect reward points to climb the leaderboard!</h2>
+    <table class="leaderboard-table">
+        <thead>
+            <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Name</th>
+                <th scope="col">Reward Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in leaderboard_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.reward_pts }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
+{% endblock %}
