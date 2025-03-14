@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 import json
+from core_app.models import UserAccount, AccountType
 from .models import Location
 from .forms import LocationForm
 import networkx as nx
@@ -10,14 +12,32 @@ import matplotlib
 matplotlib.use('Agg')
 from django.http import HttpResponse
 
+page_forbidden_string = "You dont have permission to access this page. Only game admins do."
+
+@login_required
 def admin_map_view(request):
+    if request.user.account_type != AccountType.ADMIN.value:
+        return HttpResponseForbidden(page_forbidden_string)
+
     return render(request, "locations/map.html") 
 
+@login_required
 def user_map_view(request):
-   return render(request, "locations/user_map.html") 
+    return render(request, "locations/user_map.html") 
 
+@login_required
 @csrf_exempt
 def add_location(request):
+    if request.user.account_type != AccountType.ADMIN.value:
+        return HttpResponseForbidden(page_forbidden_string)
+
+    if user.account_type == AccountType.ADMIN.value:
+        # Code for admin actions
+        print("User is an admin.")
+    else:
+        # Code for non-admin actions
+        print("User is not an admin.")
+
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -59,12 +79,14 @@ def add_location(request):
         except Exception as e:
             print("Error adding location: ", e)
             return JsonResponse({"error": str(e)}, status=400)
-        
+
+@login_required    
 def check_parent_location(request, locID):
     # Check if the location exists
     location_exists = Location.objects.filter(locID=locID).exists()
     return JsonResponse({"exists": location_exists})
-        
+
+@login_required
 def get_locations(request):
     locations =locations = list(Location.objects.values(
         "postcode", 
@@ -78,6 +100,7 @@ def get_locations(request):
         "checked_in"))
     return JsonResponse(locations, safe=False)
 
+@login_required
 def get_locations_with_lock_status(request):
     locations = Location.objects.all()
     location_data = []
@@ -113,7 +136,11 @@ def get_locations_with_lock_status(request):
 
     return JsonResponse(location_data, safe=False)
 
+@login_required
 def delete_location_view(request):
+    if request.user.account_type != AccountType.ADMIN.value:
+        return HttpResponseForbidden(page_forbidden_string)
+
     if request.method == "POST":
         selected_locations = request.POST.getlist('locations')  # Get the selected locIDs
         if selected_locations:
@@ -124,11 +151,21 @@ def delete_location_view(request):
     locations = Location.objects.all() 
     return render(request, 'locations/delete_location.html', {'locations': locations})
 
+@login_required
 def location_list(request):
+    if request.user.account_type != AccountType.ADMIN.value:
+        return HttpResponseForbidden(page_forbidden_string)
     locations = Location.objects.all()
     return render(request, 'locations/location_list.html', {'locations': locations})
 
+@login_required
 def update_location(request, locID):
+    if request.user.account_type != AccountType.ADMIN.value:
+        return HttpResponseForbidden(page_forbidden_string)
+
+    if request.user.account_type != AccountType.ADMIN.value:
+        return HttpResponseForbidden(page_forbidden_string)
+
     location = get_object_or_404(Location, pk=locID)
 
     if request.method == "POST":
@@ -141,6 +178,7 @@ def update_location(request, locID):
 
     return render(request, 'locations/location_form.html', {'form': form, 'location': location})
 
+@login_required
 def generate_location_graph(request):
     # Create a directed graph
     G = nx.DiGraph()
@@ -169,6 +207,7 @@ def generate_location_graph(request):
     # Serve the image in HTTP response
     return HttpResponse(img_io, content_type='image/png')
 
+@login_required
 @csrf_exempt
 def check_in(request, loc_id):
     if request.method == "POST":
