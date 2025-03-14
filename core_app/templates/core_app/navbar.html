@@ -1,0 +1,58 @@
+<nav class="navbar navbar-custom navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">EcoMind</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                {% if request.path != "/home/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                {% endif %}
+                
+                {% if request.path != "/games/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'games_page' %}"><i class="fa fa-gamepad"></i> Games</a>
+                    </li>
+                {% endif %}
+
+                {% if request.path != "/videos/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'videos' %}"><i class="fas fa-play-circle"></i> Videos</a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'quizzes:quiz' %}"><i class="far fa-question-circle"></i> Quizzes</a>
+                </li>
+
+                {% if request.path != "/maps/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
+                    </li>
+                {% endif %}
+
+                {% if request.path != "/leaderboard/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fa fa-list-ol"></i> Leaderboard</a>
+                    </li>
+                {% endif %}
+
+                {% if "/admin_pages/" not in request.path and request.user.account_type == "admin" %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'admin_dashboard' %}"><i class="fas fa-user-cog"></i> Admin Dashboard</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            {% if user.is_authenticated %}
+                <a class="nav-item nav-link login-btn" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a class="nav-item nav-link login-btn" href="{% url 'login' %}">Log In</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>

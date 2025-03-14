@@ -11,4 +11,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Admin route
     path('', include('core_app.urls')),  # Include core_app URLs
     path('', include('locations.urls')),
+    path('', include('jumping_game.urls')),
+    path('', include('quizzes.urls')),
 ]

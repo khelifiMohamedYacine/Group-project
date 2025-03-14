@@ -1,0 +1,106 @@
+{% extends 'core_app/base.html' %}
+{% load static %} <!--To use anything within the static folder, this needs to be present-->
+
+
+{% block head_content %} <!--Header content for HTML files extending base.html goes in here-->
+<title>Games Page</title>
+
+<style>
+    body { 
+        background-color: #f0f8ff; 
+        font-family: 'Arial', sans-serif; 
+        margin: 0; 
+        padding: 0; 
+    }
+
+    .privacy-policy {
+        color: #ffffff; 
+        font-weight: bold;
+        text-align: center;
+        display: block;
+        margin-top: 30px; /* Adjusts spacing */
+        transition: color 0.2s ease-in-out;
+        text-decoration: none;
+    }
+    .privacy-policy:hover {
+        color: #ffbb00; /* Changed for better contrast */
+        text-decoration: underline;
+    }
+
+    .main-banner { 
+        padding-top: 10vh;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        color: rgb(255, 255, 255); 
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.9); 
+        flex-direction: column;
+    }
+
+    .container { 
+        padding: 50px; 
+        display: flex; 
+        flex-wrap: wrap; /* Allow wrapping of the cards */
+        justify-content: space-between; /* Ensure 2 cards per line */
+    }
+    
+    .card { 
+        border-radius: 15px; 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+        overflow: hidden; 
+        width: 48%; /* Ensure 2 cards per row */
+        margin: 10px 0; /* Adjust margin for spacing */
+        background-color: white; 
+        margin-bottom: 60px;
+    }
+    
+    .card:hover { 
+        transform: scale(1.05); 
+        box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
+    }
+    .card img { 
+        height: 150px; 
+        object-fit: cover; 
+        border-radius: 15px 15px 0 0; 
+    }
+    .card-body { 
+        text-align: center; 
+        padding: 15px; 
+    }
+    .card-title { 
+        font-size: 1.1rem; 
+        font-weight: bold; 
+        color: #000000; 
+        margin-bottom: 5px; 
+    }
+    .card-text { 
+        font-size: 0.9rem; 
+        color: #555; 
+    }
+</style>
+{% endblock %}
+
+
+{% block body_content %} <!--Body content for HTML files extending base.html goes in here-->
+{% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
+
+<div class="main-banner">
+    <p class="display-5 fw-bold" style="text-align: center;">Games Page</p>
+</div>
+
+<div class="container">
+
+    <div class="card game-card" onclick="window.location.href='{% url 'jumping_game' %}';" style="cursor: pointer;">
+        <!--My editior complains about the previous line but won't fix because the application works properly-->
+        <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="Jumping Game">
+        <div class="card-body text-center">
+            <h5 class="card-title">Jumping Game</h5>
+            <p class="card-text">Click to play the game!</p>
+        </div>
+    </div>
+
+    <p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
+</div>
+
+{% endblock %}
