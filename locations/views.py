@@ -10,7 +10,7 @@ import matplotlib
 matplotlib.use('Agg')
 from django.http import HttpResponse
 
-def map_view(request):
+def admin_map_view(request):
     return render(request, "locations/map.html") 
 
 def user_map_view(request):
@@ -30,7 +30,7 @@ def add_location(request):
             task1 = data.get('task1_id')  
             task2 = data.get('task2_id')  
             locked_by = data.get("locked_by")
-            checked_in = data.get("checked_in")
+            checked_in = data.get("checked_in", False) # default to false because it was causing errors and IDK what this is for
 
             # Ensure locked_by is valid if provided
             if locked_by:
@@ -57,6 +57,7 @@ def add_location(request):
             return JsonResponse({"success": "Location added successfully!"}, status=201)
 
         except Exception as e:
+            print("Error adding location: ", e)
             return JsonResponse({"error": str(e)}, status=400)
         
 def check_parent_location(request, locID):
