@@ -19,5 +19,4 @@ urlpatterns = [
     path('generate-graph/', views.generate_location_graph, name='generate_location_graph'),
     path('check-in/<int:loc_id>/', views.check_in, name='check_in'),
     path("get-locations-with-lock-status/", views.get_locations_with_lock_status, name="get_locations_with_lock_status"),
-   
 ]
