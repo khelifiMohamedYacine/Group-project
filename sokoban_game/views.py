@@ -1,39 +1,78 @@
-
+import json
 from django.shortcuts import render
 
-from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
-from .models import sokoban_results
+from sokoban_game.models import sokoban_level, sokoban_results
 
+from django.views.decorators.csrf import csrf_exempt #temp
 
-def sokobanGame(request):
+@csrf_exempt
+def sokoban_game_view(request):
     if request.method == "POST":
         user_id = request.POST.get('user_id')
         level = request.POST.get('level')
         steps = request.POST.get('steps')
         score = request.POST.get('score')
-        models.sokoban_results.objects.create(user_id=user_id, level=level, steps=steps, score=score)
-    return render(request, 'sokoban_game/SokobanGame-version1.html')
+        sokoban_results.objects.create(user_id=user_id, level_id=level, steps=steps)
+
+    levels = sokoban_level.objects.all().values("number", "map_data", "box_positions", "person_position")
+
+    levels_list = []
+    for level in levels:
+        levels_list.append({
+            "number": level["number"],
+            "map_data": json.loads(level["map_data"]),
+            "box_positions": json.loads(level["box_positions"]),
+            "person_position": json.loads(level["person_position"])
+        })
+
+    return render(request, 'sokoban_game/SokobanGame-version1.html', {"levels": json.dumps(levels_list)})
 
 
-import json
-from django.http import JsonResponse
-import os
-
-LEVEL_JSON_PATH = os.path.join(os.path.dirname(__file__), "static/game/levels_admin.json")
-
-
-def sokobanAdmin(request):
+@csrf_exempt
+def sokoban_admin_view(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            print(data)
-            with open(LEVEL_JSON_PATH, "w", encoding="utf-8") as file:
-                json.dump(data, file, indent=4)
+            for level_data in data:
+                level, created = sokoban_level.objects.update_or_create(
+                    number=level_data["number"],
+                    defaults={
+                        "map_data": json.dumps(level_data["map_data"]),
+                        "box_positions": json.dumps(level_data["box_positions"]),
+                        "person_position": json.dumps(level_data["person_position"])
+                    }
+                )
 
-            return JsonResponse({"message": "Level saved successfully!", "success": True})  # ✅ return JSON
+            return JsonResponse({"message": "Levels updated successfully!", "success": True})
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
-    else:
-        return render(request, 'sokoban_game/admin.html')
 
+    levels = sokoban_level.objects.all().values("number", "map_data", "box_positions", "person_position")
+    levels_list = []
+    for level in levels:
+        levels_list.append({
+            "number": level["number"],
+            "map_data": json.loads(level["map_data"]),
+            "box_positions": json.loads(level["box_positions"]),
+            "person_position": json.loads(level["person_position"])
+        })
+
+    return render(request, 'sokoban_game/admin.html', {"levels": json.dumps(levels_list)})
+
+@csrf_exempt
+def delete_level(request, level_number):
+    if request.method == "DELETE":
+        try:
+            level = sokoban_level.objects.get(number=level_number)
+            level.delete()
+            print("del success")
+            return JsonResponse({"success": True, "message": f"Level {level_number} deleted successfully!"})
+            
+        except sokoban_level.DoesNotExist:
+            print("del fail")
+            return JsonResponse({"success": False, "error": "Level not found."})
+        print("del how did we get here")
+    print("del or here")
+    return JsonResponse({"success": False, "error": "Invalid request method."}, status=400)
