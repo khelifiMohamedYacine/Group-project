@@ -29,19 +29,22 @@
 
 
 <script>
+
+    const levels = JSON.parse('{{ levels|safe }}');  //get data from views.py
+
     function sendData(user_id, level, steps) {
+        const now = new Date();
         var user_id = user_id;
         var level = level;
         var steps = steps;
         var score = steps < 40 ? 100 : 50;
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/sokoban_game/", true);
+        xhr.open("POST", "", true);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 console.log("Data sent successfully!");
-                console.log(xhr.responseText);
             }
         };
 
@@ -82,7 +85,7 @@
     class Sokoban {
         constructor(gameBoard) {
             this.gameBoard = gameBoard;
-            this.levels = [];
+            this.levels = levels;
             this.currentLevel = 0;
             this.player = null;
             this.boxes = [];
@@ -102,7 +105,7 @@
         }
 
 
-        //  Play sound effects
+        //Play sound effects
         playSound(sound) {
             if (this.sounds[sound]) {
                 this.sounds[sound].currentTime = 0;
@@ -110,25 +113,13 @@
             }
         }
 
-        // 🎵 Start background music
+        //Start background music
         startBGM() {
             this.sounds.bgm.play();
         }
 
         stopBGM() {
             this.sounds.bgm.pause();
-        }
-
-
-        // Load level data from external JSON
-        async loadLevels() {
-            try {
-                const response = await fetch('{% static "sokoban_game/levels_admin.json" %}?t=' + Date.now()); // Fetch external JSON file
-                this.levels = await response.json();
-                this.initLevel(this.currentLevel);
-            } catch (error) {
-                console.error('Failed to load level data:', error);
-            }
         }
 
         // Initialize level
@@ -143,15 +134,15 @@
 
 
             const level = this.levels[levelIndex];
-            document.title = `Current Level: ${levelIndex + 1}`;
+            document.title = "Current Level: " + (levelIndex + 1);
 
-            const gridSize = Math.sqrt(level.map.length);
-            this.gameBoard.style.width = `${gridSize * 128}px`;
+            const gridSize = Math.sqrt(level.map_data.length);
+            this.gameBoard.style.width = (gridSize * 128) + "px";
 
             // Render map
-            level.map.forEach((tile, index) => {
+            level.map_data.forEach((tile, index) => {
                 const tileElement = document.createElement('li');
-                tileElement.className = `pos${tile}`;
+                tileElement.className = "pos" + tile;
                 this.gameBoard.appendChild(tileElement);
 
                 // Store target positions
@@ -161,10 +152,10 @@
             });
 
             // Render player
-            this.createPlayer(level.personPos);
+            this.createPlayer(level.person_position);
 
             // Render boxes
-            level.boxPos.forEach(pos => this.createBox(pos));
+            level.box_positions.forEach(pos => this.createBox(pos));
         }
 
         // Create player character
@@ -175,6 +166,20 @@
             this.player.y = position.y;
             this.updatePosition(this.player);
             this.gameBoard.appendChild(this.player);
+        }
+
+         updateBoxState() {
+            this.boxes.forEach(box => {
+                const boxPositionKey = box.offsetLeft + "_" + box.offsetTop;
+                const wasOnTarget = box.classList.contains('onTarget'); // Was it on target before?
+
+                if (this.targets[boxPositionKey]) {
+                    box.classList.add('onTarget');
+                    if (!wasOnTarget) this.playSound("place"); // Play sound only if newly placed
+                } else {
+                    box.classList.remove('onTarget');
+                }
+            });
         }
 
         // Create boxes
@@ -191,24 +196,12 @@
 
         // Update object position
         updatePosition(obj) {
-            obj.style.left = `${obj.x * 128}px`;
-            obj.style.top = `${obj.y * 128}px`;
+            obj.style.left = (obj.x * 128)+"px";
+            obj.style.top = (obj.y * 128) + "px";
         }
 
         // Update box state and play sound effects
-        updateBoxState() {
-            this.boxes.forEach(box => {
-                const boxPositionKey = box.offsetLeft + "_" + box.offsetTop;
-                const wasOnTarget = box.classList.contains('onTarget'); // Was it on target before?
 
-                if (this.targets[boxPositionKey]) {
-                    box.classList.add('onTarget');
-                    if (!wasOnTarget) this.playSound("place"); // Play sound only if newly placed
-                } else {
-                    box.classList.remove('onTarget');
-                }
-            });
-        }
 
         // Handle player movement and direction
         movePlayer(direction) {
@@ -220,8 +213,8 @@
             const pushY = nextY + direction.y;
 
             const level = this.levels[this.currentLevel];
-            const gridSize = Math.sqrt(level.map.length);
-            if (level.map[nextY * gridSize + nextX] === 1 || level.map[nextY * gridSize + nextX] === 0) return;
+            const gridSize = Math.sqrt(level.map_data.length);
+            if (level.map_data[nextY * gridSize + nextX] === 1 || level.map_data[nextY * gridSize + nextX] === 0) return;
 
 
             // Update player direction
@@ -230,12 +223,13 @@
             // Check if a box is present
             const box = this.boxes.find(b => b.x === nextX && b.y === nextY);
             if (box) {
-                this.playSound("push"); // Play pushing sound effect
-                const nextTile = level.map[pushY * gridSize + pushX];
+
+                const nextTile = level.map_data[pushY * gridSize + pushX];
 
                 // If the box is blocked, do not move it
                 if (nextTile === 1 || this.boxes.some(b => b.x === pushX && b.y === pushY)) return;
 
+                this.playSound("push"); // Play pushing sound effect
                 // Move box
                 box.x = pushX;
                 box.y = pushY;
@@ -246,7 +240,7 @@
             // Move player
             this.player.x = nextX;
             this.player.y = nextY;
-            console.log("moving");
+
             this.steps++;
             document.getElementById('step').innerText = "Step: " + this.steps;
             this.updatePosition(this.player);
@@ -262,8 +256,8 @@
             if (this.boxes.every(function (box) {
                 return this.targets[box.offsetLeft + "_" + box.offsetTop];
             }, this)) {
-                alert('Level Complete!');
                 this.nextLevel();
+                alert('Level Complete!');
             }
         }
 
@@ -283,12 +277,15 @@
 
         // Move to next level
         nextLevel() {
-            sendData('user_10086', this.currentLevel + 1, this.steps);//wait to change it to actual user_id or username...
+            const now = new Date();
+            sendData(('user-'+now), this.currentLevel + 1, this.steps);//wait to change it to actual user_id or username...
             this.currentLevel++;
             if (this.currentLevel < this.levels.length) {
                 this.initLevel(this.currentLevel);
             } else {
                 alert('Congratulations! You completed all levels.');
+                this.currentLevel = 0;
+                this.initLevel(this.currentLevel);
             }
         }
 
@@ -355,16 +352,15 @@
 
     });
     document.addEventListener("DOMContentLoaded", function () {
+
         let startX, startY, endX, endY;
 
         document.addEventListener("touchstart", function (event) {
-            // record the starting point
             startX = event.touches[0].clientX;
             startY = event.touches[0].clientY;
         });
 
         document.addEventListener("touchend", function (event) {
-            // record the ending point
             endX = event.changedTouches[0].clientX;
             endY = event.changedTouches[0].clientY;
 
@@ -377,7 +373,6 @@
             let absDeltaX = Math.abs(deltaX);
             let absDeltaY = Math.abs(deltaY);
 
-            // Determine the sliding direction
             if (absDeltaX > absDeltaY) {
                 if (deltaX > 50) {//swipe right
                     moveRight();
@@ -410,11 +405,9 @@
         }
     });
 
-    game.loadLevels();
+    game.initLevel(0);
     game.bindEvents();
 </script>
-
-
 </body>
 </html>
 

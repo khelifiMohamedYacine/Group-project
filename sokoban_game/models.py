@@ -1,29 +1,37 @@
 from django.db import models
 from core_app.models import UserAccount
+import json
 
-
-class Level(models.Model):
-    # just a stub figure this out later
+class sokoban_level(models.Model):
+    number = models.IntegerField(unique=True)
+    map_data = models.TextField()
+    box_positions = models.TextField()
+    person_position = models.TextField()
 
     def __str__(self):
-        return self.name
+        return f"Level {self.number}"
 
+    def get_map(self):
+        return json.loads(self.map_data)
+
+    def get_box_positions(self):
+        return json.loads(self.box_positions)
+
+    def get_person_position(self):
+        return json.loads(self.person_position)
+
+
+# IDK if we're keeping this
 class sokoban_results(models.Model):
-    user_id = models.CharField(max_length=100)
-    level = models.IntegerField()
-    steps = models.IntegerField()
-    score = models.IntegerField() # is this not just a function of steps? Probably remove it
-
-class SokobanResults(models.Model):
     user_id = models.ForeignKey(
         UserAccount,
         on_delete=models.CASCADE,
     )
     level_id = models.ForeignKey(
-        Level,
+        sokoban_level,
         on_delete=models.CASCADE,
     )
-    steps = models.IntegerField(default=0)  # Default value for steps is 0
+    steps = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.user_id.username} - Level {self.level_id.name} - {self.steps} steps"
