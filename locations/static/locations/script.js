@@ -8,7 +8,7 @@ var map = new maplibregl.Map({
 // Getting the saved locations from the database
 document.addEventListener("DOMContentLoaded", async function () {
     try {
-        let response = await fetch("/locations/get-locations/");
+        let response = await fetch("/get-locations/");
         let data = await response.json(); 
         console.log("Fetched data:", data);
 
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let task1Id = document.getElementById("task1Input")? document.getElementById("task1Input").value || null: null;
             let task2Id = document.getElementById("task2Input")? document.getElementById("task2Input").value || null: null;
 
-            let response = await fetch("/locations/add-location/", {
+            let response = await fetch("/add-location/", {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/json",
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 location_name: locationName,
                 latitude: selectedCoordinates.lat,
                 longitude: selectedCoordinates.lon,
-                task1_id: task1Id, // Now included
+                task1_id: task1Id,
                 task2_id: task2Id,
                 locked_by: lockedBy,
                 }),
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to check if the parent location exists
     async function checkParentLocation(lockedBy) {
-        let response = await fetch(`/locations/check-location/${lockedBy}/`);
+        let response = await fetch(`/check-location/${lockedBy}/`);
         let data = await response.json();
         return data.exists; // If the location exists, return true; otherwise, false
     }

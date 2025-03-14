@@ -3,10 +3,10 @@ from django.core.exceptions import ValidationError
 
 class Location(models.Model):
     locID = models.AutoField(primary_key=True, default=None)
-    postcode = models.CharField(max_length=20)
+    postcode = models.CharField(null=True, max_length=20)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    address = models.TextField(default="Exeter")  
+    address = models.TextField(default="Exeter")
     location_name = models.CharField(max_length=100, default="Location Name")  # User-defined name
     locked_by = models.IntegerField(null=True, blank=True)
     checked_in = models.BooleanField(default=False)

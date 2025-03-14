@@ -14,7 +14,7 @@ const csrfToken = getCSRFToken();
 
 document.addEventListener("DOMContentLoaded", async function () {
     try {
-        let response = await fetch("/locations/get-locations-with-lock-status/");
+        let response = await fetch("/get-locations-with-lock-status/");
         let data = await response.json();
         console.log("Fetched data:", data);
 
@@ -140,7 +140,7 @@ function handleCheckIn(location) {
             Math.abs(userLongitude - markerLongitude) < 0.0005 &&
             Math.abs(userLatitude - markerLatitude) < 0.0005
         ) {
-            fetch(`/locations/check-in/${locID}/`, {
+            fetch(`/check-in/${locID}/`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

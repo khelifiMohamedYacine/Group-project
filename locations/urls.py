@@ -4,13 +4,13 @@ from . import views
 urlpatterns = [
 
     #FOR ADMIN
-    path("", views.map_view, name="map_view"), #Add a location or view the existing locations on the map, with the button to generate a graph
-    path("delete-location/", views.delete_location_view, name="delete_location"), #Delete a location
-    path('update-location/', views.location_list, name='location_list'), #Update or edit a location
-    path('update-location/<int:locID>/', views.update_location, name='update_location'), #Update or edit a location by location ID (locID)
+    path("game_admin/map", views.admin_map_view, name="admin_map_view"), #Add a location or view the existing locations on the map, with the button to generate a graph
+    path("game_admin/delete-location/", views.delete_location_view, name="delete_location"), #Delete a location
+    path('game_admin/update-location/', views.location_list, name='location_list'), #Update or edit a location
+    path('game_admin/update-location/<int:locID>/', views.update_location, name='update_location'), #Update or edit a location by location ID (locID)
 
     #FOR USER
-    path("user-map/", views.user_map_view, name="user_map_view"), #For users to view locations, their tasks and tasks status, along with the graph
+    path("map/", views.user_map_view, name="user_map_view"), #For users to view locations, their tasks and tasks status, along with the graph
 
     #FOR BACK-END
     path("add-location/", views.add_location, name="add_location"),
