@@ -16,12 +16,15 @@
         </div>
 
         <h1 class="level-title" id="level-title">Current Level: 1</h1>
-
+        
         <div class="btn-right">
+            <!--
             <button id="pre-level">Previous Level</button>
             <button id="next-level">Next Level</button>
+            -->
             <p id="step">Step: 12</p>
         </div>
+        
     </div>
 
     <ul id="yxbox"></ul>
@@ -60,7 +63,7 @@
     document.getElementById("reset").addEventListener("click", function (e) {
         game.initLevel(game.currentLevel); // Reinitialize the current level
     });
-
+    /*
     // Handle "Previous Level" button click event
     document.getElementById("pre-level").addEventListener("click", function (e) {
         if (game.currentLevel > 0) {
@@ -80,7 +83,7 @@
             alert("This is the final level!");
         }
     });
-
+    */
 
     class Sokoban {
         constructor(gameBoard) {
@@ -256,7 +259,7 @@
             if (this.boxes.every(function (box) {
                 return this.targets[box.offsetLeft + "_" + box.offsetTop];
             }, this)) {
-                this.nextLevel();
+                this.nextLevel(); // do something else instead, like return to the previous page
                 alert('Level Complete!');
             }
         }
@@ -274,7 +277,7 @@
             }
         }
 
-
+        /*
         // Move to next level
         nextLevel() {
             const now = new Date();
@@ -288,6 +291,7 @@
                 this.initLevel(this.currentLevel);
             }
         }
+        */
 
         // Undo last move
         undo() {
