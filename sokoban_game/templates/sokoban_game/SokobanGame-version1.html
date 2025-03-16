@@ -127,6 +127,14 @@
 
         // Initialize level
         initLevel(levelIndex) {
+            if (!this.levels || this.levels.length === 0 || !this.levels[levelIndex]) {
+                this.gameBoard.innerHTML = `
+                    <div style="color: black; background-color: white; padding: 20px; text-align: center;">
+                        <h2>Error: Levels doesn't exist</h2>
+                        <p>Please contact the game admins</p>
+                    </div>`;
+                return;
+            }
             document.getElementById('step').innerText = "Step: 0";
             document.getElementById('level-title').innerText = "Level " + (this.currentLevel + 1);
             this.gameBoard.innerHTML = "";
