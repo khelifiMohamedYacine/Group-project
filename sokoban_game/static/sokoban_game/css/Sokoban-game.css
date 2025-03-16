@@ -1,0 +1,182 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    touch-action: none;
+    position: fixed;
+    zoom: 0.8;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.game-board {
+    position: relative;
+    margin: 0 auto;
+    width: 1200px;
+    height: 1200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.btn-container {
+    top: 0;
+    width: 84%;
+    height: 80px;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+
+}
+
+.btn-left, .btn-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.level-title {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: green;
+}
+
+#step {
+    font-size: 30px;
+    font-weight: bold;
+    margin-left: 20px;
+    color: #333;
+    border: 2px solid greenyellow;
+    border-radius: 10px;
+    box-shadow: 0 0 15px greenyellow, 0 0 30px greenyellow, 0 0 45px greenyellow;
+    padding: 4px;
+}
+
+.btn-container button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    gap: 10px;
+    background-color: greenyellow;
+    color: darkgreen;
+    font-size: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-container button:hover {
+    background-color: darkolivegreen;
+}
+
+ul {
+    background-color: #000;
+    border: 4px solid greenyellow;
+    border-radius: 10px;
+    box-shadow: 0 0 15px greenyellow, 0 0 30px greenyellow, 0 0 45px greenyellow;
+}
+
+.header {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: whitesmoke;
+    color: darkgreen;
+}
+
+body {
+    background-image: url('../img/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#yxbox {
+    padding: 0;
+    margin: 0 auto;
+    margin-top: 30px;
+    list-style: none;
+    position: relative;
+}
+
+#yxbox li {
+    width: 128px;
+    height: 128px;
+    float: left;
+}
+
+#yxbox .pos0 {
+    background: url('../img/wall2.png') no-repeat;
+    z-index: 1;
+}
+
+#yxbox .pos1 {
+    background: url('../img/wall.png') no-repeat;
+    z-index: 1;
+}
+
+#yxbox .pos2 {
+    background: url('../img/ground.png') no-repeat;
+    z-index: 1;
+}
+
+#yxbox .pos3 {
+    background: url('../img/target2.png') no-repeat;
+    z-index: 999;
+}
+
+#yxbox .person1, #yxbox .person2, #yxbox .person3, #yxbox .person4 {
+    width: 128px;
+    height: 128px;
+    position: absolute;
+    background-image: url('../img/person2.png');
+    background-repeat: no-repeat;
+    z-index: 9999;
+}
+
+#yxbox .box {
+    width: 128px;
+    height: 128px;
+    position: absolute;
+    background-image: url('../img/box2.png');
+    background-repeat: no-repeat;
+    z-index: 9999;
+}
+
+#yxbox .person1 {
+    background-position: 0;
+}
+
+#yxbox .person2 {
+    background-position: -128px 0;
+}
+
+#yxbox .person3 {
+    background-position: -256px 0;
+}
+
+#yxbox .person4 {
+    background-position: -384px 0;
+}
+
+#yxbox .box.onTarget {
+    background-image: url('../img/onTarget2.png');
+}
+

@@ -1,0 +1,400 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skoban Game - Admin Editor</title>
+    <link rel="stylesheet" href="{% static 'sokoban_game/css/Sokoban-game.css' %}">
+    <link rel="stylesheet" href="{% static 'sokoban_game/css/admin-page.css' %}">
+    
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    {% csrf_token %}
+</head>
+<style>
+    .container {
+        display: flex;
+    }
+
+    .toolbox {
+        position: absolute;
+        margin-top: 50px;
+        margin-left: 20px;
+        width: 180px;
+        background: #ccc;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 4px solid greenyellow;
+        border-radius: 10px;
+        box-shadow: 0 0 15px greenyellow, 0 0 30px greenyellow, 0 0 45px greenyellow;
+        padding: 20px;
+    }
+
+    .toolbox-item {
+        width: auto;
+        height: auto;
+        margin: 5px;
+        cursor: grab;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 50px;
+    }
+
+    .toolbox-item img {
+        pointer-events: none;
+    }
+
+</style>
+<body>
+<div class="header"><h1>Welcome, admin123</h1></div>
+<div class="container">
+    <div class="toolbox">
+        <h1>Tools</h1>
+        <div class="toolbox-item" draggable="true" data-type="0">
+            <img src="{% static 'sokoban_game/img/wall2.png' %}" alt="">
+        </div>
+        <div class="toolbox-item" draggable="true" data-type="1">
+            <img src="{% static 'sokoban_game/img/wall.png' %}" alt="">
+        </div>
+        <div class="toolbox-item" draggable="true" data-type="2">
+            <img src="{% static 'sokoban_game/img/ground.png' %}" alt="">
+        </div>
+        <div class="toolbox-item" draggable="true" data-type="3">
+            <img src="{% static 'sokoban_game/img/target2.png' %}" alt="">
+        </div>
+        <div class="toolbox-item" draggable="true" data-type="4">
+            <img src="{% static 'sokoban_game/img/box2.png' %}" alt="">
+        </div>
+        <div class="toolbox-item" draggable="true" data-type="5">
+            <img src="{% static 'sokoban_game/img/player.png' %}" alt="">
+        </div>
+    </div>
+
+</div>
+
+
+<div class="game-board">
+    <div class="btn-container">
+        <button id="save-level">§Save Level</button>
+        <button id="add-new">+Add new level</button>
+        <button id="delete-level">-Delete this level</button>
+        <select name="" id="level-selector">
+            <option value="1">level 1</option>
+            <option value="2">level 2</option>
+            <option value="3">level 3</option>
+        </select>
+    </div>
+
+    <ul id="yxbox"></ul>
+</div>
+
+<script>
+
+    const levels = JSON.parse('{{ levels|safe }}');  // get level data from views
+
+    class Sokoban {
+        constructor(gameBoard) {
+            this.gameBoard = gameBoard;
+            this.levels = levels;
+            this.currentLevel = 0;
+            this.player = null;
+            this.boxes = [];
+            this.targets = {};
+            this.history = [];
+            this.selectedElement = null;
+            this.initLevel(this.currentLevel);
+            this.addDragDropListeners();
+        }
+
+
+        initLevel(levelIndex) {
+            this.gameBoard.innerHTML = "";
+            this.history = [];
+            this.targets = {};
+            this.boxes = [];
+            this.selectedElement = null;
+
+            this.level = this.levels[levelIndex];
+
+            document.title = "Editing Level: " + (levelIndex + 1);
+            const gridSize = Math.sqrt(this.level.map_data.length);
+            this.gameBoard.style.width = `${gridSize * 128}px`;
+
+            this.level.map_data.forEach((tile, index) => {
+                const tileElement = document.createElement('li');
+                tileElement.className = "pos" + tile;
+                tileElement.dataset.index = index;
+                tileElement.addEventListener("click", () => this.selectedElement = tileElement);
+                tileElement.addEventListener("dragover", (event) => event.preventDefault());
+                tileElement.addEventListener("drop", (event) => this.onDrop(event, index));
+                this.gameBoard.appendChild(tileElement);
+            });
+
+            this.createPlayer(this.level.person_position);
+            this.level.box_positions.forEach(pos => this.createBox(pos));
+
+            document.addEventListener('keydown', (e) => this.modifyTile(e));
+
+            this.generateSelector();
+        }
+
+        modifyTile(event) {
+            if (!this.selectedElement) return;
+
+            const index = this.selectedElement.dataset.index;
+            const x = index % 8;
+            const y = Math.floor(index / 8);
+
+            if (event.key === "0") {
+                this.level.map_data[index] = 0;
+                this.selectedElement.className = "pos0";
+            } else if (event.key === "1") {
+                this.level.map_data[index] = 1;
+                this.selectedElement.className = "pos1";
+            } else if (event.key === "2") {
+                this.level.map_data[index] = 2;
+                this.selectedElement.className = "pos2";
+            } else if (event.key === "3") {
+                this.level.map_data[index] = 3;
+                this.selectedElement.className = "pos3";
+            } else if (event.key === "4") {
+                this.level.map_data[index] = 2;
+                this.level.box_positions.push({x, y});
+                console.log(`Added Box at (${x}, ${y})`);
+            } else if (event.key === "5") {
+                this.level.map_data[index] = 2;
+                this.level.person_position = {x, y};
+                console.log(`Moved Player to (${x}, ${y})`);
+            } else if (event.key === "6") {
+                this.level.map_data[index] = 3;
+                this.level.box_positions.push({x, y});
+                console.log(`Added Box at (${x}, ${y})`);
+            } else if (event.key === "7") {
+                this.level.map_data[index] = 3;
+                this.level.person_position = {x, y};
+                console.log(`Moved Player to (${x}, ${y})`);
+            }
+            this.refreshBoard();
+        }
+
+
+        createPlayer(position) {
+            this.player = document.createElement('div');
+            this.player.className = 'person1';
+            this.player.dataset.index = "player";
+            this.player.x = position.x;
+            this.player.y = position.y;
+            this.updatePosition(this.player);
+            this.gameBoard.appendChild(this.player);
+
+        }
+
+        refreshBoard() {
+            this.gameBoard.innerHTML = "";  // initial the map
+            this.initLevel(this.currentLevel);  // reload current level
+            this.updateBoxState();
+        }
+
+        updateBoxState() {
+            this.boxes.forEach((box) => {
+                const boxPositionKey = box.x + "_" + box.y;
+                const gridSize = Math.sqrt(this.level.map_data.length);
+                const tileIndex = box.y * gridSize + box.x;
+
+                if (this.level.map_data[tileIndex] === 3) {
+                    box.classList.add("onTarget");
+                } else {
+                    box.classList.remove("onTarget");
+                }
+            });
+        }
+
+
+        createBox(position) {
+            const box = document.createElement("div");
+            box.className = "box";
+            box.dataset.index = "box";
+            box.x = position.x;
+            box.y = position.y;
+            this.updatePosition(box);
+            this.boxes.push(box);
+            this.gameBoard.appendChild(box);
+
+
+            const gridSize = Math.sqrt(this.level.map_data.length);
+            const tileIndex = position.y * gridSize + position.x;
+            if (this.level.map_data[tileIndex] === 3) {
+                box.classList.add("onTarget");
+            }
+
+            this.updateBoxState();
+
+            box.addEventListener("click", () => {
+                this.selectedElement = box;
+                this.level.box_positions = this.level.box_positions.filter(
+                    (b) => !(b.x === position.x && b.y === position.y)
+                );
+                this.refreshBoard();
+            });
+        }
+
+
+        updatePosition(obj) {
+            obj.style.left = (obj.x * 128) + "px";
+            obj.style.top = (obj.y * 128) + "px";
+        }
+
+        saveLevel() {
+            fetch("/sokoban_game/admin/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(this.levels)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    window.location.reload();
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        generateSelector() {
+            const selector = document.getElementById("level-selector");
+
+            selector.innerHTML = "";
+            for (let i = 1; i <= this.levels.length; i++) {
+                const option = document.createElement("option");
+                option.value = i;
+                option.textContent = "Level - " + i;
+                selector.appendChild(option);
+            }
+            selector.value = this.currentLevel + 1;
+        }
+
+        addNewLevel() {
+            const gridSize = 8;
+            let newMap = new Array(gridSize * gridSize).fill(2);
+            for (let i = 0; i < gridSize; i++) {
+                newMap[i] = newMap[gridSize * (gridSize - 1) + i] = 0;
+                newMap[i * gridSize] = newMap[i * gridSize + gridSize - 1] = 0;
+            }
+
+            const newLevel = {
+                number: this.levels.length + 1,
+                map_data: newMap,
+                box_positions: [],
+                person_position: {x: 4, y: 4}
+            };
+
+            this.levels.push(newLevel);
+            this.currentLevel = this.levels.length - 1;
+            this.generateSelector();
+            this.initLevel(this.currentLevel);
+        }
+
+        deleteCurrentLevel() {
+            if (this.levels.length <= 1) {
+                alert("❌ Cannot delete the last remaining level!");
+                return;
+            }
+
+            const currentLevelNumber = this.levels[this.currentLevel].number;
+
+            if (!confirm("⚠️ Are you sure you want to delete Level " + currentLevelNumber)) return;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch("/game_admin/sokoban/delete_level/" + currentLevelNumber + "/", {
+                method: "DELETE",
+                headers: {"Content-Type": "application/json"},
+                "X-CSRFToken": csrfToken
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Level " + currentLevelNumber + " deleted successfully!");
+
+                        this.levels = this.levels.filter(level => level.number !== currentLevelNumber);
+                        this.currentLevel = Math.max(0, this.currentLevel - 1);  // ensure current level doesn't go negative
+
+                        this.generateSelector();
+                        this.initLevel(this.currentLevel);
+                    } else {
+                        alert("❌ Error: " + data.error);
+                    }
+                })
+                .catch(error => console.error("❌ Error:", error));
+        }
+
+        onDrop(event, index) {
+            event.preventDefault();
+            const type = event.dataTransfer.getData("type");
+
+            this.level.map_data[index] = parseInt(type);
+            console.log("index:", index, "Type:", type);
+
+            if (type == "4") {
+                this.level.map_data[index] = 2;
+                this.level.box_positions.push({x: index % 8, y: Math.floor(index / 8)});
+            }
+            // If it's a player
+            if (type == "5") {
+                this.level.map_data[index] = 2;
+                this.level.person_position = {x: index % 8, y: Math.floor(index / 8)};
+            }
+
+            this.refreshBoard();
+        }
+
+        addDragDropListeners() {
+            document.querySelectorAll(".toolbox-item").forEach(item => {
+                item.addEventListener("dragstart", (event) => {
+                    event.dataTransfer.setData("type", event.target.dataset.type);
+                });
+            });
+        }
+
+
+    }
+
+    const game = new Sokoban(document.getElementById('yxbox'));
+    game.initLevel(0);
+
+    document.getElementById("save-level").addEventListener("click", () => {
+        game.saveLevel();
+    });
+
+    document.getElementById("level-selector").addEventListener("change", function () {
+        const selectedLevel = parseInt(this.value) - 1;
+        game.currentLevel = selectedLevel;
+        game.initLevel(selectedLevel);
+
+        this.value = selectedLevel + 1;
+    });
+
+    document.getElementById("add-new").addEventListener("click", () => {
+        game.addNewLevel();
+    });
+
+    document.getElementById("delete-level").addEventListener("click", () => {
+        game.deleteCurrentLevel();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const gameBoard = document.getElementById("yxbox");
+
+        gameBoard.addEventListener("mouseover", (event) => {
+            if (event.target.tagName === "LI") {
+                game.selectedElement = event.target;
+            }
+        });
+
+        document.addEventListener("keydown", (e) => game.modifyTile(e));
+    });
+
+
+</script>
+</body>
+</html>
