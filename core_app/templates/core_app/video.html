@@ -138,14 +138,14 @@
 {% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
 
 <div class="main-banner">
-    <p class="display-5 fw-bold" style="text-align: center;">Environmental Awareness Videos</p>
+    <p class="display-5 fw-bold" style="text-align: center;">Sustainability Videos</p>
 </div>
 
 <div id="main-container">
     <div id="playback-container">
         <h3 id="video-title">Video Title (WIP)</h3>
         <div id="iframe-container">
-            <iframe class="responsive-iframe" src="https://www.youtube.com/embed/tgbNymZ7vqY" allowfullscreen></iframe>
+            <iframe id="yt-video" src="https://www.youtube-nocookie.com/embed/tgbNymZ7vqY?si=LmEW6Gg9YvS-vefg" allowfullscreen></iframe>
         </div>
         <p id="video-description">
             A video description descibes the content of the video. It is intended to inform about the video's content.
@@ -155,14 +155,43 @@
             The point of including the video source is to stop us getting pawned for academic misconduct.
         </p>
         <br>
-        <button id="nextButton" class="btn rounded-pill" onclick="">Next Video</button>
-        <button id="previousButton" class="btn rounded-pill" onclick="">Previous Video</button>
+        <button id="nextButton" class="btn rounded-pill" onclick="next()">Next Video</button>
+        <button id="previousButton" class="btn rounded-pill" onclick="previous()">Previous Video</button>
     </div> 
 </div>
 
 <p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
 
 <script>
-    
+
+// Each inner array corresponds to one video. The structure for each video array is:
+// [0 - Title, 1 - Youtube URL Code, 2 - Description, 3 - Source/Credits]
+const videoData = [
+    ["Sample Video", "kiXY7ynw6ek", "A video description descibes the content of the video. It is intended to inform about the video's content. However, this one is just here to take up space. Because nobody likes Lorem Ipsum.", "Source: The point of including the video source is to stop us getting pawned for academic misconduct."],
+    ["Trickmousing", "t8XZ-_EgWB8", "A funny little video about mice.", "Source: MouseAgility YouTube channel"],
+    ["IT HAS TO BE THIS WAY", "2l0RMGid6vo", "STANDING HEREEEEEE! I REALISEEEEE! THAT YOU WERE JUST LIKE ME! TRYING TO MAKE HISTORYYYYY!", "Source: I made it the *cough* up."]
+];
+
+var currentVideo = 0;
+
+function next() {
+    currentVideo == videoData.length - 1 ? currentVideo = 0 : currentVideo++;
+    loadVideo();
+}
+
+function previous () {
+    currentVideo == 0 ? currentVideo = videoData.length - 1 : currentVideo--;
+    loadVideo();
+}
+
+function loadVideo() {
+    console.log(currentVideo);
+    document.getElementById("video-title").textContent = videoData[currentVideo][0];
+    document.getElementById("video-description").textContent = videoData[currentVideo][2];
+    document.getElementById("video-source").textContent = videoData[currentVideo][3];
+    document.getElementById("yt-video").setAttribute("src", "https://www.youtube-nocookie.com/embed/" + videoData[currentVideo][1] + "?si=LmEW6Gg9YvS-vefg");
+}
+
+loadVideo()
 </script>
 {% endblock %}
