@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 
 class Location(models.Model):
     locID = models.AutoField(primary_key=True)
-    postcode = models.CharField(null=True, max_length=20)
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.TextField(default="Exeter")
@@ -14,11 +13,6 @@ class Location(models.Model):
 
     task1_id = models.CharField(null=True, blank=True, max_length=100)
     task2_id = models.CharField(null=True, blank=True, max_length=100)
-
-    def save(self, *args, **kwargs):
-        # Convert postcode to uppercase
-        self.postcode = self.postcode.upper()
-        super(Location, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.location_name}"

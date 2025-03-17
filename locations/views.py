@@ -35,14 +35,14 @@ def add_location(request):
         try:
             data = json.loads(request.body)
             print("Received Data:", data)
+
             latitude = data.get('latitude')
+            print("latidude: ", latitude)
             longitude = data.get('longitude')
-            postcode = data.get('postcode')
             address = data.get('address')
             location_name = data.get('location_name')
             task1 = data.get('task1_id')
             task2 = data.get('task2_id')
-            checked_in = data.get("checked_in", False) # default to false because it was causing errors and IDK what this is for
 
             locked_by = data.get("locked_by")
             if locked_by:
@@ -55,13 +55,12 @@ def add_location(request):
                 locked_by = None
 
             # Input Validation
-            if not postcode:
-                return JsonResponse({"error": "Please fill in all fields before adding the location. Missing Postcode."}, status=400)
+            if (latitude == 9999 or longitude == 9999):
+                return JsonResponse({"error": "Please select a location on the map"}, status=400)
             if not address:
                 return JsonResponse({"error": "Please fill in all fields before adding the location. Missing Address."}, status=400)
             if not location_name:
                 return JsonResponse({"error": "Please fill in all fields before adding the location. Missing Location Name."}, status=400)
-            # somehow validate if the postcode is valid, assuming we dont just remove it from database
 
             if Location.objects.filter(latitude=latitude, longitude=longitude).exists():
                 return JsonResponse({"error": "Location with these coordinates already exists"}, status=400)
@@ -79,7 +78,6 @@ def add_location(request):
             # Save the new location, including tasks
             print("locked_by:", locked_by)
             Location.objects.create(
-                postcode=postcode,
                 address=address,
                 location_name=location_name,
                 latitude=latitude,
@@ -87,7 +85,6 @@ def add_location(request):
                 task1_id=task1 if task1 else None,  # Save only if provided
                 task2_id=task2 if task2 else None,  # Save only if provided
                 locked_by=locked_by,
-                checked_in=checked_in
             )
 
             return JsonResponse({"success": "Location added successfully!"}, status=201)
@@ -99,15 +96,13 @@ def add_location(request):
 @login_required
 def get_locations(request):
     locations =locations = list(Location.objects.values(
-        "postcode", 
         "latitude", 
         "longitude", 
         "task1_id", 
         "task2_id", 
         "location_name",  
         "locID",
-        "locked_by",
-        "checked_in"))
+        "locked_by"))
     return JsonResponse(locations, safe=False)
 
 @login_required
@@ -133,7 +128,6 @@ def get_locations_with_lock_status(request):
 
         location_data.append({
             "locID": loc.locID,
-            "postcode": loc.postcode,
             "latitude": loc.latitude,
             "longitude": loc.longitude,
             "location_name": loc.location_name,
