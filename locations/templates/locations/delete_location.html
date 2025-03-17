@@ -30,7 +30,7 @@
       <h1 class="mb-4">Delete Locations</h1>
       <!-- Added margin-bottom to separate heading -->
 
-      <form method="POST" action="{% url 'delete_location' %}">
+      <form method="POST" action="{% url 'locations:delete_location' %}">
         {% csrf_token %}
         <div class="input-group mb-3 d-flex flex-column align-items-center">
           {% for location in locations %}

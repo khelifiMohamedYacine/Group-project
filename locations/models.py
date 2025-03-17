@@ -1,28 +1,30 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from core_app.models import UserAccount
 
 class Location(models.Model):
-    locID = models.AutoField(primary_key=True, default=None)
-    postcode = models.CharField(null=True, max_length=20)
+    locID = models.AutoField(primary_key=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.TextField(default="Exeter")
     location_name = models.CharField(max_length=100, default="Location Name")  # User-defined name
-    locked_by = models.IntegerField(null=True, blank=True)
     checked_in = models.BooleanField(default=False)
+
+    locked_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     task1_id = models.CharField(null=True, blank=True, max_length=100)
     task2_id = models.CharField(null=True, blank=True, max_length=100)
 
-    def save(self, *args, **kwargs):
-        # Convert postcode to uppercase
-        self.postcode = self.postcode.upper()
-        
-        # Check if locked_by refers to an existing Location ID
-        if self.locked_by is not None:
-            if not Location.objects.filter(locID=self.locked_by).exists():
-                raise ValidationError(f"Parent location with ID {self.locked_by} does not exist.")
-        super(Location, self).save(*args, **kwargs)
-
     def __str__(self):
         return f"{self.location_name}"
+
+class UserLocation(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    checked_in = models.BooleanField(default=False)
+    task1_complete = models.BooleanField(default=False)
+    task2_complete = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.location.locID}"
+

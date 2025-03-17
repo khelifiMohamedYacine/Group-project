@@ -32,7 +32,7 @@
         {% for location in locations %}
         <div class="form-check mb-3">
           <a
-            href="{% url 'update_location' locID=location.locID %}"
+            href="{% url 'locations:update_location' locID=location.locID %}"
             class="form-check-label d-block p-2 border rounded bg-light text-dark text-decoration-none"
           >
             {{ location.location_name }} (ID: {{ location.locID }})
