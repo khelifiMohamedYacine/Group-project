@@ -25,6 +25,6 @@ class LocationForm(forms.ModelForm):
         if current_address != "Address not available":
             self.fields['address'] = forms.CharField(
                 initial=current_address,
-                disabled=True,  
+                disabled=True,
                 required=False
             )

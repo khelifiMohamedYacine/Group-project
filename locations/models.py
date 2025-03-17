@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from core_app.models import UserAccount
 
 class Location(models.Model):
     locID = models.AutoField(primary_key=True)
@@ -16,3 +17,14 @@ class Location(models.Model):
 
     def __str__(self):
         return f"{self.location_name}"
+
+class UserLocation(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    checked_in = models.BooleanField(default=False)
+    task1_complete = models.BooleanField(default=False)
+    task2_complete = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.location.locID}"
+
