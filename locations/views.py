@@ -96,12 +96,6 @@ def add_location(request):
             print("Error adding location: ", e)
             return JsonResponse({"error": str(e)}, status=400)
 
-@login_required    
-def check_parent_location(request, locID):
-    # Check if the location exists
-    location_exists = Location.objects.filter(locID=locID).exists()
-    return JsonResponse({"exists": location_exists})
-
 @login_required
 def get_locations(request):
     locations =locations = list(Location.objects.values(
@@ -111,7 +105,7 @@ def get_locations(request):
         "task1_id", 
         "task2_id", 
         "location_name",  
-        #"locID",
+        "locID",
         "locked_by",
         "checked_in"))
     return JsonResponse(locations, safe=False)
