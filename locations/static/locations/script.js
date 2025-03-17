@@ -196,69 +196,43 @@ document.addEventListener("DOMContentLoaded", function () {
         let locationName = document.getElementById("floatingLocationName").value.trim();
 
         let lockedBy = document.getElementById("parentLocationInput")? document.getElementById("parentLocationInput").value || null: null;
-        if (!postcode || !address || !locationName) {
-            alert("Please fill in all fields before adding the location.");
-            return;
-        }
 
-        // If there's a parent location ID, validate it first
-        if (lockedBy) {
-            let parentLocationExists = await checkParentLocation(lockedBy);
-            if (!parentLocationExists) {
-                alert("Parent location does not exist.");
-                return;
-            }
-        }
+        // Check if the task input elements exist otherwise set to null
+        let task1Id = document.getElementById("task1Input")? document.getElementById("task1Input").value || null: null;
+        let task2Id = document.getElementById("task2Input")? document.getElementById("task2Input").value || null: null;
 
-        // Validate postcode
-        let response = await fetch(`https://api.postcodes.io/postcodes/${postcode}`);
-        let data = await response.json();
+        let response = await fetch("/add-location/", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
+            },
+            body: JSON.stringify({
+            postcode: postcode,
+            address: address,
+            location_name: locationName,
+            latitude: selectedCoordinates.lat,
+            longitude: selectedCoordinates.lon,
+            task1_id: task1Id,
+            task2_id: task2Id,
+            locked_by: lockedBy,
+            }),
+        });
+        let result = await response.json();
+        
+        if (response.ok) {
+            // Only add the marker if the response is successful
+            new maplibregl.Marker({ color: "red" }).setLngLat([selectedCoordinates.lon, selectedCoordinates.lat]).addTo(map);
+            alert("Location added successfully!");
 
-        if (selectedCoordinates) {
-            // Check if the task input elements exist before accessing their values
-            let task1Id = document.getElementById("task1Input")? document.getElementById("task1Input").value || null: null;
-            let task2Id = document.getElementById("task2Input")? document.getElementById("task2Input").value || null: null;
-
-            let response = await fetch("/add-location/", {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCSRFToken(),
-                },
-                body: JSON.stringify({
-                postcode: postcode,
-                address: address,
-                location_name: locationName,
-                latitude: selectedCoordinates.lat,
-                longitude: selectedCoordinates.lon,
-                task1_id: task1Id,
-                task2_id: task2Id,
-                locked_by: lockedBy,
-                }),
-            });
-
-            let result = await response.json();
-            
-            if (response.ok) {
-                // Only add the marker if the response is successful
-                new maplibregl.Marker({ color: "red" }).setLngLat([selectedCoordinates.lon, selectedCoordinates.lat]).addTo(map);
-                alert("Location added successfully!");
-            } else if (response.status === 400 && result.error === "Location with these coordinates already exists") {
-                alert("This location already exists with these coordinates.");
-            } else {
-                alert("An error occurred while adding the location.");
-            }
+        } else if (response.status === 400) {
+            // Input validation errors now handled on the backend for consistency and security
+            alert(result.error);
         } else {
-            alert("Please enter a valid postcode to get coordinates.");
+            alert("An error occurred while adding the location.");
         }
+        
     });
-
-    // Function to check if the parent location exists
-    async function checkParentLocation(lockedBy) {
-        let response = await fetch(`/check-location/${lockedBy}/`);
-        let data = await response.json();
-        return data.exists; // If the location exists, return true; otherwise, false
-    }
 });
 
 //-------------------------------------------------------------------
