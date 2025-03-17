@@ -1,5 +1,4 @@
 // ------------------------------------THE MAP----------------------------------------------------------
-console.log("Script Successful");
 var map = new maplibregl.Map({
     container: "map",
     style: "https://tiles.openfreemap.org/styles/bright",
@@ -121,6 +120,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
+let geoBypass = false;  // Enable the tester to play the game without going outside
+
+document.getElementById('bypassCheckInBtn').addEventListener('click', function() {
+    geoBypass = !geoBypass;
+
+    const button = document.getElementById('bypassCheckInBtn');
+    if (geoBypass) {
+        button.textContent = "Bypass Location Check: for testing only (On)";
+    } else {
+        button.textContent = "Bypass Location Check: for testing only (Off)";
+    }
+});
+
 function handleCheckIn(location) {
     if (!navigator.geolocation) {
         alert("Geolocation is not supported by this browser.");
@@ -138,7 +150,7 @@ function handleCheckIn(location) {
 
         if (
             Math.abs(userLongitude - markerLongitude) < 0.0005 &&
-            Math.abs(userLatitude - markerLatitude) < 0.0005
+            Math.abs(userLatitude - markerLatitude) < 0.0005 || geoBypass
         ) {
             fetch(`/check-in/${locID}/`, {
             method: "POST",
@@ -151,6 +163,7 @@ function handleCheckIn(location) {
                 if (data.message) {
                     updateButton(locID);
                 }
+                console.log(checked_in)
             }).catch((error) =>
                 console.error("Error during check-in:", error)
             );
