@@ -18,8 +18,6 @@ urlpatterns = [
     path('admin_pages/dashboard/', views.admin_view, name="admin_dashboard"),
     path('games/', views.games_view, name="games_page"),
 
-    # Commented for easy removal. Based on group decision
     path('videos/', views.videos_view, name="videos"),
-    path('maps/', views.maps_view, name="maps"),
-    # End comment
+
 ]
