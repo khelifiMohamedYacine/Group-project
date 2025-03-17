@@ -114,22 +114,38 @@ def get_locations_with_lock_status(request):
 
     for loc in locations:
         user_location = UserLocation.objects.filter(userID=user, locationID=loc).first()
-        is_checked_in = user_location.checked_in if user_location else False
 
-        # Determine lock status
+        is_checked_in = user_location.checked_in if user_location and user_location.checked_in else False
+        print("__________________-")
+        print("is_checked_in", is_checked_in)
+
+
         is_locked = False
-        if loc.locked_by:
+        status = ""
+
+        # Check if location is locked
+        if not loc.locked_by:                                                                 #if location isnt locked at all
+            is_locked = False
+        elif user_location  and user_location.checked_in:                                     #if user has already checked in
+            is_locked = False
+        else:
             parent_user_location = UserLocation.objects.filter(userID=user, locationID=loc.locked_by).first()
-            if parent_user_location and not parent_user_location.checked_in:
+            if parent_user_location is None:                                                  #if user has not interacted with the parent object
+                is_locked = True
+            elif parent_user_location.task1_complete and parent_user_location.task2_complete: #if user has complete both tasks for the parent
+                is_locked = False
+            else:                                                                             #user has not completed both tasks
                 is_locked = True
 
-        # Determine marker color based on task status
         if is_locked:
             status = "locked"  # Red marker
-        elif user_location and user_location.checked_in:
+        elif not is_checked_in:
             status = "pending"  # Blue marker (unlocked but not checked-in)
         else:
             status = "completed"  # Green marker (checked-in)
+
+        print("is_locked", is_locked)
+        print("status", status)
         
 
         location_data.append({
