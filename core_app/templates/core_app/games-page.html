@@ -38,21 +38,22 @@
     }
 
     .container { 
-        padding: 50px; 
+        padding:  50px 20px; 
         display: flex; 
         flex-wrap: wrap; /* Allow wrapping of the cards */
         justify-content: space-between; /* Ensure 2 cards per line */
     }
     
     .card { 
-        border-radius: 15px; 
+        border-radius: 15px;
+        border: 0px !important;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
         overflow: hidden; 
         width: 48%; /* Ensure 2 cards per row */
-        margin: 10px 0; /* Adjust margin for spacing */
+        margin: 10px 0px; /* Adjust margin for spacing */
         background-color: white; 
-        margin-bottom: 60px;
+        margin-bottom: 40px;
     }
     
     .card:hover { 
@@ -60,13 +61,13 @@
         box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
     }
     .card img { 
-        height: 150px; 
+        height: 200px; 
         object-fit: cover; 
         border-radius: 15px 15px 0 0; 
     }
     .card-body { 
         text-align: center; 
-        padding: 15px; 
+        padding: 10px; 
     }
     .card-title { 
         font-size: 1.1rem; 
@@ -93,10 +94,18 @@
 
     <div class="card game-card" onclick="window.location.href='{% url 'jumping_game' %}';" style="cursor: pointer;">
         <!--My editior complains about the previous line but won't fix because the application works properly-->
-        <img src="{% static 'core_app/images/c.png' %}" class="card-img-top" alt="Jumping Game">
+        <img src="{% static 'core_app/images/JumpingGamePic2.PNG' %}" class="card-img-top" alt="Jumping Game">
         <div class="card-body text-center">
             <h5 class="card-title">Jumping Game</h5>
-            <p class="card-text">Click to play the game!</p>
+            <p class="card-text">Lead the doggo to a cleaner environment by jumping and rolling around obstacles.</p>
+        </div>
+    </div>
+
+    <div class="card game-card" onclick="window.location.href='{% url 'sokoban_game' %}';" style="cursor: pointer;">
+        <img src="{% static 'core_app/images/SokobanGamePic1.PNG' %}" class="card-img-top" alt="Jumping Game">
+        <div class="card-body text-center">
+            <h5 class="card-title">Sokoban Game</h5>
+            <p class="card-text">Help Mark recycle the garbage in this challenging puzzle game.</p>
         </div>
     </div>
 
