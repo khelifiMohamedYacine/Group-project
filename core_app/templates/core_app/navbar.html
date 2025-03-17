@@ -31,7 +31,7 @@
 
                 {% if request.path != "/maps/" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'maps' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
+                        <a class="nav-link" href="{% url 'locations:user_map_view' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
                     </li>
                 {% endif %}
 
