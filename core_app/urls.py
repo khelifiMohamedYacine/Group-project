@@ -4,10 +4,10 @@ from . import views # Import all views from core_app
 from django.shortcuts import redirect
 
 def root_redirect_view(request):
-    return redirect('register') # May revert back to home
+    return redirect('home') # May revert back to home
 
 urlpatterns = [
-    path('', root_redirect_view), # Redirects / to /home/ # Actually register
+    path('', root_redirect_view), # Redirects / to /home/
     path('login/', views.login_view, name='login'),
     path('home/', views.home_view, name='home'),
     path('register/', views.register_view, name='register'),

@@ -167,6 +167,21 @@ button[type="submit"]:hover {
 
 <div class="container">
 
+    <!-- Manage Map Card -->
+    <div class="admin-card">
+        <h2 class="admin-title">Manage Uni Map</h2>
+        <p class="admin-content">View site usage statistics and generate reports.</p>
+        <button class="btn btn-primary" id="editContentBtn4">Edit Content</button>
+        <div class="card-nav" id="nav-4">
+            <ul>
+                <li><a href="{% url 'locations:admin_map_view' %}">Add Locations</a></li>
+                <li><a href="{% url 'locations:location_list' %}">Edit Locations</a></li>
+                <li><a href="{% url 'locations:delete_location' %}">Remove Locations</a></li>
+
+            </ul>
+        </div>
+    </div>
+
     <!-- Manage Quizzes Card -->
     <div class="admin-card">
         <h2 class="admin-title">Manage Quizzes</h2>
@@ -205,19 +220,6 @@ button[type="submit"]:hover {
             <ul>
                 <li><a href="#" id="addVideoBtn">Add Video</a></li>
                 <li><a href="#">Remove</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Manage Map Card -->
-    <div class="admin-card">
-        <h2 class="admin-title">Manage Uni Map</h2>
-        <p class="admin-content">View site usage statistics and generate reports.</p>
-        <button class="btn btn-primary" id="editContentBtn4">Edit Content</button>
-        <div class="card-nav" id="nav-4">
-            <ul>
-                <li><a href="#">Remove</a></li>
-                <li><a href="#">Add</a></li>
             </ul>
         </div>
     </div>
