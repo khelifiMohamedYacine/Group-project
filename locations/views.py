@@ -243,8 +243,8 @@ def check_in(request, loc_id):
 
             # Get or create a UserLocation entry for this user & location
             user_location, created = UserLocation.objects.get_or_create(
-                user=user,
-                location=location,
+                userID=user,
+                locationID=location,
                 defaults={"checked_in": True}
             )
             
@@ -259,5 +259,4 @@ def check_in(request, loc_id):
             return JsonResponse({'error': 'Location not found.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
-
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
