@@ -108,11 +108,7 @@ def privacy_policy_view(request):
 
 def games_view(request):
     return render(request, 'core_app/games-page.html')
-
-
-def maps_view(request):
-    return render(request, 'core_app/maps.html')
-
+    
 
 def videos_view(request):
     return render(request, 'core_app/video.html')
