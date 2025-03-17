@@ -3,7 +3,14 @@ from .models import UserAccount
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
+from django.db.models import Count
 from core_app.models import UserAccount
+
+from django.utils import timezone
+from datetime import timedelta
+
+from django.db.models.functions import TruncDate
+import json
 
 
 def login_view(request):
@@ -123,12 +130,17 @@ def leaderboard_view(request):
     leaderboard_data = UserAccount.objects.order_by('-reward_pts').values('username', 'reward_pts')[:10]
     return render(request, 'core_app/leaderboard.html', {'leaderboard_data': leaderboard_data})
 
+def manage_users(request):
+    return render(request, 'core_app/manage_users.html')
+
+def content_manage(request):
+    return render(request, 'core_app/content_manage.html')
 
 def admin_view(request):
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
             # Allow the user to access the admin dashboard page if they are logged into an admin account
-            return render(request, 'core_app/admin-dashboard.html')
+            return render(request, 'core_app/admin_dashboard.html')
         else:
             # Return the user to the home page if they are logged in but not into an admin account
             return redirect('home')
@@ -136,3 +148,44 @@ def admin_view(request):
         # Return the user to the login page if they are not logged in.
         return redirect('login')
     
+
+
+from django.shortcuts import render
+from django.utils import timezone
+from datetime import timedelta
+from .models import UserAccount
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+import json
+
+def analyse_users(request):
+    # Define the time frame for "recently active" (last 30 days)
+    n_days = 30
+    cutoff_date = timezone.now() - timedelta(days=n_days)
+
+    # Count active and inactive users
+    active_users = UserAccount.objects.filter(last_login__gte=cutoff_date).count()
+    inactive_users = UserAccount.objects.filter(last_login__lt=cutoff_date).count()
+
+    # User growth over time using TruncDate instead of extra()
+    user_growth = (
+        UserAccount.objects
+        .annotate(date_joined_trunc=TruncDate('date_joined'))
+        .values('date_joined_trunc')
+        .annotate(count=Count('id'))
+        .order_by('date_joined_trunc')
+    )
+
+    # Extracting dates and counts
+    dates = [entry['date_joined_trunc'].strftime('%Y-%m-%d') for entry in user_growth]
+    counts = [entry['count'] for entry in user_growth]
+
+    # Pass data safely as JSON
+    context = {
+        'active_users': active_users,
+        'inactive_users': inactive_users,
+        'dates': json.dumps(dates),
+        'counts': json.dumps(counts),
+    }
+
+    return render(request, 'core_app/analysis.html', context)

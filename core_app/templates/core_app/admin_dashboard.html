@@ -84,17 +84,17 @@ body {
     <div class="admin-card">
         <h2 class="admin-title">Manage Users</h2>
         <p class="admin-content">View and manage user accounts, roles, and permissions.</p>
-        <button class="btn btn-primary">Manage</button>
+        <a href="{% url 'manage_users' %}" class="btn btn-primary">Manage</a>
     </div>
     <div class="admin-card">
         <h2 class="admin-title">Content Management</h2>
-        <p class="admin-content">Add, edit, or remove games, quizzes, and videos.</p>
-        <button class="btn btn-primary">Edit Content</button>
+        <p class="admin-content">Add, edit, or remove games, quizzes, and vidoe.</p>
+        <a href="{% url 'content_manage' %}" class="btn btn-primary">Edit Content</a>
     </div>
     <div class="admin-card">
         <h2 class="admin-title">Reports & Analytics</h2>
         <p class="admin-content">View site usage statistics and generate reports.</p>
-        <button class="btn btn-primary">View Reports</button>
+        <a href="{% url 'analyse_users' %}" class="btn btn-primary">View Reports</a>
     </div>
 
 </div>
