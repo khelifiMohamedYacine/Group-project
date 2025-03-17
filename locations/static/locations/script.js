@@ -4,9 +4,10 @@ var map = new maplibregl.Map({
     center: [-3.5351, 50.7371],
     zoom: 14,
 });
-
 // Getting the saved locations from the database
 document.addEventListener("DOMContentLoaded", async function () {
+    
+
     try {
         let response = await fetch("/get-locations/");
         let data = await response.json(); 
@@ -78,7 +79,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 //---------------------------------------------------------------------------------------------------------------------
-let selectedCoordinates = null;
+let selectedCoordinates = { lat: 9999, lon: 9999 };  // Default values that represent no input
+
 document.getElementById("floatingPostcode").addEventListener("input", async function () {
     //Auto-fill the Address bar after the user enters the postcode
     let postcode = this.value.trim();
@@ -107,7 +109,7 @@ document.getElementById("floatingPostcode").addEventListener("input", async func
                 };
                 map.flyTo({
                     //Fly to the location after the user enters the postcode
-                    center: [selectedCoordinates.lon, selectedCoordinates.lat],
+                    center: [selectedlatitudeCoordinates.lon, selectedCoordinates.lat],
                     zoom: 12,
                 });
             }
