@@ -1,110 +1,24 @@
 window.addEventListener('load', function () {
+    // Level Variables (Can be modified for testing)
+    const speedMultiplier = 3; // Adjusts the speed of enemies and background
+    const enemySpawnRate = 1000; // Time in milliseconds between enemy spawns
+    const imageCycles = [1, 2, 2, 1]; // Number of cycles for each background image
+    const level = 78; // Displayed level number
+
+    // Game Variables
+    let enemys = [];
+    let score = 0;
+    let paused = false;
+    let gameOver = false;
+    let levelCompleted = false;
+
+    // Canvas Setup
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
     canvas.width = 1500;
     canvas.height = 800;
-    let enemys = [];
-    let score = 0;
-    let gameOver = false;
-   // const fullScreenButton = document.getElementById('fullScreenButton');
 
-
-    class InputHandler {
-        constructor() {
-            this.keys = [];
-            this.touchY = '';
-            this.touchTreshold = 30;//the minimum pixel needed to trigger
-            this.touchX = '';
-            window.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') {
-                    paused = !paused; // Toggle Pause
-                    if (!paused) {
-                        animate(0); // Keep playing.
-                    }
-                }
-            });
-
-            // Listen to the “keydown” event (triggered when a key is pressed)
-            window.addEventListener('keydown', e => {
-                // Check if the arrow keys (ArrowDown, ArrowUp, ArrowLeft, ArrowRight) are pressed
-                // And make sure the key is not in the keys array to prevent duplicate additions.
-                if ((e.key === 'ArrowDown' ||
-                        e.key === 'ArrowUp' ||
-                        e.key === 'ArrowLeft' ||
-                        e.key === 'ArrowRight' ||
-                        e.key === 'a' ||
-                        e.key === 'w' ||
-                        e.key === 's' ||
-                        e.key === 'd') &&
-                    this.keys.indexOf(e.key) === -1) {
-                    // If the key is not in the array, add it to the keys array
-                    this.keys.push(e.key);
-                }
-            });
-
-            // Listen for the “keyup” event (triggered when the key is released)
-            window.addEventListener('keyup', e => {
-                // Check to see if it is the arrow keys that are released
-                if (
-                    e.key === 'ArrowDown' ||
-                    e.key === 'ArrowUp' ||
-                    e.key === 'ArrowLeft' ||
-                    e.key === 'ArrowRight' ||
-                    e.key === 'a' ||
-                    e.key === 'w' ||
-                    e.key === 's' ||
-                    e.key === 'd'
-                ) {
-                    // Finds the index of the key in the keys array.
-                    let index = this.keys.indexOf(e.key);
-                    // Deletion is performed only if the index is greater than -1 (i.e., the key exists in the array)
-                    if (index > -1) {
-                        this.keys.splice(index, 1); // Remove the key from the array
-                    }
-                }
-            });
-
-            window.addEventListener('keydown', function (e) {
-                if (e.key === ' ' && gameOver) { // Press spacebar to restart the game
-                    restartGame();
-                }
-            });
-
-            window.addEventListener('touchstart', e=> {
-                this.touchY = e.changedTouches[0].pageY;
-                this.touchX = e.changedTouches[0].pageX;
-            });
-
-             window.addEventListener('touchmove', e=> {
-                const swipeDistanceY = e.changedTouches[0].pageY - this.touchY;
-                const swipeDistanceX = e.changedTouches[0].pageX - this.touchX;
-
-                if(swipeDistanceX < -this.touchTreshold && this.keys.indexOf('swipe left') === -1){//check the swipe direction
-                    this.keys.push('swipe left');
-                }
-                else if(swipeDistanceX > this.touchTreshold && this.keys.indexOf('swipe right') === -1){//check the swipe direction
-                    this.keys.push('swipe right');
-                }
-
-                if(swipeDistanceY < -this.touchTreshold && this.keys.indexOf('swipe up') === -1){//check the swipe direction
-                    this.keys.push('swipe up');
-                }
-                else if(swipeDistanceY > this.touchTreshold && this.keys.indexOf('swipe down') === -1){//check the swipe direction
-                    this.keys.push('swipe down');
-                    if(gameOver) restartGame(); //for mobile to restart the game
-                }
-            });
-             window.addEventListener('touchend', e=> {
-                this.keys.splice(this.keys.indexOf('swipe up'), 1);
-                this.keys.splice(this.keys.indexOf('swipe down'), 1);
-                this.keys.splice(this.keys.indexOf('swipe left'), 1);
-                this.keys.splice(this.keys.indexOf('swipe right'), 1);
-            });
-
-
-        }
-    }
-
+    // Player Class
     class Player {
         constructor(gameWidth, gameHeight) {
             this.gameWidth = gameWidth;
@@ -124,15 +38,12 @@ window.addEventListener('load', function () {
             this.vy = 0;
             this.weight = 1;
             this.sitting = false;
-
-            // **initialize hitbox**
-            this.radius = this.width * 0.35; // Character's hitbox radius
+            this.radius = this.width * 0.35;
             this.centerX = this.x + this.width / 2;
             this.centerY = this.y + this.height / 2;
         }
 
         draw(context) {
-            // characterization
             context.drawImage(
                 this.image,
                 this.frameX * this.width, this.frameY * this.height,
@@ -140,12 +51,6 @@ window.addEventListener('load', function () {
                 this.x, this.y,
                 this.width, this.height
             );
-
-
-            // context.strokeStyle = 'red';
-            // context.beginPath();
-            // context.arc(this.centerX, this.centerY, this.radius, 0, Math.PI * 2);
-            // context.stroke();
         }
 
         update(input, deltaTime) {
@@ -157,41 +62,32 @@ window.addEventListener('load', function () {
                 this.frameTime += deltaTime;
             }
 
-            // **Controls left and right movement**
-            if (input.keys.includes('ArrowRight') || input.keys.includes('d') || input.keys.includes('swipe right')) {
+            if (input.keys.includes('ArrowRight') || input.keys.includes('d')) {
                 this.speed = 5;
-            } else if (input.keys.includes('ArrowLeft') || input.keys.includes('a') || input.keys.includes('swipe left')) {
+            } else if (input.keys.includes('ArrowLeft') || input.keys.includes('a')) {
                 this.speed = -5;
             } else {
                 this.speed = 0;
             }
 
-            // **jump**
-            if ((input.keys.includes('ArrowUp') || input.keys.includes('w') || input.keys.includes('swipe up'))  && this.onGround()) {
+            if ((input.keys.includes('ArrowUp') || input.keys.includes('w')) && this.onGround()) {
                 this.vy -= 35;
             }
 
-            // **sit down**
-            if ((input.keys.includes('ArrowDown') || input.keys.includes('s') || input.keys.includes('swipe down')) && this.onGround() && !gameOver) {
+            if ((input.keys.includes('ArrowDown') || input.keys.includes('s')) && this.onGround()) {
                 this.sitting = true;
                 this.frameY = 6;
                 this.maxFrame = 5;
-
-                // **The hitbox moves down 10 pixels when you crouch **
                 this.centerY = this.y + this.height / 2 + 100;
             } else {
                 this.sitting = false;
-
-                // **Restore hitbox position when released***
                 this.centerY = this.y + this.height / 2;
             }
 
-            // **Horizontal movement**
             this.x += this.speed;
             if (this.x < 0) this.x = 0;
             else if (this.x > this.gameWidth - this.width) this.x = this.gameWidth - this.width;
 
-            // **Vertical movement**
             this.y += this.vy;
             if (!this.onGround()) {
                 this.vy += this.weight;
@@ -208,7 +104,6 @@ window.addEventListener('load', function () {
 
             if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height;
 
-            // **Update the X-coordinate of the hitbox
             this.centerX = this.x + this.width / 2;
         }
 
@@ -217,32 +112,97 @@ window.addEventListener('load', function () {
         }
     }
 
-
+    // Background Class
     class Background {
-        constructor(gameWidth, gameHeight) {
+        constructor(gameWidth, gameHeight, imageCycles) {
             this.gameWidth = gameWidth;
             this.gameHeight = gameHeight;
-            this.image = document.getElementById('backgroundImage');
+            this.imageCycles = imageCycles;
+            this.images = [
+                document.getElementById('backgroundImage1'),
+                document.getElementById('backgroundImage2'),
+                document.getElementById('backgroundImage3'),
+                document.getElementById('backgroundImage4')
+            ];
+            this.imageIndex = 0;
+            this.imageCount = 0;
+            this.currentImage = this.images[this.imageIndex];
+            this.nextImage = null;
+            this.transitionProgress = 0;
+            this.isTransitioning = false;
             this.x = 0;
             this.y = 0;
             this.width = 2400;
             this.height = 800;
-            this.speed = 8;
-
+            this.speed = 8 * speedMultiplier; // Adjusted by speedMultiplier
+            this.isStageComplete = false;
         }
 
         draw(context) {
+            context.drawImage(this.currentImage, this.x, this.y, this.width, this.height);
+            context.drawImage(this.currentImage, this.x + this.width - this.speed, this.y, this.width, this.height);
 
-            context.drawImage(this.image, this.x, this.y, this.width, this.height);
-            context.drawImage(this.image, this.x + this.width - this.speed, this.y, this.width, this.height);
+            if (this.isTransitioning) {
+                context.drawImage(this.nextImage, this.x + this.width, this.y, this.width, this.height);
+                context.drawImage(this.nextImage, this.x + this.width * 2 - this.speed, this.y, this.width, this.height);
+            }
         }
 
         update() {
+            if (this.isStageComplete) return;
+
             this.x -= this.speed;
-            if (this.x < 0 - this.width) this.x = 0;//Reset the scroll when the first image goes beyond the left side.
+
+            if (this.x < 0 - this.width) {
+                this.x = 0;
+                this.imageCount++;
+
+                if (this.imageCount >= this.imageCycles[this.imageIndex]) {
+                    if (this.imageIndex === this.images.length - 1) {
+                        this.isStageComplete = true;
+                        levelCompleted = true; // Level is completed
+                        setTimeout(() => {
+                            window.location.href = ""; // Redirect to home page
+                        }, 1000); // Redirect after 1 second
+                    } else {
+                        this.startTransition();
+                    }
+                }
+            }
+
+            if (this.isTransitioning) {
+                this.transitionProgress += this.speed / this.width;
+
+                if (this.transitionProgress >= 1) {
+                    this.completeTransition();
+                }
+            }
+        }
+
+        startTransition() {
+            this.isTransitioning = true;
+            this.transitionProgress = 0;
+            this.nextImage = this.images[(this.imageIndex + 1) % this.images.length];
+        }
+
+        completeTransition() {
+            this.isTransitioning = false;
+            this.imageIndex = (this.imageIndex + 1) % this.images.length;
+            this.imageCount = 0;
+            this.currentImage = this.images[this.imageIndex];
+            this.nextImage = null;
+        }
+
+        reset() {
+            this.imageIndex = 0;
+            this.imageCount = 0;
+            this.currentImage = this.images[this.imageIndex];
+            this.isStageComplete = false;
+            this.x = 0;
         }
     }
 
+    // Enemy Class
     class Enemy {
         constructor(gameWidth, gameHeight, type = 'enemy1') {
             this.gameWidth = gameWidth;
@@ -253,7 +213,7 @@ window.addEventListener('load', function () {
                 this.width = 181;
                 this.height = 218;
                 this.image = document.getElementById('enemyImage');
-                this.speed = 8;
+                this.speed = 8 * speedMultiplier; // Adjusted by speedMultiplier
                 this.fps = 60;
                 this.maxFrame = 0;
                 this.y = this.gameHeight - this.height;
@@ -262,7 +222,7 @@ window.addEventListener('load', function () {
                 this.width = 337;
                 this.height = 337;
                 this.image = document.getElementById('enemyImage2');
-                this.speed = 10 ;
+                this.speed = 10 * speedMultiplier; // Adjusted by speedMultiplier
                 this.fps = 60;
                 this.maxFrame = 0;
                 this.flyHeight = Math.random() * (300 - 200 + 1) + 100;
@@ -274,9 +234,7 @@ window.addEventListener('load', function () {
             this.frameX = 0;
             this.frameTime = 0;
             this.frameInterval = 1000 / this.fps;
-
-            // **initialize hitbox**
-            this.radius = this.width * (0.4 - this.hitbox); // 35% of the enemy's size as a radius
+            this.radius = this.width * (0.4 - this.hitbox);
             this.centerX = this.x + this.width / 2;
             this.centerY = this.y + this.height / 2;
         }
@@ -289,11 +247,6 @@ window.addEventListener('load', function () {
                 this.x, this.y,
                 this.width, this.height
             );
-
-            // // **Optional: draw hitbox circle (for debugging purposes)**
-            // context.beginPath();
-            // context.arc(this.centerX, this.centerY, this.radius, 0, Math.PI * 2);
-            // context.stroke();
         }
 
         update(deltaTime) {
@@ -306,22 +259,47 @@ window.addEventListener('load', function () {
             }
 
             this.x -= this.speed;
-
-            // **更新 hitbox**
             this.centerX = this.x + this.width / 2;
             this.centerY = this.y + this.height / 2;
         }
     }
 
+    // Input Handler Class
+    class InputHandler {
+        constructor() {
+            this.keys = [];
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    paused = !paused;
+                    if (!paused) animate(0);
+                }
+                if ((e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'a' || e.key === 'w' || e.key === 's' || e.key === 'd') && this.keys.indexOf(e.key) === -1) {
+                    this.keys.push(e.key);
+                }
+                if (e.key === ' ' && (gameOver || levelCompleted)) {
+                    restartGame(); // Restart the game when spacebar is pressed
+                }
+            });
+            window.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'a' || e.key === 'w' || e.key === 's' || e.key === 'd') {
+                    this.keys.splice(this.keys.indexOf(e.key), 1);
+                }
+            });
+            canvas.addEventListener('click', () => {
+                if (gameOver || levelCompleted) {
+                    restartGame(); // Restart the game when the canvas is clicked
+                }
+            });
+        }
+    }
 
+    // Collision Detection
     function checkCollision(player, enemy) {
         const dx = player.centerX - enemy.centerX;
         const dy = player.centerY - enemy.centerY;
         const distance = Math.sqrt(dx * dx + dy * dy);
-
-        return distance < (player.radius + enemy.radius); // If the distance is less than the sum of the two radii, the collision
+        return distance < (player.radius + enemy.radius);
     }
-
 
     function handleCollisions() {
         for (let enemy of enemys) {
@@ -331,27 +309,24 @@ window.addEventListener('load', function () {
         }
     }
 
+    // Enemy Handling
+    let enemyTimer = 0;
+    let randomEnemyInterval = Math.random() * 1000 + 500;
 
     function handleEnemies(deltaTime) {
-        // Controls the time interval between enemy spawns
-        if (enemyTimer > enemyInterval + randomEnemyInterval) {
-            // 50% Probability of generating different enemy types
+        if (enemyTimer > enemySpawnRate + randomEnemyInterval) {
             const enemyType = Math.random() < 0.5 ? 'enemy1' : 'enemy2';
             enemys.push(new Enemy(canvas.width, canvas.height, enemyType));
-
-            // Reset the random generation interval
             randomEnemyInterval = Math.random() * 1000 + 200;
             enemyTimer = 0;
         } else {
             enemyTimer += deltaTime;
         }
 
-        // Updated and mapped all enemies
         enemys.forEach((enemy, index) => {
             enemy.draw(ctx);
             enemy.update(deltaTime);
 
-            // Removes enemies that extend beyond the screen, preventing the array from growing indefinitely
             if (enemy.x + enemy.width < 0) {
                 enemys.splice(index, 1);
                 score++;
@@ -359,30 +334,39 @@ window.addEventListener('load', function () {
         });
     }
 
-
+    // Status Display
     function displayStatusText(context) {
         context.font = '40px Helvetica';
         context.fillStyle = 'black';
         context.fillText('Score: ' + score, 20, 50);
+        context.fillText('Level: ' + level, 20, 100);
         context.fillStyle = 'white';
         context.fillText('Score: ' + score, 22, 52);
+        context.fillText('Level: ' + level, 22, 102);
     }
 
+    // Restart Game
     function restartGame() {
+        console.log('Restarting game...'); // Debugging
         gameOver = false;
+        levelCompleted = false;
         score = 0;
-        enemys = []; // Clear all enemies
-        player.x = 50; // Reset player position
+        enemys = [];
+        player.x = 50;
         player.y = player.gameHeight - player.height;
-        player.vy = 0; // Reset jump state
+        player.vy = 0;
+        player.frameX = 0;
+        player.frameY = 0;
+        player.sitting = false;
         enemyTimer = 0;
+        background.reset();
         animate(0); // Restart the game loop
     }
 
+    // Pause Menu
     function drawPauseMenu() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // Semi-transparent background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
         ctx.fillStyle = 'white';
         ctx.font = '50px Helvetica';
         ctx.fillText('Game Paused', canvas.width / 2 - 130, canvas.height / 2 - 30);
@@ -390,48 +374,57 @@ window.addEventListener('load', function () {
         ctx.fillText('Press ESC to Resume', canvas.width / 2 - 130, canvas.height / 2 + 20);
     }
 
-
+    // Game Initialization
     const input = new InputHandler();
     const player = new Player(canvas.width, canvas.height);
-    const background = new Background(canvas.width, canvas.height);
+    const background = new Background(canvas.width, canvas.height, imageCycles);
 
     let lastTime = 0;
-    let enemyTimer = 0;
-    let enemyInterval = 1000;
-    let randomEnemyInterval = Math.random() * 1000 + 500;//Random monsters appear.
 
-
-    let paused = false; // Whether the game is paused
-
+    // Animation Loop
     function animate(timeStamp) {
         if (gameOver) {
-            // Show Game Over text
             ctx.fillStyle = 'white';
             ctx.font = '50px Helvetica';
             ctx.fillText('Game Over', canvas.width / 2 - 120, canvas.height / 2 - 20);
             ctx.font = '30px Helvetica';
-            ctx.fillText('Press SPACE or Swipe down to Restart', canvas.width / 2 - 180, canvas.height / 2 + 40);
-            return;
+            ctx.fillText('Score: ' + score, canvas.width / 2 - 80, canvas.height / 2 + 40);
+            ctx.fillText('Press SPACE or Click to Restart', canvas.width / 2 - 220, canvas.height / 2 + 100);
+            return; // Stop the game loop
+        }
+
+        if (levelCompleted) {
+            ctx.fillStyle = 'white';
+            ctx.font = '50px Helvetica';
+            ctx.fillText('Level Completed!', canvas.width / 2 - 150, canvas.height / 2 - 20);
+            ctx.font = '30px Helvetica';
+            ctx.fillText('Score: ' + score, canvas.width / 2 - 80, canvas.height / 2 + 40);
+            ctx.fillText('Press SPACE or Click to Restart', canvas.width / 2 - 220, canvas.height / 2 + 100);
+            return; // Stop the game loop
         }
 
         if (paused) {
-            drawPauseMenu(); // **Drawing the pause menu**
-            return;
+            drawPauseMenu();
+            return; // Stop the game loop
         }
 
         const deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         background.draw(ctx);
         background.update();
+
         player.draw(ctx);
         player.update(input, deltaTime);
+
         handleEnemies(deltaTime);
         handleCollisions();
+
         displayStatusText(ctx);
-        requestAnimationFrame(animate);
+
+        requestAnimationFrame(animate); // Continue the game loop
     }
 
-
-    animate(0);
+    animate(0); // Start the game
 });
