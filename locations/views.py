@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
 from core_app.models import UserAccount, AccountType
-from .models import Location
+from .models import Location, UserLocation
 from .forms import LocationForm
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -110,34 +110,39 @@ def get_locations_with_lock_status(request):
     locations = Location.objects.all()
     location_data = []
 
+    user = request.user
+
     for loc in locations:
+        user_location = UserLocation.objects.filter(userID=user, locationID=loc).first()
+        is_checked_in = user_location.checked_in if user_location else False
+
         # Determine lock status
         is_locked = False
         if loc.locked_by:
-            parent_location = Location.objects.filter(locID=loc.locked_by.locID).first()
-            if parent_location and not parent_location.checked_in:
+            parent_user_location = UserLocation.objects.filter(userID=user, locationID=loc.locked_by).first()
+            if parent_user_location and not parent_user_location.checked_in:
                 is_locked = True
 
         # Determine marker color based on task status
         if is_locked:
             status = "locked"  # Red marker
-        elif not loc.checked_in:
+        elif user_location and user_location.checked_in:
             status = "pending"  # Blue marker (unlocked but not checked-in)
         else:
             status = "completed"  # Green marker (checked-in)
+        
 
         location_data.append({
             "locID": loc.locID,
             "latitude": loc.latitude,
             "longitude": loc.longitude,
             "location_name": loc.location_name,
-            "checked_in": loc.checked_in,
+            "checked_in": is_checked_in,
             "task1_id": loc.task1_id,
             "task2_id": loc.task2_id,
             "locked": is_locked,
             "status": status  # New field to determine marker color
         })
-
     return JsonResponse(location_data, safe=False)
 
 @login_required
@@ -215,19 +220,28 @@ def generate_location_graph(request):
 @csrf_exempt
 def check_in(request, loc_id):
     if request.method == "POST":
+        user = request.user
         try:
             location = Location.objects.get(locID=loc_id) 
             print(f"Location found: {location}")
+
+            # Get or create a UserLocation entry for this user & location
+            user_location, created = UserLocation.objects.get_or_create(
+                user=user,
+                location=location,
+                defaults={"checked_in": True}
+            )
             
-            if not location.checked_in:
-                location.checked_in = True
-                location.save()
+            if created:
+                # a new entry was created, means the user wasn't checked in before
                 return JsonResponse({'message': 'Check-in successful!', 'checked_in': True})
             else:
+                # the entry already exists, means the user has already checked in
                 return JsonResponse({'message': 'Already checked in.', 'checked_in': True})
+
         except Location.DoesNotExist:
             return JsonResponse({'error': 'Location not found.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
