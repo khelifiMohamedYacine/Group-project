@@ -15,11 +15,15 @@ urlpatterns = [
     path('forgot_password/', views.forgot_password_view, name='forgot_password'),
     path('privacy_policy/', views.privacy_policy_view, name="privacy_policy"),
     path('leaderboard/', views.leaderboard_view, name='leaderboard'),
-    path('admin_pages/dashboard/', views.admin_view, name="admin_dashboard"),
+    path('content/', views.content_manage, name="content_manage"),
+    path('admin_dashboard/', views.admin_view, name="admin_dashboard"),
     path('games/', views.games_view, name="games_page"),
 
     # Commented for easy removal. Based on group decision
     path('videos/', views.videos_view, name="videos"),
     path('maps/', views.maps_view, name="maps"),
     # End comment
+    path('analyse/', views.analyse_users, name='analyse_users'),
+    path('users/', views.manage_users, name='manage_users'),
+
 ]
