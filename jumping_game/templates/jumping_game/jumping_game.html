@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jumping Game</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'jumping_game/css/jumping_game.css' %}">
 </head>
 <body>
+    <a id="homeButton" href="{% url 'home' %}">Home</a> <!--Home button-->
 
     <canvas id="canvas1"></canvas>
     <img id="playerImage" src="{% static 'jumping_game/images/dog.png' %}" alt="">
