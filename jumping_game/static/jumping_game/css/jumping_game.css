@@ -26,3 +26,25 @@ img{
     left: 50%;
     transform: translateX(-50%);
 }
+
+#homeButton {
+    /* Styles for the X (home) button */
+    aspect-ratio: 1 / 1;
+    position: absolute;
+    height: 25px;
+    width: 60px;
+    background-color: red;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 18px;
+    line-height: 24px;
+    margin: 5px;
+}
+#homeButton:hover {
+    background-color: rgb(175, 0, 0);
+    color: rgb(175, 134, 134);
+}

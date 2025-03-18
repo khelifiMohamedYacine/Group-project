@@ -23,12 +23,8 @@
       background-attachment: fixed;
     "
   >
-    <div
-      class="d-flex justify-content-between position-absolute top-0 w-100 mt-2 ms-4 me-4"
-    >
-      <button type="button" class="btn btn-danger btn-lg mt-4 ms-4" onclick="history.back()">
-        <strong>Exit</strong>
-      </button>
+    <div class="d-flex justify-content-between position-absolute top-0 w-100 mt-2 ms-4 me-4">
+      <a href="{% url 'home' %}" class="btn btn-danger btn-lg mt-4 ms-4 fw-bold">Return Home</a>
     </div>
 
     <div
