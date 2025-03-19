@@ -6,8 +6,8 @@ from . import views
 urlpatterns = [
     path("sokoban_game", views.sokoban_game_view, name="sokoban_game"),
 
-    path("game_admin/sokoban/", views.sokoban_admin_view, name="sokoban_admin"),
-    path("game_admin/sokoban/delete_level/<int:level_number>/", views.delete_level, name="delete_level"),
+    path("admin_pages/sokoban/", views.sokoban_admin_view, name="sokoban_admin"),
+    path("admin_pages/sokoban/delete_level/<int:level_number>/", views.delete_level, name="delete_level"),
 ]
 
     
