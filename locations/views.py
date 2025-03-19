@@ -37,14 +37,26 @@ def add_location(request):
             print("Received Data:", data)
 
             latitude = data.get('latitude')
-            print("latidude: ", latitude)
             longitude = data.get('longitude')
             address = data.get('address')
             location_name = data.get('location_name')
-            task1 = data.get('task1_id')
-            task2 = data.get('task2_id')
+            locked_by = data.get('locked_by')
 
-            locked_by = data.get("locked_by")
+            # Handle task1 and task2 which are using GenericForeignKey
+            task1_id = data.get('task1_id')
+            task2_id = data.get('task2_id')
+            task1_instance = None
+            if task1_id:
+                task1_type = data.get('task1_type')  # Get the task type for task1
+                task1_content_type = ContentType.objects.get(model=task1_type.lower())  # Use ContentType to find model
+                task1_instance = task1_content_type.get_object_for_this_type(id=task1_id)
+
+            task2_instance = None
+            if task2_id:
+                task2_type = data.get('task2_type')  # Get the task type for task2
+                task2_content_type = ContentType.objects.get(model=task2_type.lower())  # Use ContentType to find model
+                task2_instance = task2_content_type.get_object_for_this_type(id=task2_id)
+
             if locked_by:
                 # Convert locked_by from location name → Location object (if provided)
                 locked_by = Location.objects.filter(location_name=locked_by).first()
@@ -55,7 +67,7 @@ def add_location(request):
                 locked_by = None
 
             # Input Validation
-            if (latitude == 9999 or longitude == 9999):
+            if (latitude == 9999 or longitude == 9999): # 9999 indicates that no position was selected by user
                 return JsonResponse({"error": "Please select a location on the map"}, status=400)
             if not address:
                 return JsonResponse({"error": "Please fill in all fields before adding the location. Missing Address."}, status=400)
@@ -75,6 +87,7 @@ def add_location(request):
             if not (-180 <= longitude <= 180):
                 return JsonResponse({"error": "Longitude must be between -180 and 180."}, status=400)
 
+
             # Save the new location, including tasks
             print("locked_by:", locked_by)
             Location.objects.create(
@@ -82,8 +95,8 @@ def add_location(request):
                 location_name=location_name,
                 latitude=latitude,
                 longitude=longitude,
-                task1_id=task1 if task1 else None,  # Save only if provided
-                task2_id=task2 if task2 else None,  # Save only if provided
+                task1=task1_instance,
+                task2=task2_instance,
                 locked_by=locked_by,
             )
 
@@ -116,9 +129,6 @@ def get_locations_with_lock_status(request):
         user_location = UserLocation.objects.filter(userID=user, locationID=loc).first()
 
         is_checked_in = user_location.checked_in if user_location and user_location.checked_in else False
-        print("__________________-")
-        print("is_checked_in", is_checked_in)
-
 
         is_locked = False
         status = ""
@@ -185,9 +195,6 @@ def location_list(request):
 
 @login_required
 def update_location(request, locID):
-    if request.user.account_type != AccountType.ADMIN.value:
-        return HttpResponseForbidden(page_forbidden_string)
-
     if request.user.account_type != AccountType.ADMIN.value:
         return HttpResponseForbidden(page_forbidden_string)
 
@@ -260,3 +267,40 @@ def check_in(request, loc_id):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+from quizzes.models import Quiz
+from sokoban_game.models import sokoban_level
+from django.contrib.contenttypes.models import ContentType
+
+
+def get_task_ids(request):
+    # Returns data for the drop down menu
+
+    if request.user.account_type != AccountType.ADMIN.value:
+        return HttpResponseForbidden(page_forbidden_string)
+
+    task_type = request.GET.get('task_type')
+    print(f"Received task_type: {task_type}")
+    
+    if not task_type:
+        return JsonResponse({'error': 'Task type is required'}, status=400)
+    
+    try:
+        
+        # Query the task model based on the task type
+        if task_type == "Quiz":
+            print("we got quiz")
+            tasks = Quiz.objects.all().values_list("id", flat=True)
+        elif task_type == "Jumping_Game":
+            tasks = JumpingGame.objects.all().values_list("id", flat=True)
+        elif task_type == "sokoban_level":
+            print("we got here")
+            tasks = sokoban_level.objects.all().values_list("id", flat=True)
+        else:
+            return JsonResponse({'error': 'Invalid task type'}, status=400)
+
+        # Return task ids in the response
+        return JsonResponse({'task_ids': list(tasks)}, status=200)
+
+    except Exception as e:
+        return JsonResponse({'error': f'An error occurred: {str(e)}'}, status=500)
