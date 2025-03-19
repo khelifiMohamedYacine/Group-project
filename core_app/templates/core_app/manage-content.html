@@ -178,10 +178,12 @@ div > a {
 {% include 'core_app/navbar.html' %}
 
 <div class="main-banner">
-    <p class="display-5 fw-bold" style="text-align: center;">Manage Content Page</p>
+    <p class="display-5 fw-bold" style="text-align: center;">Content Management Page</p>
 </div>
 
 <div class="container">
+    <a id="backButton" class="btn btn-primary" href="{% url 'admin_dashboard' %}">Go Back</a>
+
     <!-- Manage Map Card -->
     <div class="admin-card">
         <h2 class="admin-title">Manage Locations</h2>
@@ -226,7 +228,7 @@ div > a {
     </div>
 
     <!-- Back Button -->
-    <a id="backButton" class="btn btn-primary" href="{% url 'admin_dashboard' %}">Go Back</a>
+    
 </div>
 
 <!-- Modal for Adding Quiz -->

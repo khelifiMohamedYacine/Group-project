@@ -26,25 +26,26 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+        max-width: 1100px;
     }
 
-    .admin-form {
+    .form-container {
         background-color: white;
         padding: 20px;
         border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
-    .admin-form label {
+    .form-container label {
         display: block;
         margin-bottom: 5px;
         font-weight: bold;
     }
 
-    .admin-form input[type="text"],
-    .admin-form input[type="password"],
-    .admin-form input[type="email"],
-    .admin-form select {
+    .form-container input[type="text"],
+    .form-container input[type="password"],
+    .form-container input[type="email"],
+    .form-container select {
         width: 100%;
         padding: 10px;
         margin-bottom: 15px;
@@ -52,17 +53,23 @@
         border-radius: 5px;
     }
 
-    .admin-form button {
+    .form-container input[type="number"] {
+        margin-bottom: 15px;
+    }
+
+    .form-container button {
         background-color: #007bff;
         border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
+        padding: 5px 15px;
+        border-radius: 20px;
         color: white;
         cursor: pointer;
         margin-right: 10px;
+        font-size: 1.2rem;
+        font-weight: bold;
     }
 
-    .admin-form button:hover {
+    .form-container button:hover {
         background-color: #0056b3;
     }
 
@@ -78,6 +85,32 @@
         display: block;
         margin-bottom: 5px;
     }
+
+    #backButton {
+        background-color: #ff0000;
+        margin: -25px auto 15px;
+        font-size: 1.2rem;
+        border-radius: 20px;
+        padding: 5px 15px;
+        border: none;
+        font-weight: bold;
+    }
+
+    #backButton:hover {
+        background-color: #c12121;
+    }
+
+    #resultMessage {
+        text-align: center;
+        font-weight: bold;
+        color: rgb(255, 255, 255);
+        width: 75%;
+        margin: 0 auto;
+        font-family: 'Trebuchet MS', sans-serif;
+        padding: 8px;
+        border-radius: 10px;
+        border: 3px solid white;
+    }
 </style>
 {% endblock %}
 
@@ -85,73 +118,84 @@
 {% include 'core_app/navbar.html' %}
 
 <div class="main-banner">
-    <p class="display-5 fw-bold" style="text-align: center;">Admin User Management</p>
+    <p class="display-5 fw-bold" style="text-align: center;">User Management Page</p>
 </div>
 
 <div class="container">
-    <div class="admin-form">
-        <h2>Add User</h2>
-        <form id="userForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required maxlength="150">
+    <!-- Back Button -->
+    <a id="backButton" class="btn btn-primary" href="{% url 'admin_dashboard' %}">Go Back</a>
 
-            <label for="password">Password:</label>
+    <h6 id="resultMessage" style="background-color: #ff4000; display: block;">
+        No account with the username "Jingle Bells" could be found. Make sure your spelling is correct.
+    </h6>
+
+    <div class="form-container">
+        <h3>Look Up User Details</h3>
+
+        <form id="userLookupForm">
+            {% csrf_token %}
+
+            <p>Note that the account's password is not shown here.</p>
+
+            <label for="username-email">Account Username or Email:</label>
+            <input type="text" id="username-email" name="username-email" maxlength="150" required>
+
+            <br>
+
+            <button type="submit" name="save">Search For This User</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h3>Grant/Revoke Admin Privileges</h3>
+
+        <form id="adminPrivForm">
+            {% csrf_token %}
+
+            <p>To prevent abuse of this feature, changing an account's type requires its password to be
+                given with the username/email. </p>
+
+            <label for="username-email">Account Username or Email:</label>
+            <input type="text" id="username-email" name="username-email" maxlength="150" required>
+
+            <label for="password">Account Password:</label>
             <input type="password" id="password" name="password" required>
 
-            <label for="email">Email address:</label>
-            <input type="email" id="email" name="email">
-
-            <label for="first_name">First name:</label>
-            <input type="text" id="first_name" name="first_name">
-
-            <label for="last_name">Last name:</label>
-            <input type="text" id="last_name" name="last_name">
-
-            <label for="is_staff">Staff status:</label>
-            <input type="checkbox" id="is_staff" name="is_staff">
-
-            <label for="is_active">Active:</label>
-            <input type="checkbox" id="is_active" name="is_active" checked>
-
-            <label for="is_superuser">Superuser status:</label>
-            <input type="checkbox" id="is_superuser" name="is_superuser">
-            <small>Designates that this user has all permissions without explicitly assigning them.</small>
-
-            <label for="date_joined">Date joined:</label>
-            <input type="date" id="date_joined" name="date_joined" value="2025-03-17">
-
-            <label for="time_joined">Time joined:</label>
-            <input type="time" id="time_joined" name="time_joined" value="17:41">
-
-            <label for="reward_pts">Reward points:</label>
-            <input type="number" id="reward_pts" name="reward_pts" value="0">
-
-            <label for="account_type">Account type:</label>
-            <select id="account_type" name="account_type">
-                <option value="USER">USER</option>
-                <option value="ADMIN">ADMIN</option>
+            <label for="account-type">Change Account Type To:</label>
+            <select id="account-type" name="account-type" style="width: 25%; min-width: 150px;" required>
+                <option value="user">USER</option>
+                <option value="admin">ADMIN</option>
             </select>
 
-            <button type="submit" name="save">SAVE</button>
-            <button type="submit" name="save_and_add_another">Save and add another</button>
-            <button type="submit" name="save_and_continue_editing">Save and continue editing</button>
+            <br>
+
+            <button type="submit" name="save">Save</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h3>Set Reward Points</h3>
+
+        <form id="rewardPointsForm">
+            {% csrf_token %}
+
+            <label for="username-email">Account Username or Email:</label>
+            <input type="text" id="username-email" name="username-email" maxlength="150" required>
+
+            <label for="reward_pts">Reward Points:</label>
+            <input type="number" id="reward_pts" name="reward_pts" value="0" min="0" required>
+
+            <label for="set-or-add">Set or Add:</label>
+            <select id="set-or-add" name="set-or-add" style="width: 25%; min-width: 150px;" required>
+                <option value="user">SET</option>
+                <option value="admin">ADD</option>
+            </select>
+
+            <br>
+
+            <button type="submit" name="save">Save</button>
         </form>
     </div>
 </div>
-
-<script>
-    document.getElementById("userForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        const action = event.submitter.name;
-        if (action === "save") {
-            alert("User saved successfully!");
-        } else if (action === "save_and_add_another") {
-            alert("User saved and ready to add another!");
-        } else if (action === "save_and_continue_editing") {
-            alert("User saved and continue editing!");
-        }
-        // Here you would typically send the form data to the server based on the action
-    });
-</script>
 
 {% endblock %}
