@@ -200,8 +200,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let lockedBy = document.getElementById("parentLocationInput")? document.getElementById("parentLocationInput").value || null: null;
 
         // Check if the task input elements exist otherwise set to null
-        let task1Id = document.getElementById("task1Input")? document.getElementById("task1Input").value || null: null;
-        let task2Id = document.getElementById("task2Input")? document.getElementById("task2Input").value || null: null;
+        let task1Id = document.getElementById("task1Id")? document.getElementById("task1Id").value || null: null;
+        let task2Id = document.getElementById("task2Id")? document.getElementById("task2Id").value || null: null;
+
+        let task1Type = document.getElementById("task1Type") ? document.getElementById("task1Type").value || null : null;
+        let task2Type = document.getElementById("task2Type") ? document.getElementById("task2Type").value || null : null;
+
 
         let response = await fetch("/add-location/", {
             method: "POST",
@@ -216,7 +220,9 @@ document.addEventListener("DOMContentLoaded", function () {
             latitude: selectedCoordinates.lat,
             longitude: selectedCoordinates.lon,
             task1_id: task1Id,
+            task1_type: task1Type,
             task2_id: task2Id,
+            task2_type: task2Type,
             locked_by: lockedBy,
             }),
         });
@@ -239,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //-------------------------------------------------------------------
 //To keep track of the tasks and allows the users to add 1 or 2 number of tasks
-document.addEventListener("DOMContentLoaded", function () {
+/*document.addEventListener("DOMContentLoaded", function () {
     let taskCount = 1; 
     const maxTasks = 2; // Maximum number of tasks allowed
 
@@ -304,10 +310,40 @@ document.addEventListener("DOMContentLoaded", function () {
             addTaskButton.disabled = false;
          }
     }
-});
-//-----------------------------------------------------------------------------------
-
+});*/
 function getCSRFToken() {
     const csrfToken = document.querySelector("[name=csrf-token]").getAttribute("content");
     return csrfToken;
 }
+//-----------------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+    // Function to fetch task IDs based on task type
+    function fetchTaskIds(taskType, taskIdSelect) {
+      if (!taskType) {
+        taskIdSelect.innerHTML = '<option value="">Select Task ID</option>';
+        return;
+      }
+  
+      fetch(`/get-task-ids/?task_type=${taskType}`)
+        .then((response) => response.json())
+        .then((data) => {
+          taskIdSelect.innerHTML = '<option value="">Select Task ID</option>';
+          data.task_ids.forEach((id) => {
+            const option = document.createElement("option");
+            option.value = id;
+            option.textContent = `Task ${id}`; //should probably show name, but whatever
+            taskIdSelect.appendChild(option);
+          });
+        })
+        .catch((error) => console.error("Error fetching task IDs:", error));
+    }
+  
+    // Attach event listeners to task type dropdowns
+    document.getElementById("task1Type").addEventListener("change", function () {
+      fetchTaskIds(this.value, document.getElementById("task1Id"));
+    });
+  
+    document.getElementById("task2Type").addEventListener("change", function () {
+      fetchTaskIds(this.value, document.getElementById("task2Id"));
+    });
+  });

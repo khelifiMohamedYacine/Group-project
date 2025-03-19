@@ -15,12 +15,12 @@ class Location(models.Model):
     locked_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     # using GenericForeignKey allows a foreign key to multiple different task tables
-    task1_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='task1_type')
-    task1_id = models.PositiveIntegerField()
+    task1_type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE, related_name='task1_type')
+    task1_id = models.PositiveIntegerField(null=True, blank=True)
     task1 = GenericForeignKey('task1_type', 'task1_id')
     
-    task2_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='task2_type')
-    task2_id = models.PositiveIntegerField()
+    task2_type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE, related_name='task2_type')
+    task2_id = models.PositiveIntegerField(null=True, blank=True)
     task2 = GenericForeignKey('task2_type', 'task2_id')
 
     def __str__(self):

@@ -4,7 +4,6 @@ from core_app.models import UserAccount
 
 # Quiz Model (A quiz is a collection of questions)
 class Quiz(models.Model):
-    quizID = models.AutoField(primary_key=True)  # Explicitly set primary key
     name = models.CharField(max_length=255)
 
     class Meta:
