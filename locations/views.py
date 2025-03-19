@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
 from core_app.models import UserAccount, AccountType
-from .models import Location, UserLocation
+from .models import Location, UserLocation, Quiz
 from .forms import LocationForm
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -18,8 +18,10 @@ page_forbidden_string = "You dont have permission to access this page. Only game
 def admin_map_view(request):
     if request.user.account_type != AccountType.ADMIN.value:
         return HttpResponseForbidden(page_forbidden_string)
-
-    return render(request, "locations/map.html") 
+    
+    locations = Location.objects.all()
+    quizzes = Quiz.objects.all()
+    return render(request, "locations/map.html", {'locations': locations, "quizzes": quizzes}) 
 
 @login_required
 def user_map_view(request):
@@ -33,41 +35,45 @@ def add_location(request):
 
     if request.method == "POST":
         try:
+
+            lat_min = 50.7000
+            lat_max = 50.7300
+            lon_min = -3.5500
+            lon_max = -3.5000
+
             data = json.loads(request.body)
             print("Received Data:", data)
 
             latitude = data.get('latitude')
+            print("latidude: ", latitude)
             longitude = data.get('longitude')
             address = data.get('address')
             location_name = data.get('location_name')
-            locked_by = data.get('locked_by')
+            task1_id = data.get('task1')  
+            task2_id = data.get('task2')  
+            locked_by_id = data.get("locked_by")
+            postcode = data.get("postcode")
 
-            # Handle task1 and task2 which are using GenericForeignKey
-            task1_id = data.get('task1_id')
-            task2_id = data.get('task2_id')
-            task1_instance = None
-            if task1_id:
-                task1_type = data.get('task1_type')  # Get the task type for task1
-                task1_content_type = ContentType.objects.get(model=task1_type.lower())  # Use ContentType to find model
-                task1_instance = task1_content_type.get_object_for_this_type(id=task1_id)
+            #Check if postcode is in Exeter (Not 100% guaranteed this will work)
+            if postcode == "Not Available" or postcode.startswith("EX"):
+                is_valid_postcode = True
+            elif lat_min <= latitude <= lat_max and lon_min <= longitude <= lon_max:
+                is_valid_postcode = True
+            else:
+                is_valid_postcode = False
 
-            task2_instance = None
-            if task2_id:
-                task2_type = data.get('task2_type')  # Get the task type for task2
-                task2_content_type = ContentType.objects.get(model=task2_type.lower())  # Use ContentType to find model
-                task2_instance = task2_content_type.get_object_for_this_type(id=task2_id)
-
-            if locked_by:
-                # Convert locked_by from location name → Location object (if provided)
-                locked_by = Location.objects.filter(location_name=locked_by).first()
+            if not is_valid_postcode:
+                return JsonResponse({"error": "Location is outside Exeter's boundary."}, status=400)
+    
+            if locked_by_id:
+                locked_by = Location.objects.filter(locID=locked_by_id).first()
                 if not locked_by:
                     return JsonResponse({"error": "Parent location does not exist"}, status=400) #validate locked_by is a real loction in database
-                #locked_by = locked_by.locID
             else:
                 locked_by = None
 
             # Input Validation
-            if (latitude == 9999 or longitude == 9999): # 9999 indicates that no position was selected by user
+            if (latitude == 9999 or longitude == 9999):
                 return JsonResponse({"error": "Please select a location on the map"}, status=400)
             if not address:
                 return JsonResponse({"error": "Please fill in all fields before adding the location. Missing Address."}, status=400)
@@ -86,7 +92,16 @@ def add_location(request):
                 return JsonResponse({"error": "Latitude must be between -90 and 90."}, status=400)
             if not (-180 <= longitude <= 180):
                 return JsonResponse({"error": "Longitude must be between -180 and 180."}, status=400)
+            
+            # Fetch the Quiz instances for task1 and task2 using the IDs
+            task1 = Quiz.objects.filter(quizID=task1_id).first() if task1_id else None
+            task2 = Quiz.objects.filter(quizID=task2_id).first() if task2_id else None
 
+            # Check if the Quiz instances exist
+            if task1_id and not task1:
+                return JsonResponse({"error": f"Task 1 with ID {task1_id} does not exist."}, status=400)
+            if task2_id and not task2:
+                return JsonResponse({"error": f"Task 2 with ID {task2_id} does not exist."}, status=400)
 
             # Save the new location, including tasks
             print("locked_by:", locked_by)
@@ -95,8 +110,8 @@ def add_location(request):
                 location_name=location_name,
                 latitude=latitude,
                 longitude=longitude,
-                task1=task1_instance,
-                task2=task2_instance,
+                task1=task1 if task1 else None,  # Save only if provided
+                task2=task2 if task2 else None,  # Save only if provided
                 locked_by=locked_by,
             )
 
@@ -111,8 +126,8 @@ def get_locations(request):
     locations =locations = list(Location.objects.values(
         "latitude", 
         "longitude", 
-        "task1_id", 
-        "task2_id", 
+        "task1", 
+        "task2", 
         "location_name",  
         "locID",
         "locked_by"))
@@ -129,6 +144,9 @@ def get_locations_with_lock_status(request):
         user_location = UserLocation.objects.filter(userID=user, locationID=loc).first()
 
         is_checked_in = user_location.checked_in if user_location and user_location.checked_in else False
+        print("__________________-")
+        print("is_checked_in", is_checked_in)
+
 
         is_locked = False
         status = ""
@@ -164,8 +182,8 @@ def get_locations_with_lock_status(request):
             "longitude": loc.longitude,
             "location_name": loc.location_name,
             "checked_in": is_checked_in,
-            "task1_id": loc.task1_id,
-            "task2_id": loc.task2_id,
+            "task1": loc.task1,
+            "task2": loc.task2,
             "locked": is_locked,
             "status": status  # New field to determine marker color
         })
@@ -195,6 +213,9 @@ def location_list(request):
 
 @login_required
 def update_location(request, locID):
+    if request.user.account_type != AccountType.ADMIN.value:
+        return HttpResponseForbidden(page_forbidden_string)
+
     if request.user.account_type != AccountType.ADMIN.value:
         return HttpResponseForbidden(page_forbidden_string)
 
@@ -267,40 +288,3 @@ def check_in(request, loc_id):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
-
-from quizzes.models import Quiz
-from sokoban_game.models import sokoban_level
-from django.contrib.contenttypes.models import ContentType
-
-
-def get_task_ids(request):
-    # Returns data for the drop down menu
-
-    if request.user.account_type != AccountType.ADMIN.value:
-        return HttpResponseForbidden(page_forbidden_string)
-
-    task_type = request.GET.get('task_type')
-    print(f"Received task_type: {task_type}")
-    
-    if not task_type:
-        return JsonResponse({'error': 'Task type is required'}, status=400)
-    
-    try:
-        
-        # Query the task model based on the task type
-        if task_type == "Quiz":
-            print("we got quiz")
-            tasks = Quiz.objects.all().values_list("id", flat=True)
-        elif task_type == "Jumping_Game":
-            tasks = JumpingGame.objects.all().values_list("id", flat=True)
-        elif task_type == "sokoban_level":
-            print("we got here")
-            tasks = sokoban_level.objects.all().values_list("id", flat=True)
-        else:
-            return JsonResponse({'error': 'Invalid task type'}, status=400)
-
-        # Return task ids in the response
-        return JsonResponse({'task_ids': list(tasks)}, status=200)
-
-    except Exception as e:
-        return JsonResponse({'error': f'An error occurred: {str(e)}'}, status=500)

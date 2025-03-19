@@ -27,6 +27,14 @@
         margin: 20px auto;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
+      .dropdown-menu {
+        min-width: 250px; /* Adjust width as needed */
+        text-align: center;
+      }
+      .small-btn {
+        padding: 10px 12px; /* Adjust padding to reduce height */
+        font-size: 16px; /* Optional: Adjust font size */
+      }
     </style>
   </head>
   <body
@@ -94,56 +102,109 @@
             </div>
           </div>
         </div>
-        <!--TASKS-->
+        <!-- TASK CONTAINER -->
         <div class="row g-4 mt-2" id="taskContainer">
-          <!-- Task 1 -->
-          <div class="col-md-6">
-            <label for="task1Type">Task 1 Type:</label>
-            <select class="form-select task-type" id="task1Type">
-              <option value="">Select Task Type</option>
-              <option value="Quiz">Quiz</option>
-              <option value="Jumping_Game">Jumping Game</option>
-              <option value="sokoban_level">Sokoban Game</option>
-              <!-- Add more task models as needed -->
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="task1Id">Task 1 ID:</label>
-            <select class="form-select task-id" id="task1Id">
-              <option value="">Select Task ID</option>
-              <!-- Task IDs will be populated dynamically -->
-            </select>
+          <!-- TASK 1 (Dropdown) -->
+          <div class="col-md-6 task-row">
+            <div class="btn-group w-100">
+              <button
+                class="btn btn-secondary dropdown-toggle w-100 small-btn bg-white text-dark border"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                id="selectedTask1Btn"
+              >
+                Select Task 1(Optional)
+              </button>
+              <ul class="dropdown-menu w-100" id="task1Dropdown">
+                {% for quiz in quizzes %}
+                <li>
+                  <a
+                    class="dropdown-item task-option"
+                    href="#"
+                    data-id="{{ quiz.quizID }}"
+                    data-name="{{ quiz.name }}"
+                  >
+                    {{ quiz.name }} (ID: {{ quiz.quizID }})
+                  </a>
+                </li>
+                {% empty %}
+                <li>
+                  <a class="dropdown-item text-muted">No quizzes available</a>
+                </li>
+                {% endfor %}
+              </ul>
+              <input type="hidden" id="task1Input" name="task1_id" />
+            </div>
           </div>
 
-          <!-- Task 2 (if needed) -->
-          <div class="col-md-6">
-            <label for="task2Type">Task 2 Type:</label>
-            <select class="form-select task-type" id="task2Type">
-              <option value="">Select Task Type</option>
-              <option value="Quiz">Quiz</option>
-              <option value="Jumping_Game">Jumping Game</option>
-              <option value="sokoban_level">Sokoban Game</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="task2Id">Task 2 ID:</label>
-            <select class="form-select task-id" id="task2Id">
-              <option value="">Select Task ID</option>
-            </select>
+          <!-- TASK 2 (Dropdown) -->
+          <div class="col-md-6 task-row">
+            <div class="btn-group w-100">
+              <button
+                class="btn btn-secondary dropdown-toggle w-100 small-btn bg-white text-dark border"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                id="selectedTask2Btn"
+              >
+                Select Task 2(Optional)
+              </button>
+              <ul class="dropdown-menu w-100" id="task2Dropdown">
+                {% for quiz in quizzes %}
+                <li>
+                  <a
+                    class="dropdown-item task-option"
+                    href="#"
+                    data-id="{{ quiz.quizID }}"
+                    data-name="{{ quiz.name }}"
+                  >
+                    {{ quiz.name }} (ID: {{ quiz.quizID }})
+                  </a>
+                </li>
+                {% empty %}
+                <li>
+                  <a class="dropdown-item text-muted">No quizzes available</a>
+                </li>
+                {% endfor %}
+              </ul>
+              <input type="hidden" id="task2Input" name="task2_id" />
+            </div>
           </div>
         </div>
 
         <!--PARENT LOCATION-->
         <div class="row justify-content-center g-4 mt-2">
-          <div class="col-md-6">
-            <div class="form-floating">
-              <input
-                type="text"
-                class="form-control"
-                id="parentLocationInput"
-                placeholder="Enter parent location"
-              />
-              <label for="parentLocationInput">Enter a Parent Location </label>
+          <div class="col-md-6 d-flex justify-content-center">
+            <div class="btn-group w-100" id="parentLocationDropdown">
+              <button
+                class="btn btn-secondary dropdown-toggle w-100 small-btn bg-white text-dark border"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                id="selectedParentLocationBtn"
+              >
+                Add Parent Location(Optional)
+              </button>
+              <ul class="dropdown-menu w-100">
+                {% for location in locations %}
+                <li>
+                  <a
+                    class="dropdown-item parent-location-option"
+                    href="#"
+                    data-id="{{ location.locID }}"
+                  >
+                    {{ location.location_name }} (ID: {{ location.locID }})
+                  </a>
+                </li>
+                {% empty %}
+                <li>
+                  <a class="dropdown-item text-muted">No locations available</a>
+                </li>
+                {% endfor %}
+              </ul>
+              <!-- Hidden input to store selected parent location ID -->
+              <input type="hidden" id="parentLocationInput" name="locked_by" />
             </div>
           </div>
         </div>
@@ -180,6 +241,7 @@
     <div id="map"></div>
 
     <!--SCRIPTS: For MAP, EXTERNAL .JS & BOOTSTRAP-->
+
     <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
     <script src="{% static 'locations/script.js' %}"></script>
     <script

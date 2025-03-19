@@ -4,7 +4,7 @@ from .models import Location
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
-        fields = ['location_name', 'task1_id', 'task2_id', 'address', 'locked_by']
+        fields = ['location_name', 'task1', 'task2', 'address', 'locked_by']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
