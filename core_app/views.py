@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect
-from .models import UserAccount
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
 from core_app.models import UserAccount
+
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+import json
 
 
 def login_view(request):
@@ -131,4 +136,62 @@ def admin_view(request):
     else:
         # Return the user to the login page if they are not logged in.
         return redirect('login')
-    
+
+
+def admin_content_view(request):
+    if request.user.is_authenticated:
+        if request.user.account_type == "admin":
+            return render(request, 'core_app/manage-content.html')
+        else:
+            return redirect('home')
+    else:
+        return redirect('login')
+
+
+def admin_users_view(request):
+    if request.user.is_authenticated:
+        if request.user.account_type == "admin":
+            return render(request, 'core_app/manage-users.html')
+        else:
+            return redirect('home')
+    else:
+        return redirect('login')
+
+
+def admin_analytics_view(request):
+    if request.user.is_authenticated:
+        if request.user.account_type == "admin":
+            # Define the time frame for "recently active" (last 30 days)
+            n_days = 30
+            cutoff_date = timezone.now() - timedelta(days=n_days)
+
+            # Count active and inactive users
+            active_users = UserAccount.objects.filter(last_login__gte=cutoff_date).count()
+            inactive_users = UserAccount.objects.filter(last_login__lt=cutoff_date).count()
+
+            # User growth over time using TruncDate instead of extra()
+            user_growth = (
+                UserAccount.objects
+                .annotate(date_joined_trunc=TruncDate('date_joined'))
+                .values('date_joined_trunc')
+                .annotate(count=Count('id'))
+                .order_by('date_joined_trunc')
+            )
+
+            # Extracting dates and counts
+            dates = [entry['date_joined_trunc'].strftime('%Y-%m-%d') for entry in user_growth]
+            counts = [entry['count'] for entry in user_growth]
+
+            # Pass data safely as JSON
+            context = {
+                'active_users': active_users,
+                'inactive_users': inactive_users,
+                'dates': json.dumps(dates),
+                'counts': json.dumps(counts),
+            }
+
+            return render(request, 'core_app/analytics.html', context)
+        else:
+            return redirect('home')
+    else:
+        return redirect('login')
