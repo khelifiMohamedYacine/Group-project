@@ -1,7 +1,7 @@
 window.addEventListener('load', function () {
     // Level Variables (Can be modified for testing)
-    const speedMultiplier = 3; // Adjusts the speed of enemies and background
-    const enemySpawnRate = 1000; // Time in milliseconds between enemy spawns
+    const speedMultiplier = 2; // Adjusts the speed of enemies and background
+    const enemySpawnRate = 800; // Time in milliseconds between enemy spawns
     const imageCycles = [1, 2, 2, 1]; // Number of cycles for each background image
     const level = 78; // Displayed level number
 
@@ -134,7 +134,7 @@ window.addEventListener('load', function () {
             this.y = 0;
             this.width = 2400;
             this.height = 800;
-            this.speed = 8 * speedMultiplier; // Adjusted by speedMultiplier
+            this.speed = 7.9 * speedMultiplier; // A the constant is slightly < 8 for a subtle paralax effect
             this.isStageComplete = false;
         }
 
@@ -162,8 +162,8 @@ window.addEventListener('load', function () {
                         this.isStageComplete = true;
                         levelCompleted = true; // Level is completed
                         setTimeout(() => {
-                            window.location.href = ""; // Redirect to home page
-                        }, 1000); // Redirect after 1 second
+                            window.location.href = "/games/";
+                        }, 2000); // Redirect after 2 seconds
                     } else {
                         this.startTransition();
                     }
@@ -399,7 +399,7 @@ window.addEventListener('load', function () {
             ctx.fillText('Level Completed!', canvas.width / 2 - 150, canvas.height / 2 - 20);
             ctx.font = '30px Helvetica';
             ctx.fillText('Score: ' + score, canvas.width / 2 - 80, canvas.height / 2 + 40);
-            ctx.fillText('Press SPACE or Click to Restart', canvas.width / 2 - 220, canvas.height / 2 + 100);
+            //ctx.fillText('Press SPACE or Click to Restart', canvas.width / 2 - 220, canvas.height / 2 + 100);
             return; // Stop the game loop
         }
 
