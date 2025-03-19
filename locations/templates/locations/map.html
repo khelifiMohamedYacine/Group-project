@@ -96,28 +96,43 @@
         </div>
         <!--TASKS-->
         <div class="row g-4 mt-2" id="taskContainer">
+          <!-- Task 1 -->
           <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text">Task 1</span>
-              <input
-                type="text"
-                class="form-control task-input"
-                placeholder="Enter task"
-                id="task1Input"
-              />
-              <span
-                class="input-group-text addTaskBtn"
-                style="
-                  cursor: pointer;
-                  color: black;
-                  background: white;
-                  border-left: none;
-                "
-                >+</span
-              >
-            </div>
+            <label for="task1Type">Task 1 Type:</label>
+            <select class="form-select task-type" id="task1Type">
+              <option value="">Select Task Type</option>
+              <option value="Quiz">Quiz</option>
+              <option value="Jumping_Game">Jumping Game</option>
+              <option value="sokoban_level">Sokoban Game</option>
+              <!-- Add more task models as needed -->
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="task1Id">Task 1 ID:</label>
+            <select class="form-select task-id" id="task1Id">
+              <option value="">Select Task ID</option>
+              <!-- Task IDs will be populated dynamically -->
+            </select>
+          </div>
+
+          <!-- Task 2 (if needed) -->
+          <div class="col-md-6">
+            <label for="task2Type">Task 2 Type:</label>
+            <select class="form-select task-type" id="task2Type">
+              <option value="">Select Task Type</option>
+              <option value="Quiz">Quiz</option>
+              <option value="Jumping_Game">Jumping Game</option>
+              <option value="sokoban_level">Sokoban Game</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="task2Id">Task 2 ID:</label>
+            <select class="form-select task-id" id="task2Id">
+              <option value="">Select Task ID</option>
+            </select>
           </div>
         </div>
+
         <!--PARENT LOCATION-->
         <div class="row justify-content-center g-4 mt-2">
           <div class="col-md-6">
