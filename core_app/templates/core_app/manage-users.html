@@ -152,14 +152,14 @@
         <form id="adminPrivForm">
             {% csrf_token %}
 
-            <p>To prevent abuse of this feature, changing an account's type requires its password to be
-                given with the username/email. </p>
+            <p>
+                WARNING! Changing an account's type to 'Admin' grants it the same privileges you currently have, including the
+                ability to promote and demote other accounts (such as yours). Only proceed if you know and trust the person
+                who owns this account.
+            </p>
 
-            <label for="username-email">Account Username or Email:</label>
-            <input type="text" id="username-email" name="username-email" maxlength="150" required>
-
-            <label for="password">Account Password:</label>
-            <input type="password" id="password" name="password" required>
+            <label for="email">Account Email:</label>
+            <input type="email" id="email" name="email" maxlength="150" required>
 
             <label for="account-type">Change Account Type To:</label>
             <select id="account-type" name="account-type" style="width: 25%; min-width: 150px;" required>
