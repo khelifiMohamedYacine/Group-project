@@ -282,7 +282,7 @@ class NavbarTests(TestCase):
         url = reverse("home")
         response1 = self.client.get(url)
 
-        self.assertNotContains(response1, '<a class="nav-link active" href="/admin_pages/dashboard/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        self.assertNotContains(response1, '<a class="nav-link active" href="/game_admin/dashboard/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
         # assertNotContains() asserts that its first argument does not contain its second argument.
         # The HTML for the admin button should NOT be present within the HTML code for the Home Page
 
@@ -292,7 +292,7 @@ class NavbarTests(TestCase):
 
         response2 = self.client.get(url)
 
-        self.assertNotContains(response2, '<a class="nav-link active" href="/admin_pages/dashboard/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        self.assertNotContains(response2, '<a class="nav-link active" href="/game_admin/dashboard/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
         # The HTML for the admin button still should not be present within the HTML code for the Home Page
 
         # Finally, access the Home page while logged into an admin account.
@@ -302,7 +302,7 @@ class NavbarTests(TestCase):
 
         response3 = self.client.get(url)
 
-        self.assertContains(response3, '<a class="nav-link active" href="/admin_pages/dashboard/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        self.assertContains(response3, '<a class="nav-link active" href="/game_admin/dashboard/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
         # Now, the HTML for the admin button should be present within the HTML code for the Home page
 
     def test_other_buttons(self):

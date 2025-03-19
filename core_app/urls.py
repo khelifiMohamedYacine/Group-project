@@ -15,7 +15,7 @@ urlpatterns = [
     path('forgot_password/', views.forgot_password_view, name='forgot_password'),
     path('privacy_policy/', views.privacy_policy_view, name="privacy_policy"),
     path('leaderboard/', views.leaderboard_view, name='leaderboard'),
-    path('admin_pages/dashboard/', views.admin_view, name="admin_dashboard"),
+    path('game_admin/dashboard/', views.admin_view, name="admin_dashboard"),
     path('games/', views.games_view, name="games_page"),
 
     path('videos/', views.videos_view, name="videos"),
