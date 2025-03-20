@@ -137,13 +137,11 @@
         <div class="row justify-content-center g-4 mt-2">
           <div class="col-md-6">
             <div class="form-floating">
-              <input
-                type="text"
-                class="form-control"
-                id="parentLocationInput"
-                placeholder="Enter parent location"
-              />
-              <label for="parentLocationInput">Enter a Parent Location </label>
+              <select class="form-select" id="parentLocationSelect">
+                <option value="">Select Parent Location</option>
+                <!-- Parent locations will be populated dynamically -->
+              </select>
+              <label for="parentLocationSelect">Select Parent Location</label>
             </div>
           </div>
         </div>

@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     try {
         let response = await fetch("/get-locations/");
         let data = await response.json(); 
-        console.log("Fetched data:", data);
 
         if (!Array.isArray(data)) {
             console.error("Expected an array, but got:", data);
@@ -197,7 +196,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let address = document.getElementById("floatingAddress").value.trim();
         let locationName = document.getElementById("floatingLocationName").value.trim();
 
-        let lockedBy = document.getElementById("parentLocationInput")? document.getElementById("parentLocationInput").value || null: null;
+        let lockedBy = document.getElementById("parentLocationSelect").value || null;
+        console.log('lockedBy value:', lockedBy);
 
         // Check if the task input elements exist otherwise set to null
         let task1Id = document.getElementById("task1Id")? document.getElementById("task1Id").value || null: null;
@@ -243,74 +243,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-//-------------------------------------------------------------------
-//To keep track of the tasks and allows the users to add 1 or 2 number of tasks
-/*document.addEventListener("DOMContentLoaded", function () {
-    let taskCount = 1; 
-    const maxTasks = 2; // Maximum number of tasks allowed
-
-    // Disable add task button if taskCount reaches maxTasks
-    const addTaskButton = document.querySelector(".addTaskBtn");
-
-    addTaskButton.addEventListener("click", function () {
-        // Check if the maximum task limit has been reached
-        if (taskCount >= maxTasks) {
-            alert("You can only add a maximum of 2 tasks.");
-            return;
-        }
-
-        taskCount++;
-        let taskContainer = document.getElementById("taskContainer");
-
-        // Create new task row
-        let newTaskRow = document.createElement("div");
-        newTaskRow.className = "col-md-6";
-        newTaskRow.innerHTML = `
-            <div class="input-group">
-                <span class="input-group-text">Task ${taskCount}</span>
-                <input
-                type="text"
-                class="form-control task-input"
-                placeholder="Enter task"
-                id="task2Input"
-                />
-                <span
-                class="input-group-text removeTaskBtn"
-                style="cursor: pointer; color: black; background: white; border-left: none;"
-                >
-                -
-                </span>
-            </div>
-            `;
-
-        taskContainer.appendChild(newTaskRow);
-
-      // Remove task field when clicking "-"
-      newTaskRow.querySelector(".removeTaskBtn").addEventListener("click", function () {
-          newTaskRow.remove();
-          taskCount--;
-          updateTaskNumbers();
-        });
-    });
-
-    // Function to renumber tasks after removing one
-    function updateTaskNumbers() {
-        let taskLabels = document.querySelectorAll(
-            "#taskContainer .input-group-text:first-child"
-        );
-        taskCount = 0;
-        taskLabels.forEach((label) => {
-            taskCount++;
-            label.textContent = `Task ${taskCount}`;
-        });
-
-        // If task count is less than maxTasks, enable the add button
-        const addTaskButton = document.querySelector(".addTaskBtn");
-        if (taskCount < maxTasks) {
-            addTaskButton.disabled = false;
-         }
-    }
-});*/
 function getCSRFToken() {
     const csrfToken = document.querySelector("[name=csrf-token]").getAttribute("content");
     return csrfToken;
@@ -340,10 +272,36 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Attach event listeners to task type dropdowns
     document.getElementById("task1Type").addEventListener("change", function () {
-      fetchTaskIds(this.value, document.getElementById("task1Id"));
+        fetchTaskIds(this.value, document.getElementById("task1Id"));
     });
   
     document.getElementById("task2Type").addEventListener("change", function () {
-      fetchTaskIds(this.value, document.getElementById("task2Id"));
+        fetchTaskIds(this.value, document.getElementById("task2Id"));
     });
-  });
+
+    function fetchParentLocations() {
+        console.log('Fetching parent locations...');
+        fetch('/get-locations/')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Received parent locations:', data); // Log the data
+
+                const parentLocationSelect = document.getElementById("parentLocationSelect");
+
+                // Clear existing options
+                parentLocationSelect.innerHTML = '<option value="">Select Parent Location</option>';
+
+                // iterate over the data in locations
+                data.forEach(location => {
+                    const option = document.createElement("option");
+                    option.value = location.locID; 
+                    option.textContent = location.location_name;
+                    parentLocationSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching parent locations:', error));
+    }
+    // Call the function on page load
+    fetchParentLocations();
+    //maybe also call on successfull add location
+});
