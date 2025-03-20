@@ -1,10 +1,8 @@
 {% extends 'core_app/base.html' %}
-{% load static %} <!--To use anything within the static folder, this needs to be present-->
+{% load static %}
 
-
-{% block head_content %} <!--Header content for HTML files extending base.html goes in here-->
+{% block head_content %}
 <title>Games Page</title>
-
 <style>
     body { 
         background-color: #f0f8ff; 
@@ -18,12 +16,12 @@
         font-weight: bold;
         text-align: center;
         display: block;
-        margin-top: 30px; /* Adjusts spacing */
+        margin-top: 30px;
         transition: color 0.2s ease-in-out;
         text-decoration: none;
     }
     .privacy-policy:hover {
-        color: #ffbb00; /* Changed for better contrast */
+        color: #ffbb00;
         text-decoration: underline;
     }
 
@@ -40,41 +38,45 @@
     .container { 
         padding: 50px; 
         display: flex; 
-        flex-wrap: wrap; /* Allow wrapping of the cards */
-        justify-content: space-between; /* Ensure 2 cards per line */
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
-    
+
     .card { 
         border-radius: 15px;
         border: 0px !important;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
         overflow: hidden; 
-        width: 42%; /* Ensure 2 cards per row */
-        margin: 10px 10px; /* Adjust margin for spacing */
+        width: 42%;
+        margin: 10px 10px;
         background-color: white; 
         margin-bottom: 40px;
     }
-    
+
     .card:hover { 
         transform: scale(1.05); 
         box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
     }
+
     .card img { 
         height: 200px; 
         object-fit: cover; 
         border-radius: 15px 15px 0 0; 
     }
+
     .card-body { 
         text-align: center; 
         padding: 10px; 
     }
+
     .card-title { 
         font-size: 1.1rem; 
         font-weight: bold; 
         color: #000000; 
         margin-bottom: 5px; 
     }
+
     .card-text { 
         font-size: 0.8rem; 
         color: #555; 
@@ -82,34 +84,33 @@
 </style>
 {% endblock %}
 
-
-{% block body_content %} <!--Body content for HTML files extending base.html goes in here-->
-{% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
+{% block body_content %}
+{% include 'core_app/navbar.html' %}
 
 <div class="main-banner">
     <p class="display-5 fw-bold" style="text-align: center;">Games Page</p>
 </div>
 
 <div class="container">
+    {% if games %}
+        {% for game in games %}
 
-    <div class="card game-card" onclick="window.location.href='{% url 'jumping_game' %}';" style="cursor: pointer;">
-        <!--My editior complains about the previous line but won't fix because the application works properly-->
-        <img src="{% static 'core_app/images/JumpingGamePic2.PNG' %}" class="card-img-top" alt="Jumping Game">
-        <div class="card-body text-center">
-            <h5 class="card-title">Jumping Game</h5>
-            <p class="card-text">Lead the doggo to a cleaner environment by jumping and rolling around obstacles.</p>
+            <div class="card game-card" onclick="window.location.href='{% url game.game_url task_id=game.game_id %}';" style="cursor: pointer;">
+                <img src="{% static 'core_app/images/'|add:game.image %}" class="card-img-top" alt="{{ game.name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ game.name }}</h5>
+                    <p class="card-text">{{ game.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-games-message">
+            <p>Visit Locations on the map to unlock games</p>
+            <button class="no-games-button" onclick="window.location.href='{% url 'home' %}'">Go to Map</button>
         </div>
-    </div>
-
-    <div class="card game-card" onclick="window.location.href='{% url 'sokoban_game' %}';" style="cursor: pointer;">
-        <img src="{% static 'core_app/images/SokobanGamePic1.PNG' %}" class="card-img-top" alt="Jumping Game">
-        <div class="card-body text-center">
-            <h5 class="card-title">Sokoban Game</h5>
-            <p class="card-text">Help Mark recycle the garbage in this challenging puzzle game.</p>
-        </div>
-    </div>
-
-    <p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
+    {% endif %}
 </div>
+
+<p style="width: 100%;"><a href="{% url 'privacy_policy' %}" class="privacy-policy h5">Privacy Policy</a></p>
 
 {% endblock %}

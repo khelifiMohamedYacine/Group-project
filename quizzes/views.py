@@ -4,13 +4,15 @@ import random
 from .models import Quiz, TrueFalse, Question, UserQuizScore
 
 
-def quiz_view(request):
+def quiz_view_no_numbers(request):
+    return
+def quiz_view(request, task_id):
     # Refuse access to users not logged in (defensive programming)
     if not request.user.is_authenticated:
         return redirect('login')
 
 
-    quiz_id = 1 # hardcoded (temporaily) value that determines which quiz we are going to play
+    quiz_id = task_id # value that determines which quiz we are going to play
 
     # Initialize session variables
     if 'question_number' not in request.session:
@@ -31,18 +33,17 @@ def quiz_view(request):
     if quiz_finished:
         user = request.user
 
-        if UserQuizScore.objects.filter(user=user, quiz_id=quiz_id).exists():
+        if UserQuizScore.objects.filter(user=user, id=quiz_id).exists():
             # handle case where the results already exists (defensive programming)
-
-            # these lines update the old results to the new ones, need to agree what to actually do in this case
-            user_quiz_score = UserQuizScore.objects.get(user=user, quiz_id=quiz_id)
+            # these lines update the old results to the new ones
+            user_quiz_score = UserQuizScore.objects.get(user=user, id=quiz_id)
             user_quiz_score.score = request.session['quiz_result']
             user_quiz_score.save()
         else:
             # Record the results in UserQuizScore model if none exists
             UserQuizScore.objects.create(
                 user=user,
-                quiz_id=quiz_id,
+                quiz=Quiz.objects.get(id=quiz_id),
                 score=request.session['quiz_result']
             )
         
@@ -52,7 +53,7 @@ def quiz_view(request):
     if 'selected_questions' not in request.session:
 
         # Get all the questions belonging to that quiz
-        quiz = Quiz.objects.get(quizID=quiz_id)
+        quiz = Quiz.objects.get(id=quiz_id)
         all_questions = list(Question.objects.filter(quiz=quiz)) + list(TrueFalse.objects.filter(quiz=quiz))
 
         

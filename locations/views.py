@@ -140,7 +140,9 @@ def get_locations_with_lock_status(request):
         # Check if location is locked
         if not loc.locked_by:                                                                 #if location isnt locked at all
             is_locked = False
-        elif user_location  and user_location.checked_in:                                     #if user has already checked in
+        elif user_location is None:
+            is_locked = False
+        elif user_location.checked_in:                                                        #if user has already checked in
             is_locked = False
         else:
             parent_user_location = UserLocation.objects.filter(userID=user, locationID=loc.locked_by).first()
@@ -253,8 +255,15 @@ def check_in(request, loc_id):
             user_location, created = UserLocation.objects.get_or_create(
                 userID=user,
                 locationID=location,
+                task1_complete = False,
+                task2_complete = False,
                 defaults={"checked_in": True}
             )
+            if location.task1_id is None: # if there is no task imidiately set it to None
+                user_location.task1_complete = True
+            if location.task2_id is None:
+                user_location.task2_complete = True
+            location.save()  #
             
             if created:
                 # a new entry was created, means the user wasn't checked in before
