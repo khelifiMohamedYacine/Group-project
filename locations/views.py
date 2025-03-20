@@ -12,6 +12,10 @@ import matplotlib
 matplotlib.use('Agg')
 from django.http import HttpResponse
 
+from quizzes.models import Quiz
+from sokoban_game.models import sokoban_level
+from django.contrib.contenttypes.models import ContentType
+
 page_forbidden_string = "You dont have permission to access this page. Only game admins do."
 
 @login_required
@@ -58,13 +62,13 @@ def add_location(request):
                 task2_instance = task2_content_type.get_object_for_this_type(id=task2_id)
 
             if locked_by:
-                # Convert locked_by from location name → Location object (if provided)
-                locked_by = Location.objects.filter(location_name=locked_by).first()
-                if not locked_by:
-                    return JsonResponse({"error": "Parent location does not exist"}, status=400) #validate locked_by is a real loction in database
-                #locked_by = locked_by.locID
+                # Attempt to get the location by locID
+                locked_by = Location.objects.filter(locID=locked_by).first()
+                if not locked_by: # validate locked by is a real location
+                    return JsonResponse({"error": "Parent location does not exist"}, status=400)
             else:
                 locked_by = None
+
 
             # Input Validation
             if (latitude == 9999 or longitude == 9999): # 9999 indicates that no position was selected by user
@@ -153,9 +157,6 @@ def get_locations_with_lock_status(request):
             status = "pending"  # Blue marker (unlocked but not checked-in)
         else:
             status = "completed"  # Green marker (checked-in)
-
-        print("is_locked", is_locked)
-        print("status", status)
         
 
         location_data.append({
@@ -267,10 +268,6 @@ def check_in(request, loc_id):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
-
-from quizzes.models import Quiz
-from sokoban_game.models import sokoban_level
-from django.contrib.contenttypes.models import ContentType
 
 
 def get_task_ids(request):
