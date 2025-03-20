@@ -20,6 +20,14 @@
     <img id="enemyImage" src="{% static 'jumping_game/images/trash-bin.png' %}" alt="">
     <img id="enemyImage2" src="{% static 'jumping_game/images/smoke3.png' %}" alt="">
 
+
+    <!-- Should be using {{ game_data|json_script }}-->
+    <script id="game-data" type="application/json">
+        {"speedMultiplier_": 2.0, "enemySpawnRate_": 800, "level_": 1}
+        
+    </script>
+
+
     <script src="{% static 'jumping_game/js/jumping_game.js' %}"></script>
 </body>
 </html>
