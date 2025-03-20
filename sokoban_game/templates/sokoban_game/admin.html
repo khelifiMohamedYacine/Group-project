@@ -247,7 +247,7 @@
         }
 
         saveLevel() {
-            fetch("/sokoban_game/admin/", {
+            fetch("/game_admin/sokoban/", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(this.levels)
