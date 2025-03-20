@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import UserAccount
 from django.contrib import messages
+from django.urls import reverse
+
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from core_app.models import UserAccount
 
@@ -105,9 +108,78 @@ def forgot_password_view(request):
 def privacy_policy_view(request):
     return render(request, 'core_app/privacy-policy.html')
 
+from locations.models import Location, UserLocation
 
+@login_required
 def games_view(request):
-    return render(request, 'core_app/games-page.html')
+
+    # store of data that doesnt change
+    game_info = { 
+        'quiz': {
+            'url': "quizzes:quiz",
+            'image': 'cc.png',
+            'description': 'Test your knowledge in the quiz game.'
+        },
+        'sokoban_level': {
+            'url': 'sokoban_game',
+            'image': 'SokobanGamePic1.PNG',
+            'description': 'Help Mark recycle the garbage in this puzzle game.'
+        },
+        'jumping_game': {
+            'url': 'jumping_game',
+            'image': 'JumpingGamePic2.PNG',
+            'description': 'Lead the dog to a cleaner environment by jumping and rolling around obstacles.'
+        }
+    }
+    user = request.user
+    locations = Location.objects.all()
+    user_locations = UserLocation.objects.filter(userID=user)
+    
+    # populates the games data dynamically
+    games = []
+    for location in locations:
+
+        user_location = user_locations.filter(locationID=location).first()
+
+        if user_location is None or not user_location.checked_in:
+            print("p1")
+            continue
+        print("p1.5")
+
+        if not user_location.task1_complete:
+            print("p2")
+            task1_type = location.task1_type.name if location.task1_type else None
+            game_data = game_info[task1_type]
+            game_id = location.task1_id
+
+            game = {
+                "name": location.location_name,
+                "location_name": location.location_name,
+                "description": game_data['description'],
+                "image": game_data['image'],
+                "game_url": game_data['url'],
+                "game_id": game_id,
+            }
+            games.append(game)
+
+        if not user_location.task2_complete:
+            print("p3")
+            task2_type = location.task2_type.name if location.task2_type else None
+            game_data = game_info[task2_type]
+            game_id = location.task2_id
+
+            game = {
+                "name": location.location_name,
+                "location_name": location.location_name,
+                "description": game_data['description'],
+                "image": game_data['image'],
+                "game_url": game_data['url'],
+                "game_id": game_id,
+            }
+            games.append(game)
+    print("sent games data", games)
+    
+    return render(request, 'core_app/games-page.html', {'games': games})
     
 
 def videos_view(request):
@@ -119,16 +191,12 @@ def leaderboard_view(request):
     leaderboard_data = UserAccount.objects.order_by('-reward_pts').values('username', 'reward_pts')[:10]
     return render(request, 'core_app/leaderboard.html', {'leaderboard_data': leaderboard_data})
 
-
+@login_required
 def admin_view(request):
-    if request.user.is_authenticated:
-        if request.user.account_type == "admin":
-            # Allow the user to access the admin dashboard page if they are logged into an admin account
-            return render(request, 'core_app/admin-dashboard.html')
-        else:
-            # Return the user to the home page if they are logged in but not into an admin account
-            return redirect('home')
+
+    if request.user.account_type == "admin":
+        return render(request, 'core_app/admin-dashboard.html')
     else:
-        # Return the user to the login page if they are not logged in.
-        return redirect('login')
+        # send the user to the home page if they are logged in but not into a game_admin account
+        return redirect('home')
     

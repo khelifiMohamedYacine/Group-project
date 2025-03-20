@@ -8,7 +8,11 @@ from sokoban_game.models import sokoban_level, sokoban_results
 from django.views.decorators.csrf import csrf_exempt #temp
 
 @csrf_exempt
-def sokoban_game_view(request):
+def sokoban_game_view(request, task_id):
+    # Note that the sokoban javascript was designed to take an array of every sokoban level and play each in sequence
+    # But it was decided that users would only play one level at a time. To avoid major changes to the javascript this
+    # view now just returns an array of only one level. I guess this is minor tech debt
+
     if request.method == "POST":
         user_id = request.POST.get('user_id')
         level = request.POST.get('level')
@@ -16,17 +20,17 @@ def sokoban_game_view(request):
         score = request.POST.get('score')
         sokoban_results.objects.create(user_id=user_id, level_id=level, steps=steps)
 
-    levels = sokoban_level.objects.all().values("number", "map_data", "box_positions", "person_position")
-
+    level = sokoban_level.objects.filter(id=task_id).first()  # Fetch the level using task_id
+    if not level:
+        # Handle case if the level with the given task_id doesn't exist, Doesnt work :(
+        return render(request, 'sokoban_game/SokobanGame-version1.html', {"error": "Level not found."})
     levels_list = []
-    for level in levels:
-        levels_list.append({
-            "number": level["number"],
-            "map_data": json.loads(level["map_data"]),
-            "box_positions": json.loads(level["box_positions"]),
-            "person_position": json.loads(level["person_position"])
-        })
-
+    levels_list.append({
+        "number": task_id,
+        "map_data": json.loads(level.map_data),
+        "box_positions": json.loads(level.box_positions),
+        "person_position": json.loads(level.person_position)  
+    })
     return render(request, 'sokoban_game/SokobanGame-version1.html', {"levels": json.dumps(levels_list)})
 
 

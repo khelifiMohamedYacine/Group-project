@@ -34,5 +34,5 @@ class UserLocation(models.Model):
     task2_complete = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.location.locID}"
+        return f"{self.userID.username} - {self.locationID.locID}"
 
