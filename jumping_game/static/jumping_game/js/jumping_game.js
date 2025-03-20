@@ -1,9 +1,18 @@
 window.addEventListener('load', function () {
-    // Level Variables (Can be modified for testing)
-    const speedMultiplier = 2; // Adjusts the speed of enemies and background
-    const enemySpawnRate = 800; // Time in milliseconds between enemy spawns
+
     const imageCycles = [1, 2, 2, 1]; // Number of cycles for each background image
-    const level = 78; // Displayed level number
+
+    // load level data dynamically, it is what differenciates levels from each other
+    const gameData = JSON.parse(document.getElementById("game-data").textContent);
+
+    console.log("Raw Game Data:", gameData);
+    const speedMultiplier = gameData.speedMultiplier_;
+    const enemySpawnRate = gameData.enemySpawnRate_;
+    const level = gameData.level_;
+
+    console.log("Speed Multiplier:", speedMultiplier);
+    console.log("Enemy Spawn Rate:", enemySpawnRate);
+    console.log("Level:", level);
 
     // Game Variables
     let enemys = [];

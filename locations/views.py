@@ -14,6 +14,7 @@ from django.http import HttpResponse
 
 from quizzes.models import Quiz
 from sokoban_game.models import sokoban_level
+from jumping_game.models import jumping_game_level
 from django.contrib.contenttypes.models import ContentType
 
 page_forbidden_string = "You dont have permission to access this page. Only game admins do."
@@ -39,6 +40,8 @@ def add_location(request):
         try:
             data = json.loads(request.body)
             print("Received Data:", data)
+            
+            
 
             latitude = data.get('latitude')
             longitude = data.get('longitude')
@@ -52,12 +55,14 @@ def add_location(request):
             task1_instance = None
             if task1_id:
                 task1_type = data.get('task1_type')  # Get the task type for task1
+                print("task1_type", task1_type)
                 task1_content_type = ContentType.objects.get(model=task1_type.lower())  # Use ContentType to find model
                 task1_instance = task1_content_type.get_object_for_this_type(id=task1_id)
 
             task2_instance = None
             if task2_id:
                 task2_type = data.get('task2_type')  # Get the task type for task2
+                print("task2_type", task2_type)
                 task2_content_type = ContentType.objects.get(model=task2_type.lower())  # Use ContentType to find model
                 task2_instance = task2_content_type.get_object_for_this_type(id=task2_id)
 
@@ -295,13 +300,16 @@ def get_task_ids(request):
         
         # Query the task model based on the task type
         if task_type == "Quiz":
-            print("we got quiz")
             tasks = Quiz.objects.all().values_list("id", flat=True)
-        elif task_type == "Jumping_Game":
-            tasks = JumpingGame.objects.all().values_list("id", flat=True)
+        elif task_type == "jumping_game_level":
+            print("hi got to jumping game level")
+            tasks = jumping_game_level.objects.all().values_list("id", flat=True)
+            print("tasks", tasks)
+            
         elif task_type == "sokoban_level":
-            print("we got here")
+
             tasks = sokoban_level.objects.all().values_list("id", flat=True)
+            
         else:
             return JsonResponse({'error': 'Invalid task type'}, status=400)
 

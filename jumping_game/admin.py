@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import jumping_game_level
+
+admin.site.register(jumping_game_level)
