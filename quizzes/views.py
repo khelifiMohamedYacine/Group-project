@@ -4,8 +4,6 @@ import random
 from .models import Quiz, TrueFalse, Question, UserQuizScore
 
 
-def quiz_view_no_numbers(request):
-    return
 def quiz_view(request, task_id):
     # Refuse access to users not logged in (defensive programming)
     if not request.user.is_authenticated:
@@ -48,6 +46,7 @@ def quiz_view(request, task_id):
             )
         
         return redirect('quizzes:quiz_results')
+        #return redirect('quizzes:quiz', task_id=task_id)
 
     # Select unique questions if not already chosen
     if 'selected_questions' not in request.session:
@@ -99,7 +98,7 @@ def quiz_view(request, task_id):
                 request.session['quiz_finished'] = True
                 #return redirect('quizzes:quiz_results')
 
-            return redirect('quizzes:quiz')
+            return redirect('quizzes:quiz', task_id=task_id)
 
     print("Debug the question ", Question.objects.get(id=question_id))
     return render(request, 'quizzes/quiz.html', {'question': question, 'question_number': question_number})

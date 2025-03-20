@@ -142,12 +142,9 @@ def games_view(request):
         user_location = user_locations.filter(locationID=location).first()
 
         if user_location is None or not user_location.checked_in:
-            print("p1")
             continue
-        print("p1.5")
 
         if not user_location.task1_complete:
-            print("p2")
             task1_type = location.task1_type.name if location.task1_type else None
             game_data = game_info[task1_type]
             game_id = location.task1_id
@@ -163,7 +160,6 @@ def games_view(request):
             games.append(game)
 
         if not user_location.task2_complete:
-            print("p3")
             task2_type = location.task2_type.name if location.task2_type else None
             game_data = game_info[task2_type]
             game_id = location.task2_id
