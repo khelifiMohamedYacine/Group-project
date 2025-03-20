@@ -98,7 +98,7 @@
             <div class="card game-card" onclick="window.location.href='{% url game.game_url task_id=game.game_id %}';" style="cursor: pointer;">
                 <img src="{% static 'core_app/images/'|add:game.image %}" class="card-img-top" alt="{{ game.name }}">
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ game.name }}</h5>
+                    <h5 class="card-title">Location: {{ game.name }}</h5>
                     <p class="card-text">{{ game.description }}</p>
                 </div>
             </div>

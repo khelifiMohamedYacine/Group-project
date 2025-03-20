@@ -5,13 +5,13 @@ from django.http import JsonResponse
 
 from sokoban_game.models import sokoban_level, sokoban_results
 
-from django.views.decorators.csrf import csrf_exempt #temp
+from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def sokoban_game_view(request, task_id):
-    # Note that the sokoban javascript was designed to take an array of every sokoban level and play each in sequence
-    # But it was decided that users would only play one level at a time. To avoid major changes to the javascript this
-    # view now just returns an array of only one level. I guess this is minor tech debt
+    # Note that the sokoban javascript was originally designed to take an array of every sokoban level and play each in sequence
+    # But it was decided that users would only play one level at a time. To avoid major changes to the javascript this view now
+    # just returns an array of only one level.
 
     if request.method == "POST":
         user_id = request.POST.get('user_id')
@@ -36,12 +36,16 @@ def sokoban_game_view(request, task_id):
 
 @csrf_exempt
 def sokoban_admin_view(request):
+    #id_number = 1  # Hardcoded ID to maintain consistency
+
+    # Save level to database
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             for level_data in data:
+                print("Received level data:", level_data)
                 level, created = sokoban_level.objects.update_or_create(
-                    number=level_data["number"],
+                    id=level_data["number"],
                     defaults={
                         "map_data": json.dumps(level_data["map_data"]),
                         "box_positions": json.dumps(level_data["box_positions"]),
@@ -53,11 +57,12 @@ def sokoban_admin_view(request):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-    levels = sokoban_level.objects.all().values("number", "map_data", "box_positions", "person_position")
+    # Load levels to display
+    levels = sokoban_level.objects.all().values("id", "map_data", "box_positions", "person_position")
     levels_list = []
     for level in levels:
         levels_list.append({
-            "number": level["number"],
+            "number": level["id"],
             "map_data": json.loads(level["map_data"]),
             "box_positions": json.loads(level["box_positions"]),
             "person_position": json.loads(level["person_position"])
@@ -69,7 +74,7 @@ def sokoban_admin_view(request):
 def delete_level(request, level_number):
     if request.method == "DELETE":
         try:
-            level = sokoban_level.objects.get(number=level_number)
+            level = sokoban_level.objects.get(id=level_number)
             level.delete()
             print("del success")
             return JsonResponse({"success": True, "message": f"Level {level_number} deleted successfully!"})
@@ -77,6 +82,4 @@ def delete_level(request, level_number):
         except sokoban_level.DoesNotExist:
             print("del fail")
             return JsonResponse({"success": False, "error": "Level not found."})
-        print("del how did we get here")
-    print("del or here")
     return JsonResponse({"success": False, "error": "Invalid request method."}, status=400)
