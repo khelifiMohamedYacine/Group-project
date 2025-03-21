@@ -40,7 +40,7 @@ sokoban_level.objects.all().delete()
 
 for index, level in enumerate(levels_data):
     sokoban_level.objects.create(
-        #number=index + 1,
+        id=index + 1,
         map_data=json.dumps(level["map"]),
         box_positions=json.dumps(level["boxPos"]),
         person_position=json.dumps(level["personPos"])

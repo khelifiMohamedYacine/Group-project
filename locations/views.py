@@ -14,7 +14,7 @@ from django.http import HttpResponse
 
 from quizzes.models import Quiz
 from sokoban_game.models import sokoban_level
-from jumping_game.models import jumping_game_level
+from jumping_game.models import JumpingGameLevel
 from django.contrib.contenttypes.models import ContentType
 
 page_forbidden_string = "You dont have permission to access this page. Only game admins do."
@@ -301,10 +301,8 @@ def get_task_ids(request):
         # Query the task model based on the task type
         if task_type == "Quiz":
             tasks = Quiz.objects.all().values_list("id", flat=True)
-        elif task_type == "jumping_game_level":
-            print("hi got to jumping game level")
-            tasks = jumping_game_level.objects.all().values_list("id", flat=True)
-            print("tasks", tasks)
+        elif task_type == "JumpingGameLevel":
+            tasks = JumpingGameLevel.objects.all().values_list("id", flat=True)
             
         elif task_type == "sokoban_level":
 
