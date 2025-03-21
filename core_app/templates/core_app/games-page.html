@@ -81,6 +81,17 @@
         font-size: 0.8rem; 
         color: #555; 
     }
+    /* Change to rows of 1 for narrow mobile screens */
+    @media (max-aspect-ratio: 1/1) {
+        .card {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .container {
+            padding: 20px;
+        }
+    }
 </style>
 {% endblock %}
 
