@@ -4,6 +4,17 @@ var map = new maplibregl.Map({
     center: [-3.5351, 50.7371],
     zoom: 14,
 });
+
+// restrict map panning
+var radiusLat = 0.05;
+var radiusLon = radiusLat / Math.cos(map.getCenter().lat * Math.PI / 180);
+
+var bounds = [
+    [map.getCenter().lng - radiusLon, map.getCenter().lat - radiusLat],
+    [map.getCenter().lng + radiusLon, map.getCenter().lat + radiusLat]
+];
+map.setMaxBounds(bounds);
+
 // Getting the saved locations from the database
 document.addEventListener("DOMContentLoaded", async function () {
     
