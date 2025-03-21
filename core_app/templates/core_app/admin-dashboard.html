@@ -21,13 +21,14 @@ body {
     color: rgb(255, 255, 255); 
     text-shadow: 2px 2px 8px rgba(0,0,0,0.9); 
     flex-direction: column;
+    -webkit-text-stroke: 2px black;
 }
 
 .container { 
     padding: 50px; 
     display: flex; 
     flex-wrap: wrap; /* Allow wrapping of the cards */
-    justify-content: space-between; /* Ensure 2 cards per line */
+    justify-content: center; /* Ensure 2 cards per line */
 }
 
 .admin-card {
@@ -37,8 +38,9 @@ body {
     overflow: hidden;
     background-color: white;
     padding: 20px;
-    margin-bottom: 20px;
+    margin: 0px 10px 20px;
     width: 32%;
+    min-width: 200px;
 }
 
 .admin-card:hover {
@@ -82,7 +84,7 @@ a {
 {% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
 
 <div class="main-banner">
-    <p class="display-5 fw-bold" style="text-align: center;">Admin Dashboard</p>
+    <p class="display-4 fw-bold" style="text-align: center;">Admin Dashboard</p>
 </div>
 
 <div class="container">
