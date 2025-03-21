@@ -173,7 +173,6 @@ def games_view(request):
                 "game_id": game_id,
             }
             games.append(game)
-    
     return render(request, 'core_app/games-page.html', {'games': games})
     
 
