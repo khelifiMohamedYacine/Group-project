@@ -7,12 +7,10 @@ from sokoban_game.models import sokoban_level
 from jumping_game.models import JumpingGameLevel
 
 def mark_task_complete(user, task_type_string, task_id, reward_pts):
-    print("m0")
     if not user.is_authenticated:
         raise PermissionDenied("User must be logged in")
         return
 
-    print("m1")
     task_type = None
     match task_type_string:
         case "Quiz":
@@ -22,7 +20,6 @@ def mark_task_complete(user, task_type_string, task_id, reward_pts):
         case "sokoban_level":
             task_type = ContentType.objects.get_for_model(sokoban_level)
 
-    print("m2")
     user_locations = UserLocation.objects.filter(userID=user, checked_in=True)  # Filter for checked-in locations
     # check through every UserLocation the user has check in to
     for user_location in user_locations:
