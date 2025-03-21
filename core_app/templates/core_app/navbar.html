@@ -29,7 +29,7 @@
                     <a class="nav-link" href="{% url 'quizzes:quiz' %}"><i class="far fa-question-circle"></i> Quizzes</a>
                 </li>
 
-                {% if request.path != "/maps/" %}
+                {% if request.path != "/map/" %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'locations:user_map_view' %}"><i class="fas fa-map-marker-alt"></i> Uni map</a>
                     </li>

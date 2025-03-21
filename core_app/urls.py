@@ -19,8 +19,8 @@ urlpatterns = [
     path('games/', views.games_view, name="games_page"),
     path('videos/', views.videos_view, name="videos"),
 
-    path('admin_pages/dashboard/', views.admin_view, name="admin_dashboard"),
-    path('admin_pages/content/', views.admin_content_view, name="admin_content"),
-    path('admin_pages/users/', views.admin_users_view, name="admin_users"),
-    path('admin_pages/analytics/', views.admin_analytics_view, name="admin_analytics"),
+    path('game_admin/dashboard/', views.admin_view, name="admin_dashboard"),
+    path('game_admin/content/', views.admin_content_view, name="admin_content"),
+    path('game_admin/users/', views.admin_users_view, name="admin_users"),
+    path('game_admin/analytics/', views.admin_analytics_view, name="admin_analytics"),
 ]
