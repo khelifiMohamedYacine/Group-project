@@ -1,8 +1,10 @@
+import json
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 
+from core_app.mark_task_complete import mark_task_complete
 from .models import JumpingGameLevel
 
 @login_required
@@ -24,17 +26,29 @@ def jumping_game_view(request, task_id):
 @csrf_exempt
 @login_required
 def mark_jumping_game_complete(request):
+    print("try to mark jumping game complete")
     if request.method == "POST":
         try:
+            print(f"Raw request body: {request.body}")
+            print("hi1")
+
             data = json.loads(request.body)
+            
+            print(data)
+            print("hi1.1")
             task_id = data.get("task_id")
+            print("hi1.2")
             reward_pts = data.get("score")
-
+            print("hi2")
             if not task_id or reward_pts is None:
+                print("hi0")
                 return JsonResponse({"error": "Missing task_id or reward_pts"}, status=400)
-
+            print("hi3")
             user = request.user
+            print("hi4")
+            print("stuff", user, task_id, reward_pts)
             mark_task_complete(user, "JumpingGameLevel", task_id, reward_pts)
+            print("hi5")
             return JsonResponse({"message": f"Level Complete. Recieved {reward_pts} reward points"})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)

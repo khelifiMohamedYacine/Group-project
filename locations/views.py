@@ -129,6 +129,7 @@ def get_locations(request):
 
 @login_required
 def get_locations_with_lock_status(request):
+
     locations = Location.objects.all()
     location_data = []
 
@@ -250,6 +251,8 @@ def generate_location_graph(request):
 @login_required
 @csrf_exempt
 def check_in(request, loc_id):
+    print("check in func")
+
     if request.method == "POST":
         user = request.user
         try:
@@ -262,18 +265,22 @@ def check_in(request, loc_id):
                 locationID=location,
                 task1_complete = False,
                 task2_complete = False,
-                defaults={"checked_in": True}
+                checked_in = True,
+                #defaults={"checked_in": True}
             )
+            print("user_location: ", user_location)
+
             if location.task1_id is None: # if there is no task imidiately set it to None
                 user_location.task1_complete = True
             if location.task2_id is None:
                 user_location.task2_complete = True
-            location.save()  #
+            location.save()
             
             if created:
                 # a new entry was created, means the user wasn't checked in before
                 return JsonResponse({'message': 'Check-in successful!', 'checked_in': True})
             else:
+                print("not created")
                 # the entry already exists, means the user has already checked in
                 return JsonResponse({'message': 'Already checked in.', 'checked_in': True})
 

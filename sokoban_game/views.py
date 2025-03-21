@@ -24,7 +24,7 @@ def sokoban_game_view(request, task_id):
     level = sokoban_level.objects.filter(id=task_id).first()  # Fetch the level using task_id
     if not level:
         # Handle case if the level with the given task_id doesn't exist, Doesnt work :(
-        return render(request, 'sokoban_game/SokobanGame-version1.html', {"error": "Level not found."})
+        return render(request, 'sokoban_game/SokobanGame.html', {"error": "Level not found."})
     levels_list = []
     levels_list.append({
         "number": task_id,
@@ -32,7 +32,7 @@ def sokoban_game_view(request, task_id):
         "box_positions": json.loads(level.box_positions),
         "person_position": json.loads(level.person_position)  
     })
-    return render(request, 'sokoban_game/SokobanGame-version1.html', {"levels": json.dumps(levels_list)})
+    return render(request, 'sokoban_game/SokobanGame.html', {"levels": json.dumps(levels_list)})
 
 
 @csrf_exempt
@@ -93,7 +93,9 @@ def delete_level(request, level_number):
 def mark_sokoban_complete(request):
     if request.method == "POST":
         try:
+            print(f"Raw request body: {request.body}")
             data = json.loads(request.body)
+            print(data)
             task_id = data.get("task_id")
             reward_pts = 60 - data.get("steps") # lower number of steps is better
             if reward_pts < 10: # ensure user always gets some reward_pts
