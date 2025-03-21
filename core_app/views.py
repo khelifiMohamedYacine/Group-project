@@ -125,7 +125,7 @@ def games_view(request):
             'image': 'SokobanGamePic1.PNG',
             'description': 'Help Mark recycle the garbage in this puzzle game.'
         },
-        'jumping_game_level': {
+        'jumping game level': { # well that did fix the bug
             'url': 'jumping_game',
             'image': 'JumpingGamePic2.PNG',
             'description': 'Lead the dog to a cleaner environment by jumping and rolling around obstacles.'

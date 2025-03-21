@@ -2,14 +2,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import random
 from .models import Quiz, TrueFalse, Question, UserQuizScore
+from core_app.mark_task_complete import mark_task_complete
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def quiz_view(request, task_id):
-    # Refuse access to users not logged in (defensive programming)
-    if not request.user.is_authenticated:
-        return redirect('login')
 
-
+    user = request.user
     quiz_id = task_id # value that determines which quiz we are going to play
 
     # Initialize session variables
@@ -29,7 +28,7 @@ def quiz_view(request, task_id):
 
     # If quiz is finished, save and redirect to results
     if quiz_finished:
-        user = request.user
+        
 
         if UserQuizScore.objects.filter(user=user, id=quiz_id).exists():
             # handle case where the results already exists (defensive programming)
@@ -96,13 +95,15 @@ def quiz_view(request, task_id):
             # Check if quiz is completed
             if request.session['question_number'] >= len(request.session['selected_questions']):
                 request.session['quiz_finished'] = True
-                #return redirect('quizzes:quiz_results')
+
+                mark_task_complete(user, "Quiz", task_id, 10 * request.session['quiz_result'])
 
             return redirect('quizzes:quiz', task_id=task_id)
 
     print("Debug the question ", Question.objects.get(id=question_id))
     return render(request, 'quizzes/quiz.html', {'question': question, 'question_number': question_number})
 
+@login_required
 def quiz_results_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -119,11 +120,8 @@ def quiz_results_view(request):
     for question_id in request.session.get('selected_questions', []):
         
         question = Question.objects.filter(id=question_id).first() or TrueFalse.objects.filter(id=question_id).first()
-        print("Question:", question)
         selected_answer = request.session.get(f"answer_{question_id}")
-        print("selected Answer:", selected_answer)
         correct_answer = question.correct_choice if isinstance(question, Question) else ("True" if question.is_true else "False")
-        print("correct Answer:", correct_answer)
 
         quiz_feedback.append({
             "question_text": question.question_text,
@@ -147,3 +145,4 @@ def quiz_results_view(request):
     del request.session['selected_questions']
         
     return response
+

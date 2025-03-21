@@ -408,7 +408,25 @@ window.addEventListener('load', function () {
             ctx.fillText('Level Completed!', canvas.width / 2 - 150, canvas.height / 2 - 20);
             ctx.font = '30px Helvetica';
             ctx.fillText('Score: ' + score, canvas.width / 2 - 80, canvas.height / 2 + 40);
-            //ctx.fillText('Press SPACE or Click to Restart', canvas.width / 2 - 220, canvas.height / 2 + 100);
+
+            // Send completion data to backend
+            fetch('/mark_jumping_game_complete/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    task_id: level,
+                    score: score
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);  // Display completion message with reward points
+            })
+            .catch(error => {
+                alert('Error marking level complete');
+            });
             return; // Stop the game loop
         }
 
