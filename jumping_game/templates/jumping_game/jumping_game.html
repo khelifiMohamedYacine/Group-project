@@ -22,10 +22,14 @@
 
 
     <!-- Should be using {{ game_data|json_script }}-->
-    <script id="game-data" type="application/json">
+    <!--<script id="game-data" type="application/json">
+        {{ game_data|json_script }}
         {"speedMultiplier_": 2.0, "enemySpawnRate_": 800, "level_": 1}
         
-    </script>
+    </script>-->
+    <input type="hidden" id='speedMultiplier_' value='{{ game_data.speedMultiplier_ }}'>
+    <input type="hidden" id='enemySpawnRate_' value='{{ game_data.enemySpawnRate_ }}'>
+    <input type="hidden" id='level_' value='{{ game_data.level_ }}'>
 
 
     <script src="{% static 'jumping_game/js/jumping_game.js' %}"></script>

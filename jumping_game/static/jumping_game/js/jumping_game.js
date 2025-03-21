@@ -3,12 +3,12 @@ window.addEventListener('load', function () {
     const imageCycles = [1, 2, 2, 1]; // Number of cycles for each background image
 
     // load level data dynamically, it is what differenciates levels from each other
-    const gameData = JSON.parse(document.getElementById("game-data").textContent);
+    //const gameData = JSON.parse(document.getElementById("game-data").textContent);
 
-    console.log("Raw Game Data:", gameData);
-    const speedMultiplier = gameData.speedMultiplier_;
-    const enemySpawnRate = gameData.enemySpawnRate_;
-    const level = gameData.level_;
+    //console.log("Raw Game Data:", gameData);
+    const speedMultiplier = Number(this.document.getElementById("speedMultiplier_").value);
+    const enemySpawnRate = Number(this.document.getElementById("enemySpawnRate_").value);
+    const level = Number(this.document.getElementById("level_").value);
 
     console.log("Speed Multiplier:", speedMultiplier);
     console.log("Enemy Spawn Rate:", enemySpawnRate);
@@ -409,6 +409,11 @@ window.addEventListener('load', function () {
             ctx.font = '30px Helvetica';
             ctx.fillText('Score: ' + score, canvas.width / 2 - 80, canvas.height / 2 + 40);
 
+            // edge case for odd levels with no obstacles
+            if (score < 1) {
+                score = 1;
+            }
+
             // Send completion data to backend
             fetch('/mark_jumping_game_complete/', {
                 method: 'POST',
@@ -422,10 +427,12 @@ window.addEventListener('load', function () {
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);  // Display completion message with reward points
+                if (data.message) {
+                    alert(data.message);  // Show the message like "Level Complete. X reward points"
+                }
             })
             .catch(error => {
-                alert('Error marking level complete');
+                alert('Error marking game level complete');
             });
             return; // Stop the game loop
         }
