@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from core_app.models import UserAccount
 from quizzes.models import Quiz, Question
+# from jumping_game.models import JumpingGameLevel
 
 from django.utils import timezone
 from datetime import timedelta
@@ -202,7 +203,7 @@ def admin_quiz_view(request):
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
             context = {
-                'messageStyle': "color: #ff4000; display: none;",
+                'messageClass': "noResult",
                 'message' : "",
                 'currentQuizzes' : []
             }
@@ -212,25 +213,24 @@ def admin_quiz_view(request):
 
                 if Quiz.objects.filter(name = request.POST['quiz-name']).exists():
                     # The new quiz is not allowed to have the same name as an existing one
-                    context["messageStyle"] = "color: #ff4000; display: block;"
+                    context["messageClass"] = "resultFail"
                     context["message"] = f"There is already a quiz with the name '{request.POST['quiz-name']}'."
 
                 elif not (request.POST['numberOfQuestions'].isnumeric()):
                     # This could only happen if the form was posted illegitimately (not through the website)
-                    context["messageStyle"] = "color: #ff4000; display: block;"
+                    context["messageClass"] = "resultFail"
                     context["message"] = f"An unknown error occurred."
 
                 else:
                     noOfQuestions = int(request.POST['numberOfQuestions'])
                     duplicateQuestionFound = False
-                    print(Question.objects.all())
 
                     for x in range(1, noOfQuestions + 1):
                         # Check questions against the database for duplicates
                         if Question.objects.filter(question_text = request.POST['question-text-q' + str(x)]).exists():
                             # No duplicates of existing questions are allowed
                             duplicateQuestionFound = True
-                            context["messageStyle"] = "color: #ff4000; display: block;"
+                            context["messageClass"] = "resultFail"
                             context["message"] = f"""The question '{request.POST['question-text-q' + str(x)]}' 
                                 is already in another quiz. Try re-wording the question slightly."""
                             break
@@ -242,14 +242,14 @@ def admin_quiz_view(request):
                                 if request.POST['question-text-q' + str(x)] == request.POST['question-text-q' + str(y)]:
                                     # No duplicates of existing questions are allowed
                                     duplicateQuestionFound = True
-                                    context["messageStyle"] = "color: #ff4000; display: block;"
+                                    context["messageClass"] = "resultFail"
                                     context["message"] = f"""The question '{request.POST['question-text-q' + str(x)]}' 
                                         appears multiple times in this quiz."""
                                     break
 
                     if duplicateQuestionFound == False:
                         # If all validation checks have passed, then add the quiz and questions to the database
-                        context["messageStyle"] = "color: #369a04; display: block;"
+                        context["messageClass"] = "resultSuccess"
                         context["message"] = "The new quiz was successfully added!"
 
                         newQuiz = Quiz(name = request.POST['quiz-name'])
@@ -268,23 +268,117 @@ def admin_quiz_view(request):
                             )
                             newQuestion.save()
                         
-
             elif request.method == 'POST' and request.POST['whichForm'] == "deleteQuizForm":
                 # This means the delete quiz form was just submitted
 
                 if Quiz.objects.filter(name = request.POST['select-quiz']).exists():
                     # Confirm that a quiz with the given name exists within the database
                     Quiz.objects.filter(name = request.POST['select-quiz']).delete()
-                    context["messageStyle"] = "color: #369a04; display: block;"
+                    context["messageClass"] = "resultSuccess"
                     context["message"] = f"The quiz '{request.POST['select-quiz']}' was successfully deleted!"
                 
                 else:
-                    context["messageStyle"] = "color: #ff4000; display: block;"
+                    context["messageClass"] = "resultFail"
                     context["message"] = f"""No quiz named '{request.POST['select-quiz']}' could be found.
                         This is likely because it was recently deleted."""
 
             context["currentQuizzes"] = list(Quiz.objects.values_list('name', flat=True))
             return render(request, 'core_app/manage-quiz.html', context)
+        else:
+            return redirect('home')
+    else:
+        return redirect('login')
+    
+
+def admin_jumping_view(request):
+    """
+    For clarity, view function for the Jumping game's admin/management page.
+    """
+    if request.user.is_authenticated:
+        if request.user.account_type == "admin":
+            context = {
+                'messageClass': "noResult",
+                'message' : "",
+                'levelIDs' : [1,2,3,4,5] # dummy data
+            }
+
+            if request.method == 'POST' and request.POST['whichForm'] == "addLevelForm":
+                # This means the add level form was just submitted
+
+                sm = request.POST['speed-multi']
+                sp = request.POST['spawn-rate']
+
+                if sm.replace('.','',1).isdigit() == True and sp.isnumeric():
+                    # Only add a new level if the values given can be converted into the correct type
+
+                    context["messageClass"] = "resultSuccess"
+                    context["message"] = f"The level was successfully added!"
+
+                    """
+                    newLevel = JumpingGameLevel(
+                        speed_multiplier = float(sm),
+                        enemy_spawn_rate = int(sp)
+                    )
+                    newLevel.save()
+                    """ # This code block will be uncommented when the most recent database updates become available
+
+                else:
+                    # This could only happen if the form was posted illegitimately (not through the website)
+                    context["messageClass"] = "resultFail"
+                    context["message"] = f"An unknown error occurred."
+
+            elif request.method == 'POST' and request.POST['whichForm'] == "editLevelForm":
+                # This means the edit level form was just submitted
+                
+                """
+                if JumpingGameLevel.objects.filter(id = request.POST['select-level']).exists():
+                    # Confirm that a level with the given ID exists in the Jumping game database
+
+                    sm = request.POST['speed-multi']
+                    sp = request.POST['spawn-rate']
+
+                    if sm.replace('.','',1).isdigit() == True and sp.isnumeric():
+                        # Only add a new level if the values given can be converted into the correct type
+
+                        context["messageClass"] = "resultSuccess"
+                        context["message"] = f"The level was successfully edited!"
+
+                        editLevel = JumpingGameLevel.objects.get(id =  request.POST['select-level'])
+                        editLevel.speed_multiplier = float(sm)
+                        editLevel.enemy_spawn_rate = int(sp)
+                        editLevel.save()
+
+                    else:
+                        # This could only happen if the form was posted illegitimately (not through the website)
+                        context["messageClass"] = "resultFail"
+                        context["message"] = f"An unknown error occurred."
+
+                else:
+                """ # This code block will be uncommented when the most recent database updates become available
+                    # When that happens, indent the three lines below
+                context["messageClass"] = "resultFail"
+                context["message"] = f"""No level with an ID of '{request.POST['select-level']}' could be found. 
+                    This is likely because it was recently deleted."""                  
+
+            elif request.method == 'POST' and request.POST['whichForm'] == "deleteLevelForm":
+                # This means the delete level form was just submitted
+
+                """
+                if JumpingGameLevel.objects.filter(id = request.POST['select-level']).exists():
+                    # Confirm that a level with the given ID exists in the Jumping game database
+                    JumpingGameLevel.objects.filter(id = request.POST['select-level']).delete()
+                    context["messageClass"] = "resultSuccess"
+                    context["message"] = f"The level with an ID of '{request.POST['select-level']}' was successfully deleted!"
+                
+                else:
+                """ # This code block will be uncommented when the most recent database updates become available
+                    # When that happens, indent the three lines below
+                context["messageClass"] = "resultFail"
+                context["message"] = f"""No level with an ID of '{request.POST['select-level']}' could be found. 
+                    This is likely because it was recently deleted.""" 
+
+            # context["levelIDs"] = list(JumpingGameLevel.objects.values_list('id', flat=True))
+            return render(request, 'core_app/manage-jumping.html', context)
         else:
             return redirect('home')
     else:

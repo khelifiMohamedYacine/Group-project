@@ -112,6 +112,20 @@
         border-radius: 10px;
         background-color: #ffffff;
     }
+
+    .resultSuccess {
+        color: #369a04 !important;
+        display: block;
+    }
+
+    .resultFail {
+        color: #d83600 !important;
+        display: block;
+    }
+
+    .noResult {
+        display: none;
+    }
 </style>
 {% endblock %}
 
@@ -129,6 +143,9 @@
     <h6 id="resultMessage" style="color: #ff4000; display: block;">
         No account with the username "Jingle Bells" could be found. Make sure your spelling is correct.
     </h6>
+    <!--<h6 id="resultMessage" class="{{ messageClass }}">
+        {{ message }}
+    </h6>-->
 
     <div class="form-container">
         <h3>Look Up User Details</h3>

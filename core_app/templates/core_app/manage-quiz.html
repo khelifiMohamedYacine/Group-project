@@ -116,6 +116,20 @@
         border-radius: 10px;
         background-color: #ffffff;
     }
+
+    .resultSuccess {
+        color: #369a04 !important;
+        display: block;
+    }
+
+    .resultFail {
+        color: #d83600 !important;
+        display: block;
+    }
+
+    .noResult {
+        display: none;
+    }
 </style>
 {% endblock %}
 
@@ -130,7 +144,7 @@
     <!-- Back Button -->
     <a id="backButton" class="btn btn-primary" href="{% url 'admin_content' %}">Go Back</a>
 
-    <h6 id="resultMessage" style="{{ messageStyle }}">
+    <h6 id="resultMessage" class="{{ messageClass }}">
         {{ message }}
     </h6>
 

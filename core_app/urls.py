@@ -24,4 +24,5 @@ urlpatterns = [
     path('game_admin/users/', views.admin_users_view, name="admin_users"),
     path('game_admin/analytics/', views.admin_analytics_view, name="admin_analytics"),
     path('game_admin/quiz/', views.admin_quiz_view, name="admin_quiz"),
+    path('game_admin/jumping/', views.admin_jumping_view, name="admin_jumping"),
 ]
