@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
 from core_app.models import UserAccount
+from quizzes.models import Quiz, Question
 
 from django.utils import timezone
 from datetime import timedelta
@@ -191,6 +192,99 @@ def admin_analytics_view(request):
             }
 
             return render(request, 'core_app/analytics.html', context)
+        else:
+            return redirect('home')
+    else:
+        return redirect('login')
+
+
+def admin_quiz_view(request):
+    if request.user.is_authenticated:
+        if request.user.account_type == "admin":
+            context = {
+                'messageStyle': "color: #ff4000; display: none;",
+                'message' : "",
+                'currentQuizzes' : []
+            }
+
+            if request.method == 'POST' and request.POST['whichForm'] == "addQuizForm":
+                # This means the add quiz form was just submitted
+
+                if Quiz.objects.filter(name = request.POST['quiz-name']).exists():
+                    # The new quiz is not allowed to have the same name as an existing one
+                    context["messageStyle"] = "color: #ff4000; display: block;"
+                    context["message"] = f"There is already a quiz with the name '{request.POST['quiz-name']}'."
+
+                elif not (request.POST['numberOfQuestions'].isnumeric()):
+                    # This could only happen if the form was posted illegitimately (not through the website)
+                    context["messageStyle"] = "color: #ff4000; display: block;"
+                    context["message"] = f"An unknown error occurred."
+
+                else:
+                    noOfQuestions = int(request.POST['numberOfQuestions'])
+                    duplicateQuestionFound = False
+                    print(Question.objects.all())
+
+                    for x in range(1, noOfQuestions + 1):
+                        # Check questions against the database for duplicates
+                        if Question.objects.filter(question_text = request.POST['question-text-q' + str(x)]).exists():
+                            # No duplicates of existing questions are allowed
+                            duplicateQuestionFound = True
+                            context["messageStyle"] = "color: #ff4000; display: block;"
+                            context["message"] = f"""The question '{request.POST['question-text-q' + str(x)]}' 
+                                is already in another quiz. Try re-wording the question slightly."""
+                            break
+
+                    if noOfQuestions > 1:
+                        for x in range(1, noOfQuestions):
+                            for y in range(x + 1, noOfQuestions + 1):
+                                # Check questions against each other for duplicates
+                                if request.POST['question-text-q' + str(x)] == request.POST['question-text-q' + str(y)]:
+                                    # No duplicates of existing questions are allowed
+                                    duplicateQuestionFound = True
+                                    context["messageStyle"] = "color: #ff4000; display: block;"
+                                    context["message"] = f"""The question '{request.POST['question-text-q' + str(x)]}' 
+                                        appears multiple times in this quiz."""
+                                    break
+
+                    if duplicateQuestionFound == False:
+                        # If all validation checks have passed, then add the quiz and questions to the database
+                        context["messageStyle"] = "color: #369a04; display: block;"
+                        context["message"] = "The new quiz was successfully added!"
+
+                        newQuiz = Quiz(name = request.POST['quiz-name'])
+                        newQuiz.save()
+
+                        for x in range(1, noOfQuestions + 1):
+                            correct = request.POST['correct-choice-q' + str(x)]
+                            newQuestion = Question(
+                                question_text = request.POST['question-text-q' + str(x)],
+                                choice1 = request.POST['choice1-q' + str(x)],
+                                choice2 = request.POST['choice2-q' + str(x)],
+                                choice3 = request.POST['choice3-q' + str(x)],
+                                choice4 = request.POST['choice4-q' + str(x)],
+                                correct_choice = request.POST['choice' + correct + '-q' + str(x)],
+                                quiz = newQuiz
+                            )
+                            newQuestion.save()
+                        
+
+            elif request.method == 'POST' and request.POST['whichForm'] == "deleteQuizForm":
+                # This means the delete quiz form was just submitted
+
+                if Quiz.objects.filter(name = request.POST['select-quiz']).exists():
+                    # Confirm that a quiz with the given name exists within the database
+                    Quiz.objects.filter(name = request.POST['select-quiz']).delete()
+                    context["messageStyle"] = "color: #369a04; display: block;"
+                    context["message"] = f"The quiz '{request.POST['select-quiz']}' was successfully deleted!"
+                
+                else:
+                    context["messageStyle"] = "color: #ff4000; display: block;"
+                    context["message"] = f"""No quiz named '{request.POST['select-quiz']}' could be found.
+                        This is likely because it was recently deleted."""
+
+            context["currentQuizzes"] = list(Quiz.objects.values_list('name', flat=True))
+            return render(request, 'core_app/manage-quiz.html', context)
         else:
             return redirect('home')
     else:

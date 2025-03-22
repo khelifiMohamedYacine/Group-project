@@ -1,0 +1,271 @@
+{% extends 'core_app/base.html' %}
+{% load static %}
+
+{% block head_content %}
+<title>Manage Quizzes Page</title>
+<style>
+    body {
+        background-color: #f0f8ff;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-banner {
+        padding-top: 5vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgb(255, 255, 255);
+        text-shadow: 4px 4px 8px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 2px black;
+        flex-direction: column;
+    }
+
+    .container {
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-width: 1100px;
+    }
+
+    .form-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .form-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="password"],
+    .form-container input[type="email"],
+    .form-container textarea,
+    .form-container select {
+        width: 50%;
+        min-width: 250px;
+        padding: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .form-container textarea {
+        width: 75%
+    }
+
+    .form-container input[type="number"] {
+        margin-bottom: 15px;
+    }
+
+    .form-container button {
+        background-color: #007bff;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        margin-right: 10px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .form-container button:hover {
+        background-color: #0056b3;
+    }
+
+    h3 {
+        margin-bottom: 20px;
+    }
+
+    #backButton {
+        background-color: #ff0000;
+        margin: -25px auto 15px;
+        font-size: 1.2rem;
+        border-radius: 20px;
+        padding: 5px 15px;
+        border: none;
+        font-weight: bold;
+    }
+
+    #backButton:hover {
+        background-color: #c12121;
+    }
+
+    #addQuestionButton, #removeQuestionButton {
+        margin-bottom: 10px;
+        margin-top: 10px;
+        padding: 3px 10px;
+        font-size: 1rem;
+    }
+
+    #resultMessage {
+        text-align: center;
+        font-weight: bold;
+        color: rgb(255, 255, 255);
+        width: 75%;
+        margin: 0 auto;
+        font-family: 'Trebuchet MS', sans-serif;
+        padding: 8px;
+        border-radius: 10px;
+        background-color: #ffffff;
+    }
+</style>
+{% endblock %}
+
+{% block body_content %}
+{% include 'core_app/navbar.html' %}
+
+<div class="main-banner">
+    <p class="display-4 fw-bold" style="text-align: center;">Manage Quizzes</p>
+</div>
+
+<div class="container">
+    <!-- Back Button -->
+    <a id="backButton" class="btn btn-primary" href="{% url 'admin_content' %}">Go Back</a>
+
+    <h6 id="resultMessage" style="{{ messageStyle }}">
+        {{ message }}
+    </h6>
+
+    <div class="form-container">
+        <h3>Add A New Quiz</h3>
+
+        <form id="addQuizForm" method="POST"> <!--The form for adding new quizzes-->
+            {% csrf_token %}
+
+            <input type="hidden" id="whichForm" name="whichForm" value="addQuizForm">
+            <input type="hidden" id="numberOfQuestions" name="numberOfQuestions" value=1>
+
+            <label for="quiz-name">Quiz Name:</label>
+            <input type="text" id="quiz-name" name="quiz-name" placeholder="Name of the quiz">
+
+            <br>
+
+            <button type="button" id="addQuestionButton" onclick="addQuestion()">Add Question</button>
+            <button type="button" id="removeQuestionButton" onclick="removeQuestion()">Remove Question</button>
+
+            <hr>
+
+            <div id="questionContainer">
+                <div id="questionTemplate" class="questionSet">
+                    <label for="question-text-q1">Question 1:</label>
+                    <textarea id="question-text-q1" name="question-text-q1" rows="4" placeholder="Enter the question" required></textarea>
+
+                    <label for="choice1-q1">Choice 1:</label>
+                    <input type="text" id="choice1-q1" name="choice1-q1" placeholder="Choice 1" required>
+
+                    <label for="choice2-q1">Choice 2:</label>
+                    <input type="text" id="choice2-q1" name="choice2-q1" placeholder="Choice 2" required>
+
+                    <label for="choice3-q1">Choice 3:</label>
+                    <input type="text" id="choice3-q1" name="choice3-q1" placeholder="Choice 3" required>
+
+                    <label for="choice4-q1">Choice 4:</label>
+                    <input type="text" id="choice4-q1" name="choice4-q1" placeholder="Choice 4" required>
+
+                    <label for="correct-choice-q1">Correct Answer:</label>
+                    <select id="correct-choice-q1" name="correct-choice-q1" style="width: 25%; min-width: 150px;" required>
+                        <option value="1">Choice 1</option>
+                        <option value="2">Choice 2</option>
+                        <option value="3">Choice 3</option>
+                        <option value="4">Choice 4</option>
+                    </select>
+
+                    <hr>
+                </div>
+            </div>
+
+            <button type="submit" name="submit" style="margin-top: 15px;">Add Quiz</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h3>Delete An Existing Quiz</h3>
+
+        <form id="deleteQuizForm"  method="POST"> <!--The form for deleting existing quizzes-->
+            {% csrf_token %}
+
+            <input type="hidden" id="whichForm" name="whichForm" value="deleteQuizForm">
+
+            <label for="select-quiz">Select which quiz you want to delete:</label>
+            <select id="select-quiz" name="select-quiz" style="width: 25%; min-width: 150px;" required>
+                {% for quiz in currentQuizzes %}
+                    <option value="{{ quiz }}">{{ quiz }}</option>
+                {% endfor %}
+            </select>
+
+            <br>
+
+            <button type="submit" name="submit" style="margin-top: 15px;">Delete Quiz</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+const template = document.getElementById("questionTemplate");
+var NQ = 1; // Stands for Number of Questions
+document.getElementById("numberOfQuestions").value = NQ;
+
+
+function addQuestion() {
+    // Allow ten questions max per quiz
+    if (NQ < 10) {
+        NQ++;
+        document.getElementById("numberOfQuestions").value = NQ;
+
+        var clone = template.cloneNode(true);
+
+        clone.removeAttribute("id");
+
+        clone.children[0].htmlFor = "question-text-q" + NQ;
+        clone.children[0].textContent = "Question " + NQ + ":";
+        clone.children[1].id = "question-text-q" + NQ;
+        clone.children[1].name = "question-text-q" + NQ;
+
+        clone.children[2].htmlFor = "choice1-q" + NQ;
+        clone.children[3].id = "choice1-q" + NQ;
+        clone.children[3].name = "choice1-q" + NQ;
+
+        clone.children[4].htmlFor = "choice2-q" + NQ;
+        clone.children[5].id = "choice2-q" + NQ;
+        clone.children[5].name = "choice2-q" + NQ;
+
+        clone.children[6].htmlFor = "choice3-q" + NQ;
+        clone.children[7].id = "choice3-q" + NQ;
+        clone.children[7].name = "choice3-q" + NQ;
+
+        clone.children[8].htmlFor = "choice4-q" + NQ;
+        clone.children[9].id = "choice4-q" + NQ;
+        clone.children[9].name = "choice4-q" + NQ;
+
+        clone.children[10].htmlFor = "correct-choice-q" + NQ;
+        clone.children[11].id = "correct-choice-q" + NQ;
+        clone.children[11].name = "correct-choice-q" + NQ;
+
+        document.getElementById("questionContainer").appendChild(clone);
+    }
+}
+
+function removeQuestion() {
+    // Cannot remove the last question remaining
+    if (NQ > 1) {
+        NQ--;
+
+        document.getElementById("numberOfQuestions").value = NQ;
+        
+        document.getElementById("questionContainer").removeChild(document.getElementById("questionContainer").lastElementChild);
+    }
+}
+
+</script>
+
+{% endblock %}
