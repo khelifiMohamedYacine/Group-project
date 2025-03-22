@@ -183,6 +183,7 @@ div > a {
 </div>
 
 <div class="container">
+    <!-- Back Button -->
     <a id="backButton" class="btn btn-primary" href="{% url 'admin_dashboard' %}">Go Back</a>
 
     <!-- Manage Map Card -->
@@ -202,16 +203,8 @@ div > a {
     <!-- Manage Quizzes Card -->
     <div class="admin-card">
         <h2 class="admin-title">Manage Quizzes</h2>
-        <p class="admin-content">Add, edit, or remove quizzes and their questions.</p>
-        <button class="btn btn-primary" id="editContentBtn2">Manage</button>
-        <div class="card-nav" id="nav-2">
-            <ul>
-                <li><a href="">Add Quiz</a></li>
-                <li><a href="">Edit Quiz</a></li>
-                <li><a href="">Remove Quiz</a></li>
-
-            </ul>
-        </div>
+        <p class="admin-content">Add or remove quizzes and their questions.</p>
+        <a class="btn btn-primary" id="editContentBtn2" href="{% url 'admin_quiz' %}">Manage</a>
     </div>
 
     <!-- Manage Jumping Game Card -->
@@ -226,38 +219,6 @@ div > a {
         <h2 class="admin-title">Manage Sokoban Game</h2>
         <p class="admin-content">Add, edit, or remove levels from the Sokoban Game.</p>
         <a class="btn btn-primary" id="editContentBtn4" href="{% url 'sokoban_admin' %}">Manage</a>
-    </div>
-
-    <!-- Back Button -->
-    
-</div>
-
-<!-- Modal for Adding Quiz -->
-<div id="addQuizModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2>Add Quiz</h2>
-        <form id="quizForm">
-            <label for="questionText">Question:</label>
-            <textarea id="questionText" rows="4" placeholder="Enter the question"></textarea>
-
-            <label for="choice1">Choice 1:</label>
-            <input type="text" id="choice1" placeholder="Choice 1">
-
-            <label for="choice2">Choice 2:</label>
-            <input type="text" id="choice2" placeholder="Choice 2">
-
-            <label for="choice3">Choice 3:</label>
-            <input type="text" id="choice3" placeholder="Choice 3">
-
-            <label for="choice4">Choice 4:</label>
-            <input type="text" id="choice4" placeholder="Choice 4">
-
-            <label for="correctAnswer">Correct Answer:</label>
-            <input type="text" id="correctAnswer" placeholder="Correct Answer">
-
-            <button type="submit">Submit Question</button>
-        </form>
     </div>
 </div>
 
