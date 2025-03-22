@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
 from django.http import HttpResponse
+import math
 
 from quizzes.models import Quiz
 from sokoban_game.models import sokoban_level
@@ -40,14 +41,18 @@ def add_location(request):
         try:
             data = json.loads(request.body)
             print("Received Data:", data)
-            
-            
 
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             address = data.get('address')
             location_name = data.get('location_name')
             locked_by = data.get('locked_by')
+
+            bounds = data.get('bounds')
+            # To validate if the latitude and longitude are within the bounds sent from frontend
+            lon_min, lat_min = bounds[0]  # First item is min longitude, min latitude
+            lon_max, lat_max = bounds[1]  # Second item is max longitude, max latitude
+            print(f"Bounds Min: {lon_min}, {lat_min}, Max: {lon_max}, {lat_max}")
 
             # Handle task1 and task2 which are using GenericForeignKey
             task1_id = data.get('task1_id')
@@ -90,13 +95,11 @@ def add_location(request):
                 longitude = float(longitude)
             except ValueError:
                 return JsonResponse({"error": "Latitude and Longitude must be valid numbers."}, status=400)
-            # Validate if latitude and longitude are within valid geographical ranges
-            if not (-90 <= latitude <= 90):
-                return JsonResponse({"error": "Latitude must be between -90 and 90."}, status=400)
-            if not (-180 <= longitude <= 180):
-                return JsonResponse({"error": "Longitude must be between -180 and 180."}, status=400)
-
-
+            if not (lat_min <= latitude <= lat_max):
+                return JsonResponse({"error": f"Latitude must be between {lat_min} and {lat_max}."}, status=400)
+            if not (lon_min <= longitude <= lon_max):
+                return JsonResponse({"error": f"Longitude must be between {lon_min} and {lon_max}."}, status=400)
+            
             # Save the new location, including tasks
             print("locked_by:", locked_by)
             Location.objects.create(
