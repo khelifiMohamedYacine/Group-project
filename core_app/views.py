@@ -8,7 +8,7 @@ from quizzes.models import Quiz, Question
 
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Count
+from django.db.models import Count, F
 from django.db.models.functions import TruncDate
 import json
 
@@ -128,6 +128,8 @@ def leaderboard_view(request):
 
 
 def admin_view(request):
+    """This is the view function for the Admin Dashboard page"""
+
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
             # Allow the user to access the admin dashboard page if they are logged into an admin account
@@ -141,6 +143,8 @@ def admin_view(request):
 
 
 def admin_content_view(request):
+    """This is the view function for the Content Management page"""
+
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
             return render(request, 'core_app/manage-content.html')
@@ -151,9 +155,118 @@ def admin_content_view(request):
 
 
 def admin_users_view(request):
+    """This is the view function for the Manage Users page"""
+
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
-            return render(request, 'core_app/manage-users.html')
+            context = {
+                'messageClass': "noResult",
+                'message' : "",
+                'userDetails' : []
+            }
+
+            if request.method == 'POST' and request.POST['whichForm'] == "userLookupForm":
+                # This means the user lookup form was just submitted
+
+                usem = request.POST['username-email']
+                user = None
+
+                if UserAccount.objects.filter(username = usem).exists():
+                    user = UserAccount.objects.get(username = usem)
+                elif UserAccount.objects.filter(email = usem).exists():
+                    user = UserAccount.objects.get(email = usem)
+
+                if user != None:
+                    context["messageClass"] = "resultSuccess"
+                    context["message"] = f"Successfully retrieved the details for the user '{user.username}'!"
+
+                    context['userDetails'].append(f"Username: {user.username}")
+                    context['userDetails'].append(f"Email: {user.email}")
+                    context['userDetails'].append(f"Is Active: {user.is_active}")
+                    context['userDetails'].append(f"Last Login: {user.last_login}")
+                    context['userDetails'].append(f"Date Joined: {user.date_joined}")
+                    context['userDetails'].append(f"Reward Points: {user.reward_pts}")
+                    context['userDetails'].append(f"Account Type: {user.account_type}")
+                    
+                else:
+                    context["messageClass"] = "resultFail"
+                    context["message"] = f"""No account with the username or email address '{usem}' could be found.
+                        Make sure your spelling is correct."""
+
+            elif request.method == 'POST' and request.POST['whichForm'] == "adminPrivForm":
+                # This means the user lookup form was just submitted
+                
+                if UserAccount.objects.filter(email = request.POST['email']).exists():
+                    if request.POST['email'] == request.user.email:
+                        # Do not allow an admin to demote the account they are currently using.
+                        context["messageClass"] = "resultFail"
+                        context["message"] = f"""You cannot change the type of your own account while you are using it.
+                            Try asking another admin to do this for you."""
+
+                    else:
+                        user = UserAccount.objects.get(email = request.POST['email'])
+                        user.account_type = request.POST['account-type']
+                        user.save()
+
+                        context["messageClass"] = "resultSuccess"
+                        if user.account_type == "admin":
+                            context["message"] = f"""The account '{user.username}' (email adrress: {user.email}) 
+                                has successfully been changed to an admin account!"""
+                        else:
+                            context["message"] = f"""The account '{user.username}' (email adrress: {user.email}) 
+                                has successfully been changed to a regular user account!"""
+                    
+                else:
+                    context["messageClass"] = "resultFail"
+                    context["message"] = f"""No account with the email address '{request.POST['email']}' could be found.
+                        Make sure your spelling is correct."""
+
+            elif request.method == 'POST' and request.POST['whichForm'] == "rewardPointsForm":
+                # This means the user lookup form was just submitted
+                
+                usem = request.POST['username-email']
+                user = None
+
+                if UserAccount.objects.filter(username = usem).exists():
+                    user = UserAccount.objects.get(username = usem)
+                elif UserAccount.objects.filter(email = usem).exists():
+                    user = UserAccount.objects.get(email = usem)
+
+                try:
+                    if user != None:
+                        # The given user does exist
+                        if request.POST['set-or-add'] == 'set':
+                            if int(request.POST['reward_pts']) < 0:
+                                context["messageClass"] = "resultFail"
+                                context["message"] = f"""A user's total number of reward points cannot be less than zero."""
+                            else:
+                                user.reward_pts = int(request.POST['reward_pts'])
+                                user.save()
+                                context["messageClass"] = "resultSuccess"
+                                context["message"] = f"""The user '{user.username}' now has {user.reward_pts} reward points."""
+
+                        elif request.POST['set-or-add'] == 'add':
+                            if user.reward_pts + int(request.POST['reward_pts']) < 0:
+                                context["messageClass"] = "resultFail"
+                                context["message"] = f"""A user's total number of reward points cannot be less than zero."""
+                            else:
+                                user.reward_pts = F("reward_pts") + request.POST['reward_pts']
+                                user.save()
+                                user.refresh_from_db()
+                                context["messageClass"] = "resultSuccess"
+                                context["message"] = f"""The user '{user.username}' now has {user.reward_pts} reward points."""
+                    else:
+                        # The given user does not exist
+                        context["messageClass"] = "resultFail"
+                        context["message"] = f"""No account with the username or email address '{usem}' could be found.
+                            Make sure your spelling is correct."""
+
+                except ValueError:
+                    # This could only happen if the form was posted illegitimately (not through the website)
+                    context["messageClass"] = "resultFail"
+                    context["message"] = f"""An unknown error occurred."""
+
+            return render(request, 'core_app/manage-users.html', context)
         else:
             return redirect('home')
     else:
@@ -161,6 +274,8 @@ def admin_users_view(request):
 
 
 def admin_analytics_view(request):
+    """This is the view function for the Website Analytics page"""
+
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
             # Define the time frame for "recently active" (last 30 days)
@@ -200,6 +315,8 @@ def admin_analytics_view(request):
 
 
 def admin_quiz_view(request):
+    """This is the view function for the Manage Quizzes page"""
+
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
             context = {
@@ -291,9 +408,8 @@ def admin_quiz_view(request):
     
 
 def admin_jumping_view(request):
-    """
-    For clarity, view function for the Jumping game's admin/management page.
-    """
+    """This is the view function for the Manage Jumping Game page"""
+
     if request.user.is_authenticated:
         if request.user.account_type == "admin":
             context = {
