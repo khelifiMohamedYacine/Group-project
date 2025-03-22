@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head_content %}
-<title>Manage Users Page</title>
+<title>Manage Jumping Game</title>
 <style>
     body {
         background-color: #f0f8ff;
@@ -46,12 +46,18 @@
     .form-container input[type="text"],
     .form-container input[type="password"],
     .form-container input[type="email"],
+    .form-container textarea,
     .form-container select {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
+        width: 50%;
+        min-width: 250px;
+        padding: 5px;
+        margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
+    }
+
+    .form-container textarea {
+        width: 75%
     }
 
     .form-container input[type="number"] {
@@ -74,17 +80,8 @@
         background-color: #0056b3;
     }
 
-    .permissions-section {
-        margin-top: 20px;
-    }
-
-    .permissions-section h3 {
-        margin-bottom: 10px;
-    }
-
-    .permissions-section label {
-        display: block;
-        margin-bottom: 5px;
+    h3 {
+        margin-bottom: 20px;
     }
 
     #backButton {
@@ -133,85 +130,82 @@
 {% include 'core_app/navbar.html' %}
 
 <div class="main-banner">
-    <p class="display-4 fw-bold" style="text-align: center;">User Management Page</p>
+    <p class="display-4 fw-bold" style="text-align: center;">Manage Jumping Game</p>
 </div>
 
 <div class="container">
     <!-- Back Button -->
-    <a id="backButton" class="btn btn-primary" href="{% url 'admin_dashboard' %}">Go Back</a>
+    <a id="backButton" class="btn btn-primary" href="{% url 'admin_content' %}">Go Back</a>
 
-    <h6 id="resultMessage" style="color: #ff4000; display: block;">
-        No account with the username "Jingle Bells" could be found. Make sure your spelling is correct.
-    </h6>
-    <!--<h6 id="resultMessage" class="{{ messageClass }}">
+    <h6 id="resultMessage" class="{{ messageClass }}">
         {{ message }}
-    </h6>-->
+    </h6>
 
     <div class="form-container">
-        <h3>Look Up User Details</h3>
+        <h3>Add A New Level</h3>
 
-        <form id="userLookupForm">
+        <form id="addLevelForm" method="POST"> <!--The form for adding new jumping game levels-->
             {% csrf_token %}
 
-            <p>Note that the account's password is not shown here.</p>
+            <input type="hidden" id="whichForm" name="whichForm" value="addLevelForm">
 
-            <label for="username-email">Account Username or Email:</label>
-            <input type="text" id="username-email" name="username-email" maxlength="150" required>
+            <label for="speed-multi">Level Speed Multiplier:</label>
+            <input type="number" id="speed-multi" name="speed-multi" type="number" step="0.01" min="0.2" max="10" value="2.0" required>
 
+            <label for="spawn-rate">Obstacle Spawn Rate (milliseconds):</label>
+            <input type="number" id="spawn-rate" name="spawn-rate" type="number" min="100" max="3000" value="800" required>
+            
             <br>
 
-            <button type="submit" name="save">Search For This User</button>
+            <button type="submit" name="submit" style="margin-top: 15px;">Add Level</button>
         </form>
     </div>
 
     <div class="form-container">
-        <h3>Grant/Revoke Admin Privileges</h3>
+        <h3>Edit A New Level</h3>
 
-        <form id="adminPrivForm">
+        <form id="editLevelForm" method="POST"> <!--The form for editing existing jumping game levels-->
             {% csrf_token %}
 
-            <p>
-                WARNING! Changing an account's type to 'Admin' grants it the same privileges you currently have, including the
-                ability to promote and demote other accounts (such as yours). Only proceed if you know and trust the person
-                who owns this account.
-            </p>
+            <input type="hidden" id="whichForm" name="whichForm" value="editLevelForm">
 
-            <label for="email">Account Email:</label>
-            <input type="email" id="email" name="email" maxlength="150" required>
-
-            <label for="account-type">Change Account Type To:</label>
-            <select id="account-type" name="account-type" style="width: 25%; min-width: 150px;" required>
-                <option value="user">USER</option>
-                <option value="admin">ADMIN</option>
+            <label for="select-level">Select the ID of the level to edit:</label>
+            <select id="select-level" name="select-level" style="width: 25%; min-width: 150px;" required>
+                {% for id in levelIDs %}
+                    <option value="{{ id }}">ID: {{ id }}</option>
+                {% endfor %}
             </select>
 
+            <label for="speed-multi">Level Speed Multiplier:</label>
+            <input type="number" id="speed-multi" name="speed-multi" type="number" step="0.01" min="0.2" max="10" value="2.0" required>
+
+            <label for="spawn-rate">Obstacle Spawn Rate (milliseconds):</label>
+            <input type="number" id="spawn-rate" name="spawn-rate" type="number" min="100" max="3000" value="800" required>
+            
             <br>
 
-            <button type="submit" name="save">Save</button>
+            <button type="submit" name="submit" style="margin-top: 15px;">Edit Level</button>
         </form>
     </div>
 
     <div class="form-container">
-        <h3>Set Reward Points</h3>
+        <h3>Edit A New Level</h3>
 
-        <form id="rewardPointsForm">
+        <form id="deleteLevelForm" method="POST"> <!--The form for deleting existing jumping game levels-->
             {% csrf_token %}
 
-            <label for="username-email">Account Username or Email:</label>
-            <input type="text" id="username-email" name="username-email" maxlength="150" required>
+            <input type="hidden" id="whichForm" name="whichForm" value="deleteLevelForm">
 
-            <label for="reward_pts">Reward Points:</label>
-            <input type="number" id="reward_pts" name="reward_pts" value="0" min="0" required>
-
-            <label for="set-or-add">Set or Add:</label>
-            <select id="set-or-add" name="set-or-add" style="width: 25%; min-width: 150px;" required>
-                <option value="user">SET</option>
-                <option value="admin">ADD</option>
+            <label for="select-level">Select the ID of the level to delete:</label>
+            <select id="select-level" name="select-level" style="width: 25%; min-width: 150px;" required>
+                {% for id in levelIDs %}
+                    <option value="{{ id }}">ID: {{ id }}</option>
+                {% endfor %}
             </select>
-
+            
             <br>
 
-            <button type="submit" name="save">Save</button>
+            <button type="submit" name="submit" style="margin-top: 15px;">Delete Level</button>
         </form>
     </div>
 </div>
