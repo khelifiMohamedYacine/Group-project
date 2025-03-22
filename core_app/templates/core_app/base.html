@@ -16,10 +16,16 @@
 
     {% block head_content %}
     {% endblock %}
-
+    <style>
+        html, body {
+            height: 100%;  /* Ensure the body takes the full height of the viewport */
+            margin: 0;  /* Remove default margin */
+        }
+    </style>
 </head>
 
-<body style="background-image: url('https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D'); background-size: cover; background-position: center center">
+<body style="background-image: url('{% static 'core_app/images/background.jpg' %}'); background-size: cover; background-position: center center">
+
     {% block body_content %}
     {% endblock %}
 
