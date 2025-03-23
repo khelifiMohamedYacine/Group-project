@@ -1,0 +1,262 @@
+{% extends 'core_app/base.html' %}
+{% load static %}
+
+{% block head_content %}
+<title>Manage Content Page</title>
+
+<style>
+body { 
+    background-color: #f0f8ff; 
+    font-family: 'Arial', sans-serif; 
+    margin: 0; 
+    padding: 0; 
+}
+
+.main-banner { 
+    padding-top: 5vh;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: rgb(255, 255, 255); 
+    text-shadow: 4px 4px 8px rgba(0,0,0,0.9);
+    -webkit-text-stroke: 2px black;
+    flex-direction: column;
+}
+
+.container { 
+    padding: 30px 50px; 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 20px; /* Space between cards */
+    max-width: 1000px;
+}
+
+.admin-card {
+    width: 100%; 
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease-in-out;
+    overflow: hidden;
+    background-color: white;
+    padding: 20px;
+}
+
+.admin-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.admin-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 15px;
+}
+
+.admin-content {
+    font-size: 1rem;
+    color: #555;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-radius: 20px;
+    padding: 5px 15px;
+    border: none;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.card-nav {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.card-nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.card-nav ul li {
+    margin-bottom: 10px;
+}
+
+.card-nav ul li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.card-nav ul li a:hover {
+    color: #0056b3;
+}
+
+/* Modal styling */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+div > a {
+    text-decoration: none;
+    color: white;
+}
+
+#backButton {
+    background-color: #ff0000;
+    margin: 0 auto;
+    font-size: 1.2rem;
+}
+
+#backButton:hover {
+    background-color: #c12121;
+}
+</style>
+
+{% endblock %}
+
+{% block body_content %}
+{% include 'core_app/navbar.html' %}
+
+<div class="main-banner">
+    <p class="display-4 fw-bold" style="text-align: center;">Content Management Page</p>
+</div>
+
+<div class="container">
+    <!-- Back Button -->
+    <a id="backButton" class="btn btn-primary" href="{% url 'admin_dashboard' %}">Go Back</a>
+
+    <!-- Manage Map Card -->
+    <div class="admin-card">
+        <h2 class="admin-title">Manage Locations</h2>
+        <p class="admin-content">Manage the locations that can be interacted with through the website.</p>
+        <button class="btn btn-primary" id="editContentBtn1">Manage</button>
+        <div class="card-nav" id="nav-1">
+            <ul>
+                <li><a href="{% url 'locations:admin_map_view' %}">Add Locations</a></li>
+                <li><a href="{% url 'locations:location_list' %}">Edit Locations</a></li>
+                <li><a href="{% url 'locations:delete_location' %}">Remove Locations</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Manage Quizzes Card -->
+    <div class="admin-card">
+        <h2 class="admin-title">Manage Quizzes</h2>
+        <p class="admin-content">Add or remove quizzes and their questions.</p>
+        <a class="btn btn-primary" id="editContentBtn2" href="{% url 'admin_quiz' %}">Manage</a>
+    </div>
+
+    <!-- Manage Jumping Game Card -->
+    <div class="admin-card">
+        <h2 class="admin-title">Manage Jumping Game</h2>
+        <p class="admin-content">Add, edit, or remove levels from the Jumping Game.</p>
+        <a class="btn btn-primary" id="editContentBtn3" href="{% url 'admin_jumping' %}">Manage</a>
+    </div>
+
+    <!-- Manage Sokoban Game Card -->
+    <div class="admin-card">
+        <h2 class="admin-title">Manage Sokoban Game</h2>
+        <p class="admin-content">Add, edit, or remove levels from the Sokoban Game.</p>
+        <a class="btn btn-primary" id="editContentBtn4" href="{% url 'sokoban_admin' %}">Manage</a>
+    </div>
+</div>
+
+<script>
+    // Get modal elements
+    var modal = document.getElementById("addQuizModal");
+    var closeModal = document.getElementById("closeModal");
+    var videoModal = document.getElementById("addVideoModal");
+    var closeVideoModal = document.getElementById("closeVideoModal");
+
+    // Function to toggle visibility of card nav menus
+    function toggleNav(cardId) {
+        var cardNav = document.getElementById("nav-" + cardId);
+        cardNav.style.display = cardNav.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Add event listeners for the "Edit Content" buttons
+    document.getElementById("editContentBtn1").onclick = function() { toggleNav(1); };
+    document.getElementById("editContentBtn2").onclick = function() { toggleNav(2); };
+    document.getElementById("editContentBtn3").onclick = function() { toggleNav(3); };
+    document.getElementById("editContentBtn4").onclick = function() { toggleNav(4); };
+
+    // Close modal when clicking outside the modal
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+        if (event.target === videoModal) {
+            videoModal.style.display = "none";
+        }
+    }
+
+    // Form submission (just for static demonstration)
+    document.getElementById("quizForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        alert("Quiz question added!");
+        modal.style.display = "none"; // Close modal after submission
+    });
+</script>
+
+{% endblock %}
