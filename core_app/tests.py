@@ -358,8 +358,8 @@ class HomeViewTests(TestCase):
         response1 = self.client.get(url)
         
         self.assertContains(response1, 'Welcome!')
-        self.assertContains(response1, '<p class="h4 fw-bold" style="text-align: center;">Log In To See Your Reward Points</p>')
-        # The Home page should display "Welcome" and "Log In To See Your Reward Points"
+        self.assertContains(response1, '<p class="h4 fw-bold" style="text-align: center;">Log In To Play The Game</p>')
+        # The Home page should display "Welcome" and "Log In To Play The Game"
 
         # Then, access the Home page while logged into an account.
         create_user("user001", "001@email.com", "password001")

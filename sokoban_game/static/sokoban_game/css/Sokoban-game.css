@@ -112,12 +112,12 @@ ul {
     color: darkgreen;
 }
 
-body {
+/*body {
     background-image: url('../img/background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-}
+}*/
 
 #yxbox {
     padding: 0;
