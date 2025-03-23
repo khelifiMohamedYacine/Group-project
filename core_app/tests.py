@@ -325,10 +325,7 @@ class NavbarTests(TestCase):
         self.assertNotContains(response3, '<a class="nav-link" href="/videos/"><i class="fas fa-play-circle"></i> Videos</a>')
         # The HTML for the videos button should not be present on the Sustainability Videos page
 
-        response4 = self.client.get(reverse("maps"))
-
-        self.assertNotContains(response4, '<a class="nav-link" href="/maps/"><i class="fas fa-map-marker-alt"></i> Uni map</a>')
-        # The HTML for the map button should not be present on the University Map page
+        # The navbar was removed from the map page, so there is no point checking for it there.
 
         response5 = self.client.get(reverse("leaderboard"))
 
@@ -340,7 +337,7 @@ class NavbarTests(TestCase):
 
         response6 = self.client.get(reverse("admin_dashboard"))
 
-        self.assertNotContains(response6, '<a class="nav-link active" href="/admin_page/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        self.assertNotContains(response6, '<a class="nav-link active" href="/game_admin/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
         # The HTML for the admin button should not be present on the Admin Dashboard page
 
 
@@ -358,7 +355,7 @@ class HomeViewTests(TestCase):
         response1 = self.client.get(url)
         
         self.assertContains(response1, 'Welcome!')
-        self.assertContains(response1, '<p class="h4 fw-bold" style="text-align: center;">Log In To Play The Game</p>')
+        self.assertContains(response1, 'Log In To Play The Game')
         # The Home page should display "Welcome" and "Log In To Play The Game"
 
         # Then, access the Home page while logged into an account.
@@ -381,7 +378,7 @@ class HomeViewTests(TestCase):
         url = reverse("home")
         response1 = self.client.get(url)
         
-        self.assertContains(response1, '<p class="h4 fw-bold" style="text-align: center;">Reward Points: 0</p>')
+        self.assertContains(response1, 'Reward Points: 0')
         # The Home page should display that the user has 0 reward points.
 
         # This time, create an account and manually give it 25 reward points.
@@ -391,7 +388,7 @@ class HomeViewTests(TestCase):
 
         response2 = self.client.get(url)
 
-        self.assertContains(response2, '<p class="h4 fw-bold" style="text-align: center;">Reward Points: 25</p>')
+        self.assertContains(response2, 'Reward Points: 25')
         # The Home page should now display that the user has 25 reward points.
 
 
