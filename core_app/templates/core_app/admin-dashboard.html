@@ -1,8 +1,9 @@
 {% extends 'core_app/base.html' %}
-{% load static %}
+{% load static %} <!--To use anything within the static folder, this needs to be present-->
 
-{% block head_content %}
-<title>Admin Content Page</title>
+
+{% block head_content %} <!--Header content for HTML files extending base.html goes in here-->
+<title>Admin Dashboard</title>
 
 <style>
 body { 
@@ -13,30 +14,33 @@ body {
 }
 
 .main-banner { 
-    padding-top: 10vh;
+    padding-top: 5vh;
     display: flex; 
     align-items: center; 
     justify-content: center; 
     color: rgb(255, 255, 255); 
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.9); 
     flex-direction: column;
+    -webkit-text-stroke: 2px black;
 }
 
 .container { 
     padding: 50px; 
     display: flex; 
-    flex-wrap: wrap; 
-    gap: 20px; /* Space between cards */
+    flex-wrap: wrap; /* Allow wrapping of the cards */
+    justify-content: center; /* Ensure 2 cards per line */
 }
 
 .admin-card {
-    width: 100%; 
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     transition: transform 0.3s ease-in-out;
     overflow: hidden;
     background-color: white;
     padding: 20px;
+    margin: 0px 10px 20px;
+    width: 32%;
+    min-width: 200px;
 }
 
 .admin-card:hover {
@@ -52,7 +56,7 @@ body {
 }
 
 .admin-content {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #555;
 }
 
@@ -68,273 +72,38 @@ body {
     background-color: #0056b3;
 }
 
-.card-nav {
-    display: none;
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.card-nav ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.card-nav ul li {
-    margin-bottom: 10px;
-}
-
-.card-nav ul li a {
+a {
     text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-}
-
-.card-nav ul li a:hover {
-    color: #0056b3;
-}
-
-/* Modal styling */
-.modal {
-    display: none; 
-    position: fixed;
-    z-index: 1; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgb(0,0,0); 
-    background-color: rgba(0,0,0,0.4); 
-    padding-top: 60px;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-input[type="text"], textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-button[type="submit"] {
-    background-color: #007bff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
     color: white;
-    cursor: pointer;
-}
-
-button[type="submit"]:hover {
-    background-color: #0056b3;
 }
 </style>
-
 {% endblock %}
 
-{% block body_content %}
-{% include 'core_app/navbar.html' %}
+
+{% block body_content %} <!--Body content for HTML files extending base.html goes in here-->
+{% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
 
 <div class="main-banner">
-    <p class="display-5 fw-bold" style="text-align: center;">Admin Dashboard</p>
+    <p class="display-4 fw-bold" style="text-align: center;">Admin Dashboard</p>
 </div>
 
 <div class="container">
 
-    <!-- Manage Map Card -->
     <div class="admin-card">
-        <h2 class="admin-title">Manage Uni Map</h2>
+        <h2 class="admin-title">Manage Users</h2>
+        <p class="admin-content">View and manage user accounts.</p>
+        <a class="btn btn-primary" href="{% url 'admin_users' %}">Manage Users</a>
+    </div>
+    <div class="admin-card">
+        <h2 class="admin-title">Manage Content</h2>
+        <p class="admin-content">Add, edit, or remove games levels and quizzes.</p>
+        <a class="btn btn-primary" href="{% url 'admin_content' %}">Manage Content</a>
+    </div>
+    <div class="admin-card">
+        <h2 class="admin-title">Reports & Analytics</h2>
         <p class="admin-content">View site usage statistics and generate reports.</p>
-        <button class="btn btn-primary" id="editContentBtn4">Edit Content</button>
-        <div class="card-nav" id="nav-4">
-            <ul>
-                <li><a href="{% url 'locations:admin_map_view' %}">Add Locations</a></li>
-                <li><a href="{% url 'locations:location_list' %}">Edit Locations</a></li>
-                <li><a href="{% url 'locations:delete_location' %}">Remove Locations</a></li>
-
-            </ul>
-        </div>
-    </div>
-
-    <!-- Manage Quizzes Card -->
-    <div class="admin-card">
-        <h2 class="admin-title">Manage Quizzes</h2>
-        <p class="admin-content">View and manage user accounts, roles, and permissions.</p>
-        <button class="btn btn-primary" id="editContentBtn1">Edit Content</button>
-
-        <div class="card-nav" id="nav-1">
-            <ul>
-                <li><a href="#" id="addQuizBtn">Add</a></li>
-                <li><a href="#">Edit</a></li>
-                <li><a href="#">Delete</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Manage Games Card -->
-    <div class="admin-card">
-        <h2 class="admin-title">Manage Games</h2>
-        <p class="admin-content">Add, edit, or remove games, quizzes, and videos.</p>
-        <button class="btn btn-primary" id="editContentBtn2">Edit Content</button>
-        <div class="card-nav" id="nav-2">
-            <ul>
-                <li><a href="#">Edit</a></li>
-                <li><a href="#">Remove</a></li>
-                <li><a href="#">Add</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Manage Videos Card -->
-    <div class="admin-card">
-        <h2 class="admin-title">Manage Videos</h2>
-        <p class="admin-content">Add, edit, or remove videos.</p>
-        <button class="btn btn-primary" id="editContentBtn3">Edit Content</button>
-        <div class="card-nav" id="nav-3">
-            <ul>
-                <li><a href="#" id="addVideoBtn">Add Video</a></li>
-                <li><a href="#">Remove</a></li>
-            </ul>
-        </div>
+        <a class="btn btn-primary" href="{% url 'admin_analytics' %}">View Reports</a></button>
     </div>
 
 </div>
-
-<!-- Modal for Adding Quiz -->
-<div id="addQuizModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2>Add Quiz</h2>
-        <form id="quizForm">
-            <label for="questionText">Question:</label>
-            <textarea id="questionText" rows="4" placeholder="Enter the question"></textarea>
-
-            <label for="choice1">Choice 1:</label>
-            <input type="text" id="choice1" placeholder="Choice 1">
-
-            <label for="choice2">Choice 2:</label>
-            <input type="text" id="choice2" placeholder="Choice 2">
-
-            <label for="choice3">Choice 3:</label>
-            <input type="text" id="choice3" placeholder="Choice 3">
-
-            <label for="choice4">Choice 4:</label>
-            <input type="text" id="choice4" placeholder="Choice 4">
-
-            <label for="correctAnswer">Correct Answer:</label>
-            <input type="text" id="correctAnswer" placeholder="Correct Answer">
-
-            <button type="submit">Submit Question</button>
-        </form>
-    </div>
-</div>
-
-<!-- Modal for Adding Video -->
-<div id="addVideoModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeVideoModal">&times;</span>
-        <h2>Add Video from YouTube</h2>
-        <label for="videoUrl">Enter YouTube Video URL:</label>
-        <input type="text" id="videoUrl" placeholder="Enter YouTube video URL" oninput="previewVideo()">
-        <div id="videoPreview" style="margin-top: 20px;">
-            <iframe id="videoIframe" width="560" height="315" style="display: none;" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <button type="button" id="uploadVideoBtn" class="btn btn-primary">Upload</button>
-    </div>
-</div>
-
-<script>
-    // Get modal elements
-    var modal = document.getElementById("addQuizModal");
-    var closeModal = document.getElementById("closeModal");
-    var videoModal = document.getElementById("addVideoModal");
-    var closeVideoModal = document.getElementById("closeVideoModal");
-
-    // Function to toggle visibility of card nav menus
-    function toggleNav(cardId) {
-        var cardNav = document.getElementById("nav-" + cardId);
-        cardNav.style.display = cardNav.style.display === 'block' ? 'none' : 'block';
-    }
-
-    // Add event listeners for the "Edit Content" buttons
-    document.getElementById("editContentBtn1").onclick = function() { toggleNav(1); };
-    document.getElementById("editContentBtn2").onclick = function() { toggleNav(2); };
-    document.getElementById("editContentBtn3").onclick = function() { toggleNav(3); };
-    document.getElementById("editContentBtn4").onclick = function() { toggleNav(4); };
-
-    // When the "Add Quiz" button is clicked, open the modal
-    document.getElementById("addQuizBtn").onclick = function() {
-        modal.style.display = "block";
-    }
-
-    // When the "Add Video" button is clicked, open the modal
-    document.getElementById("addVideoBtn").onclick = function() {
-        videoModal.style.display = "block";
-    }
-
-    // Close modal when the close button (X) is clicked
-    closeModal.onclick = function() {
-        modal.style.display = "none";
-    }
-    closeVideoModal.onclick = function() {
-        videoModal.style.display = "none";
-    }
-
-    // Close modal when clicking outside the modal
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-        if (event.target === videoModal) {
-            videoModal.style.display = "none";
-        }
-    }
-
-    // Form submission (just for static demonstration)
-    document.getElementById("quizForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        alert("Quiz question added!");
-        modal.style.display = "none"; // Close modal after submission
-    });
-
-    // Preview YouTube video
-    function previewVideo() {
-        var videoUrl = document.getElementById("videoUrl").value;
-        var iframe = document.getElementById("videoIframe");
-        var videoId = videoUrl.split("v=")[1];
-        if (videoId) {
-            iframe.style.display = "block";
-            iframe.src = "https://www.youtube.com/embed/" + videoId;
-        } else {
-            iframe.style.display = "none";
-        }
-    }
-</script>
-
 {% endblock %}

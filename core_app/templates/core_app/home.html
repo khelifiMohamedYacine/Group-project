@@ -28,12 +28,13 @@
     }
 
     .main-banner { 
-        padding-top: 10vh;
+        padding-top: 5vh;
         display: flex; 
         align-items: center; 
         justify-content: center; 
         color: #ffffff;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.9); 
+        text-shadow: 4px 4px 8px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 2px black;
         flex-direction: column;
         margin-bottom: 50px;
     }
@@ -102,7 +103,7 @@
 {% include 'core_app/navbar.html' %} <!--This adds the navbar (from navbar.html) onto this page-->
 
 <div class="main-banner">
-    <p class="display-5 fw-bold" style="text-align: center;">
+    <p class="display-4 fw-bold" style="text-align: center;">
     {% if user.is_authenticated %} <!--If the user is logged in-->
         Welcome, {{ user }}!
     {% else %} <!--If the user is not logged in-->
@@ -111,9 +112,9 @@
     </p>
 
     {% if user.is_authenticated %} <!--If the user is logged in-->
-        <p class="h4 fw-bold" style="text-align: center;">Reward Points: {{ user.reward_pts }}</p>
+        <p class="h3 fw-bold" style="text-align: center;">Reward Points: {{ user.reward_pts }}</p>
     {% else %} <!--If the user is not logged in-->
-        <p class="h4 fw-bold" style="text-align: center;">Log In To See Your Reward Points</p>
+        <p class="h3 fw-bold" style="text-align: center;">Log In To See Your Reward Points</p>
     {% endif %}     
 </div>
 
