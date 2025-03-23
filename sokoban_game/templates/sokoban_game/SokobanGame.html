@@ -6,7 +6,16 @@
     <title>Sokoban Game</title>
     <link rel="stylesheet" href="{% static 'sokoban_game/css/Sokoban-game.css' %}">
 </head>
-<body>
+<body
+class="d-flex align-items-center justify-content-center vh-100"
+style="
+  background-image: url('{% static 'core_app/images/background.jpg' %}');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+"
+>
 <div class="header"><h1>ECO Mind Sokoban Game</h1></div>
 <div class="game-board">
     <div class="btn-container">
@@ -317,7 +326,8 @@
             .then(data => {
                 // Check if there is a message in the response and display it
                 if (data.message) {
-                    alert(data.message); 
+                    alert(data.message);
+                    window.location.href = '/home';
                 }
             })
             .catch(error => {

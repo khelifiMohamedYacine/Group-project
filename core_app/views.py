@@ -85,20 +85,69 @@ def register_view(request):
 
 def home_view(request):
 
-    # This is dummy data for now.
-    # For each task in task_data: [icons, category, task, location, URL name]
-    task_data = [
-        ['fas fa-angle-double-up', 'Jumping Game', 'Complete Level 1', 'The Forum', 'jumping_game'],
-        ['fas fa-question', 'Quiz', 'Complete Quiz 1', 'The Forum', 'quizzes:quiz'],
-        ['fas fa-angle-double-up', 'Jumping Game', 'Complete Level 2', 'The Forum', 'jumping_game'],
-        ['fas fa-question', 'Quiz', 'Complete Quiz 2', 'The Amory', 'quizzes:quiz'],
-        ['fas fa-question', 'Quiz', 'Complete Quiz 3', 'The Amory', 'quizzes:quiz'],
-        ['fas fa-angle-double-up', 'Jumping Game', 'Complete Level 3', 'The Amory', 'jumping_game'],
-        ['fas fa-question', 'Quiz', 'Complete Quiz 4', 'Streatham Court', 'quizzes:quiz'],
-    ]
-    # Get icons from: https://www.w3schools.com/icons/icons_reference.asp
+    # store of data that doesnt change
+    game_info = { 
+        'quiz': {
+            'url': "quizzes:quiz",
+            'image': 'cc.png',
+            'description': 'Test your knowledge in the quiz game.'
+        },
+        'sokoban_level': {
+            'url': 'sokoban_game',
+            'image': 'SokobanGamePic1.PNG',
+            'description': 'Help Mark recycle the garbage in this puzzle game.'
+        },
+        'jumping game level': { # well that did fix the bug
+            'url': 'jumping_game',
+            'image': 'JumpingGamePic2.PNG',
+            'description': 'Lead the dog to a cleaner environment by jumping and rolling around obstacles.'
+        }
+    }
+    user = request.user
+    locations = Location.objects.all()
 
-    return render(request, 'core_app/home.html', {'user': request.user, 'task_data' : task_data})
+    games = []
+    if request.user.is_authenticated:
+        user_locations = UserLocation.objects.filter(userID=user)
+    
+        # populate the games data dynamically
+        for location in locations:
+
+            user_location = user_locations.filter(locationID=location).first()
+
+            if user_location is None or not user_location.checked_in:
+                continue
+
+            if not user_location.task1_complete:
+                task1_type = location.task1_type.name if location.task1_type else None
+                game_data = game_info[task1_type]
+                game_id = location.task1_id
+
+                game = {
+                    "name": location.location_name,
+                    "location_name": location.location_name,
+                    "description": game_data['description'],
+                    "image": game_data['image'],
+                    "game_url": game_data['url'],
+                    "game_id": game_id,
+                }
+                games.append(game)
+
+            if not user_location.task2_complete:
+                task2_type = location.task2_type.name if location.task2_type else None
+                game_data = game_info[task2_type]
+                game_id = location.task2_id
+
+                game = {
+                    "name": location.location_name,
+                    "location_name": location.location_name,
+                    "description": game_data['description'],
+                    "image": game_data['image'],
+                    "game_url": game_data['url'],
+                    "game_id": game_id,
+                }
+                games.append(game)
+    return render(request, 'core_app/home.html', {'user': request.user, 'games': games})
 
 
 def forgot_password_view(request):

@@ -38,35 +38,65 @@
         margin-bottom: 50px;
     }
 
-    .task-container {
-        background-color: rgba(0, 0, 0, 0.6);
-        border-radius: 10px;
-        border: 3px dashed #ffffff;
-        padding: 20px;
-        width: 85%;
-        max-width: 800px;
-        margin: 0 auto;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        text-align: center;
-        font-family: 'Trebuchet MS', sans-serif;
+    .container { 
+        padding: 50px; 
+        display: flex; 
+        flex-wrap: wrap;
+        justify-content: space-between;
+        color: #ffffff;
+        
+        
     }
 
-    .task-table {
-        width: 100%;
-        margin: 20px 0px;
+    .card { 
+        border-radius: 15px;
+        border: 0px !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+        overflow: hidden; 
+        width: 42%;
+        margin: 10px 10px;
+        background-color: white; 
+        margin-bottom: 40px;
     }
 
-    .task-table th, .task-table td {
-        padding: 8px;
-        text-align: center;
-        color: rgb(255, 255, 255);
+    .card:hover { 
+        transform: scale(1.05); 
+        box-shadow: 0 8px 16px rgba(0,0,0,0.3); 
     }
-    .task-table th {
-        font-size: 1.1rem;
+
+    .card img { 
+        height: 200px; 
+        object-fit: cover; 
+        border-radius: 15px 15px 0 0; 
     }
-    .task-table td {
-        font-size: 0.9rem;
-        border-top: 2px solid #616161;
+
+    .card-body { 
+        text-align: center; 
+        padding: 10px; 
+    }
+
+    .card-title { 
+        font-size: 1.1rem; 
+        font-weight: bold; 
+        color: #000000; 
+        margin-bottom: 5px; 
+    }
+
+    .card-text { 
+        font-size: 0.8rem; 
+        color: #555; 
+    }
+    /* Change to rows of 1 for narrow mobile screens */
+    @media (max-aspect-ratio: 1/1) {
+        .card {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .container {
+            padding: 20px;
+        }
     }
     
     /* New button for certificate */
@@ -113,41 +143,29 @@
     {% if user.is_authenticated %} <!--If the user is logged in-->
         <p class="h4 fw-bold" style="text-align: center;">Reward Points: {{ user.reward_pts }}</p>
     {% else %} <!--If the user is not logged in-->
-        <p class="h4 fw-bold" style="text-align: center;">Log In To See Your Reward Points</p>
+        <p class="h4 fw-bold" style="text-align: center;">Log In To Play The Game</p>
     {% endif %}     
 </div>
 
 
-<div class="task-container">
-    <h3 class="mb-3 fw-bold text-white"><i class="fa fa-tasks"></i> Pending Tasks</h3>
+<div class="container">
+    {% if games %}
+        {% for game in games %}
 
-    <table class="task-table">
-        <thead>
-            <tr class="py-2">
-                <th scope="col">Category</th>
-                <th scope="col">Task</th>
-                <th scope="col">Location</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <!--Will show the first four of the user's tasks.-->
-            {% for task in task_data|slice:"4" %}
-                <tr>
-                    <td><i class="{{ task.0 }}"></i> {{ task.1 }}</td>
-                    <td>{{ task.2 }}</td>
-                    <td>{{ task.3 }}</td>
-                    {% url task.4 as go_url %}
-                    <td><a class="btn btn-sm btn-secondary fw-bold rounded-pill" href="{{ go_url }}">Go</a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <!--Clicking this button will open a Bootstrap modal window with the user's full list of tasks-->
-    <button type="button" class="btn btn-primary rounded-pill my-1" data-bs-toggle="modal" data-bs-target="#taskModal">
-        See All of Your Tasks
-    </button>
+            <div class="card game-card" onclick="window.location.href='{% url game.game_url task_id=game.game_id %}';" style="cursor: pointer;">
+                <img src="{% static 'core_app/images/'|add:game.image %}" class="card-img-top" alt="{{ game.name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Location: {{ game.name }}</h5>
+                    <p class="card-text">{{ game.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% elif user.is_authenticated %}
+        <div class="no-games-message">
+            <p>Visit Locations on the map to unlock games</p>
+            <button class="no-games-button" onclick="window.location.href='{% url 'home' %}'">Go to Map</button>
+        </div>
+    {% endif %}
 </div>
 
 
