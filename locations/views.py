@@ -60,14 +60,12 @@ def add_location(request):
             task1_instance = None
             if task1_id:
                 task1_type = data.get('task1_type')  # Get the task type for task1
-                print("task1_type", task1_type)
                 task1_content_type = ContentType.objects.get(model=task1_type.lower())  # Use ContentType to find model
                 task1_instance = task1_content_type.get_object_for_this_type(id=task1_id)
 
             task2_instance = None
             if task2_id:
                 task2_type = data.get('task2_type')  # Get the task type for task2
-                print("task2_type", task2_type)
                 task2_content_type = ContentType.objects.get(model=task2_type.lower())  # Use ContentType to find model
                 task2_instance = task2_content_type.get_object_for_this_type(id=task2_id)
 
@@ -292,6 +290,10 @@ def check_in(request, loc_id):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+from quizzes.models import Quiz
+from sokoban_game.models import sokoban_level
+from django.contrib.contenttypes.models import ContentType
 
 
 def get_task_ids(request):

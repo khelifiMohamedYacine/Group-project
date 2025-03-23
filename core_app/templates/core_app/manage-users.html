@@ -1,0 +1,233 @@
+{% extends 'core_app/base.html' %}
+{% load static %}
+
+{% block head_content %}
+<title>Manage Users Page</title>
+<style>
+    body {
+        background-color: #f0f8ff;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-banner {
+        padding-top: 5vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgb(255, 255, 255);
+        text-shadow: 4px 4px 8px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 2px black;
+        flex-direction: column;
+    }
+
+    .container {
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-width: 1100px;
+    }
+
+    .form-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .form-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="password"],
+    .form-container input[type="email"],
+    .form-container select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .form-container input[type="number"] {
+        margin-bottom: 15px;
+    }
+
+    .form-container button {
+        background-color: #007bff;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        margin-right: 10px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .form-container button:hover {
+        background-color: #0056b3;
+    }
+
+    .permissions-section {
+        margin-top: 20px;
+    }
+
+    .permissions-section h3 {
+        margin-bottom: 10px;
+    }
+
+    .permissions-section label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    #backButton {
+        background-color: #ff0000;
+        margin: -25px auto 15px;
+        font-size: 1.2rem;
+        border-radius: 20px;
+        padding: 5px 15px;
+        border: none;
+        font-weight: bold;
+    }
+
+    #backButton:hover {
+        background-color: #c12121;
+    }
+
+    #resultMessage {
+        text-align: center;
+        font-weight: bold;
+        color: rgb(255, 255, 255);
+        width: 75%;
+        margin: 0 auto;
+        font-family: 'Trebuchet MS', sans-serif;
+        padding: 8px;
+        border-radius: 10px;
+        background-color: #ffffff;
+    }
+
+    .resultSuccess {
+        color: #369a04 !important;
+        display: block;
+    }
+
+    .resultFail {
+        color: #d83600 !important;
+        display: block;
+    }
+
+    .noResult {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block body_content %}
+{% include 'core_app/navbar.html' %}
+
+<div class="main-banner">
+    <p class="display-4 fw-bold" style="text-align: center;">User Management Page</p>
+</div>
+
+<div class="container">
+    <!-- Back Button -->
+    <a id="backButton" class="btn btn-primary" href="{% url 'admin_dashboard' %}">Go Back</a>
+
+    <h6 id="resultMessage" class="{{ messageClass }}">
+        {{ message }}
+    </h6>
+
+    <div class="form-container">
+        <h3>Look Up User Details</h3>
+
+        <form id="userLookupForm" method="POST">
+            {% csrf_token %}
+
+            <input type="hidden" id="whichForm" name="whichForm" value="userLookupForm">
+
+            <p>Note that the account's password is not shown here.</p>
+
+            <ul>
+                {% for detail in userDetails %}
+                    <li>{{ detail }}</li>
+                {% endfor %}
+            </ul>
+
+            <label for="username-email">Account Username or Email:</label>
+            <input type="text" id="username-email" name="username-email" maxlength="150" required>
+
+            <br>
+
+            <button type="submit" name="save">Search For This User</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h3>Grant/Revoke Admin Privileges</h3>
+
+        <form id="adminPrivForm" method="POST">
+            {% csrf_token %}
+
+            <input type="hidden" id="whichForm" name="whichForm" value="adminPrivForm">
+
+            <p>
+                WARNING! Changing an account's type to 'Admin' grants it the same privileges you currently have, including the
+                ability to promote and demote other accounts (such as yours). Only proceed if you know and trust the person
+                who owns this account.
+            </p>
+
+            <label for="email">Account Email:</label>
+            <input type="email" id="email" name="email" maxlength="150" required>
+
+            <label for="account-type">Change Account Type To:</label>
+            <select id="account-type" name="account-type" style="width: 25%; min-width: 150px;" required>
+                <option value="user">USER</option>
+                <option value="admin">ADMIN</option>
+            </select>
+
+            <br>
+
+            <button type="submit" name="save">Save</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h3>Set Reward Points</h3>
+
+        <form id="rewardPointsForm" method="POST">
+            {% csrf_token %}
+
+            <input type="hidden" id="whichForm" name="whichForm" value="rewardPointsForm">
+
+            <p>
+                You can use this to directly reward users for their IRL sustainability-related actions,
+                or for other administrative purposes.
+            </p>
+
+            <label for="username-email">Account Username or Email:</label>
+            <input type="text" id="username-email" name="username-email" maxlength="150" required>
+
+            <label for="reward_pts">Reward Points:</label>
+            <input type="number" id="reward_pts" name="reward_pts" value="0" required>
+
+            <label for="set-or-add">Set or Add:</label>
+            <select id="set-or-add" name="set-or-add" style="width: 25%; min-width: 150px;" required>
+                <option value="set">SET</option>
+                <option value="add">ADD</option>
+            </select>
+
+            <br>
+
+            <button type="submit" name="save">Save</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

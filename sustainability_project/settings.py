@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-oouzj4*2*-b82*eph^m&zk@1p$k5yq6802!4kt4^n8&+k!ht8n
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# If setting debug to true while still running the app locally, then use:
+# ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
 
 LOGIN_URL = '/login/'
 
