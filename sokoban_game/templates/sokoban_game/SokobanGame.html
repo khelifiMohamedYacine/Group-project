@@ -105,7 +105,6 @@ style="
             this.targets = {};
             this.history = [];
 
-            // Sound effects
             this.sounds = {
                 bgm: new Audio("{% static 'sokoban_game/mp3/background.mp3' %}"), // Background music
                 push: new Audio("{% static 'sokoban_game/mp3/moveBox.wav' %}"), // Pushing box sound
@@ -220,8 +219,6 @@ style="
             obj.style.left = (obj.x * 128)+"px";
             obj.style.top = (obj.y * 128) + "px";
         }
-
-        // Update box state and play sound effects
 
 
         // Handle player movement and direction
