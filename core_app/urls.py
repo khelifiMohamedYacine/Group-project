@@ -12,7 +12,6 @@ urlpatterns = [
     path('home/', views.home_view, name='home'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
-    path('forgot_password/', views.forgot_password_view, name='forgot_password'),
     path('privacy_policy/', views.privacy_policy_view, name="privacy_policy"),
     path('leaderboard/', views.leaderboard_view, name='leaderboard'),
     path('games/', views.games_view, name="games_page"),

@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from core_app.models import UserAccount
 from quizzes.models import Quiz, Question
-# from jumping_game.models import JumpingGameLevel
+from jumping_game.models import JumpingGameLevel
 
 from django.utils import timezone
 from datetime import timedelta
@@ -157,9 +157,6 @@ def home_view(request):
                 games.append(game)
     return render(request, 'core_app/home.html', {'user': request.user, 'games': games})
 
-
-def forgot_password_view(request):
-    return render(request, 'core_app/forgot-password.html')
 
 
 def privacy_policy_view(request):
@@ -531,7 +528,7 @@ def admin_jumping_view(request):
             context = {
                 'messageClass': "noResult",
                 'message' : "",
-                'levelIDs' : [1,2,3,4,5] # dummy data
+                'levelIDs' : []
             }
 
             if request.method == 'POST' and request.POST['whichForm'] == "addLevelForm":
@@ -546,13 +543,11 @@ def admin_jumping_view(request):
                     context["messageClass"] = "resultSuccess"
                     context["message"] = f"The level was successfully added!"
 
-                    """
                     newLevel = JumpingGameLevel(
                         speed_multiplier = float(sm),
                         enemy_spawn_rate = int(sp)
                     )
                     newLevel.save()
-                    """ # This code block will be uncommented when the most recent database updates become available
 
                 else:
                     # This could only happen if the form was posted illegitimately (not through the website)
@@ -561,9 +556,13 @@ def admin_jumping_view(request):
 
             elif request.method == 'POST' and request.POST['whichForm'] == "editLevelForm":
                 # This means the edit level form was just submitted
-                
-                """
-                if JumpingGameLevel.objects.filter(id = request.POST['select-level']).exists():
+
+                if not (request.POST['select-level'].isnumeric()):
+                    # This could only happen if the form was posted illegitimately (not through the website)
+                    context["messageClass"] = "resultFail"
+                    context["message"] = f"An unknown error occurred."
+
+                elif JumpingGameLevel.objects.filter(id = int(request.POST['select-level'])).exists():
                     # Confirm that a level with the given ID exists in the Jumping game database
 
                     sm = request.POST['speed-multi']
@@ -575,7 +574,7 @@ def admin_jumping_view(request):
                         context["messageClass"] = "resultSuccess"
                         context["message"] = f"The level was successfully edited!"
 
-                        editLevel = JumpingGameLevel.objects.get(id =  request.POST['select-level'])
+                        editLevel = JumpingGameLevel.objects.get(id = int(request.POST['select-level']))
                         editLevel.speed_multiplier = float(sm)
                         editLevel.enemy_spawn_rate = int(sp)
                         editLevel.save()
@@ -586,30 +585,30 @@ def admin_jumping_view(request):
                         context["message"] = f"An unknown error occurred."
 
                 else:
-                """ # This code block will be uncommented when the most recent database updates become available
-                    # When that happens, indent the three lines below
-                context["messageClass"] = "resultFail"
-                context["message"] = f"""No level with an ID of '{request.POST['select-level']}' could be found. 
-                    This is likely because it was recently deleted."""                  
+                    context["messageClass"] = "resultFail"
+                    context["message"] = f"""No level with an ID of '{request.POST['select-level']}' could be found. 
+                        This is likely because it was recently deleted."""                  
 
             elif request.method == 'POST' and request.POST['whichForm'] == "deleteLevelForm":
                 # This means the delete level form was just submitted
 
-                """
-                if JumpingGameLevel.objects.filter(id = request.POST['select-level']).exists():
+                if not (request.POST['select-level'].isnumeric()):
+                    # This could only happen if the form was posted illegitimately (not through the website)
+                    context["messageClass"] = "resultFail"
+                    context["message"] = f"An unknown error occurred."
+
+                elif JumpingGameLevel.objects.filter(id = int(request.POST['select-level'])).exists():
                     # Confirm that a level with the given ID exists in the Jumping game database
-                    JumpingGameLevel.objects.filter(id = request.POST['select-level']).delete()
+                    JumpingGameLevel.objects.filter(id = int(request.POST['select-level'])).delete()
                     context["messageClass"] = "resultSuccess"
                     context["message"] = f"The level with an ID of '{request.POST['select-level']}' was successfully deleted!"
                 
                 else:
-                """ # This code block will be uncommented when the most recent database updates become available
-                    # When that happens, indent the three lines below
-                context["messageClass"] = "resultFail"
-                context["message"] = f"""No level with an ID of '{request.POST['select-level']}' could be found. 
-                    This is likely because it was recently deleted.""" 
+                    context["messageClass"] = "resultFail"
+                    context["message"] = f"""No level with an ID of '{request.POST['select-level']}' could be found. 
+                        This is likely because it was recently deleted.""" 
 
-            # context["levelIDs"] = list(JumpingGameLevel.objects.values_list('id', flat=True))
+            context["levelIDs"] = list(JumpingGameLevel.objects.values_list('id', flat=True))
             return render(request, 'core_app/manage-jumping.html', context)
         else:
             return redirect('home')

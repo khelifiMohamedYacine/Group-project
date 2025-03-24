@@ -18,7 +18,6 @@
         justify-content: center;
         color: rgb(255, 255, 255);
         text-shadow: 4px 4px 8px rgba(0,0,0,0.9);
-        -webkit-text-stroke: 2px black;
         flex-direction: column;
     }
 
@@ -162,7 +161,7 @@
     </div>
 
     <div class="form-container">
-        <h3>Edit A New Level</h3>
+        <h3>Edit An Existing Level</h3>
 
         <form id="editLevelForm" method="POST"> <!--The form for editing existing jumping game levels-->
             {% csrf_token %}
@@ -189,7 +188,7 @@
     </div>
 
     <div class="form-container">
-        <h3>Edit A New Level</h3>
+        <h3>Delete An Existing Level</h3>
 
         <form id="deleteLevelForm" method="POST"> <!--The form for deleting existing jumping game levels-->
             {% csrf_token %}

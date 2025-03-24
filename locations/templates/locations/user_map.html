@@ -29,6 +29,16 @@
         margin: 20px auto;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
+
+      .main-banner { 
+          padding-top: 5vh;
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          color: rgb(255, 255, 255); 
+          text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+          flex-direction: column;
+      }
     </style>
   </head>
 
@@ -41,12 +51,19 @@
       background-attachment: fixed;
     "
   >
-    <button id="bypassCheckInBtn" class="btn btn-warning w-100 mt-2">
-      Bypass Location Check: for testing only (Off)
-    </button>
+
+    <div class="main-banner">
+      <p class="display-4 fw-bold" style="text-align: center;">Locations Map</p>
+    </div>
+    
     <div class="row g-4 mt-2 justify-content-center">
-      <!-- Graph + Home Button Section -->
+      
+
       <div class="col-md-4 text-center">
+        <button id="bypassCheckInBtn" class="btn btn-warning w-100 mb-3">
+          Bypass Location Check: for testing only (Off)
+        </button>
+
         <div class="form-floating">
           <button
             type="button"

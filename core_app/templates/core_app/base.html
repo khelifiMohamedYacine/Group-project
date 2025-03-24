@@ -17,14 +17,19 @@
     {% block head_content %}
     {% endblock %}
     <style>
-        html, body {
+        body {
             height: 100%;  /* Ensure the body takes the full height of the viewport */
             margin: 0;  /* Remove default margin */
+             background-size: cover;
+             background-position: center center;
+             background-attachment:fixed;
         }
+
+
     </style>
 </head>
 
-<body style="background-image: url('{% static 'core_app/images/background.jpg' %}'); background-size: cover; background-position: center center; background-position: center 8%">
+<body style="background-image: url('{% static 'core_app/images/background.jpg' %}');">
 
     {% block body_content %}
     {% endblock %}
