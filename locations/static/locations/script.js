@@ -335,46 +335,19 @@ document.addEventListener("DOMContentLoaded", function () {
         parentLocationSelect.innerHTML =
           '<option value="">Select Parent Location</option>';
 
-        // If task count is less than maxTasks, enable the add button
-        const addTaskButton = document.querySelector(".addTaskBtn");
-        if (taskCount < maxTasks) {
-            addTaskButton.disabled = false;
-         }
-    }
-});*/
-function getCSRFToken() {
-    const csrfToken = document.querySelector("[name=csrf-token]").getAttribute("content");
-    return csrfToken;
-}
-//-----------------------------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", function () {
-    // Function to fetch task IDs based on task type
-    function fetchTaskIds(taskType, taskIdSelect) {
-      if (!taskType) {
-        taskIdSelect.innerHTML = '<option value="">Select Task ID</option>';
-        return;
-      }
-  
-      fetch(`/get-task-ids/?task_type=${taskType}`)
-        .then((response) => response.json())
-        .then((data) => {
-          taskIdSelect.innerHTML = '<option value="">Select Task ID</option>';
-          data.task_ids.forEach((id) => {
-            const option = document.createElement("option");
-            option.value = id;
-            option.textContent = `Task ${id}`; //should probably show name, but whatever
-            taskIdSelect.appendChild(option);
-          });
-        })
-        .catch((error) => console.error("Error fetching task IDs:", error));
-    }
-  
-    // Attach event listeners to task type dropdowns
-    document.getElementById("task1Type").addEventListener("change", function () {
-      fetchTaskIds(this.value, document.getElementById("task1Id"));
-    });
-  
-    document.getElementById("task2Type").addEventListener("change", function () {
-      fetchTaskIds(this.value, document.getElementById("task2Id"));
-    });
-  });
+        // iterate over the data in locations
+        data.forEach((location) => {
+          const option = document.createElement("option");
+          option.value = location.locID;
+          option.textContent = location.location_name;
+          parentLocationSelect.appendChild(option);
+        });
+      })
+      .catch((error) =>
+        console.error("Error fetching parent locations:", error)
+      );
+  }
+  // Call the function on page load
+  fetchParentLocations();
+  //maybe also call on successfull add location
+});
