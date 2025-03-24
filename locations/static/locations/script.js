@@ -325,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch("/get-locations/")
       .then((response) => response.json())
       .then((data) => {
-        console.log("Received parent locations:", data); // Log the data
+        console.log("Received parent locations:", data);
 
         const parentLocationSelect = document.getElementById(
           "parentLocationSelect"

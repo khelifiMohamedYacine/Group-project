@@ -9,10 +9,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Add the Django project root directory to sys.path
 sys.path.append(BASE_DIR)
 
-# Set up the Django environment (Make sure to replace with your actual project name)
+# Set up the Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sustainability_project.settings")
 
-# Initialize Django
 django.setup()
 
 from sokoban_game.models import sokoban_level  # Ensure the model is correctly imported

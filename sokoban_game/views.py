@@ -38,14 +38,13 @@ def sokoban_game_view(request, task_id):
 @csrf_exempt
 @login_required
 def sokoban_admin_view(request):
-    #id_number = 1  # Hardcoded ID to maintain consistency
+    #id_number = 1  # temporarilly Hardcoded ID
 
     # Save level to database
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             for level_data in data:
-                print("Received level data:", level_data)
                 level, created = sokoban_level.objects.update_or_create(
                     id=level_data["number"],
                     defaults={

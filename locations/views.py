@@ -323,7 +323,6 @@ def get_task_ids(request):
         else:
             return JsonResponse({'error': 'Invalid task type'}, status=400)
 
-        # Return task ids in the response
         return JsonResponse({'task_ids': list(tasks)}, status=200)
 
     except Exception as e:
