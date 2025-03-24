@@ -178,7 +178,8 @@ function handleCheckIn(location) {
             );
         } else {
           alert("You are too far from the location to check in.");
-        }}, () => alert("Unable to retrieve your location.")
+        }}, () => alert("Unable to retrieve your location."),
+        { enableHighAccuracy: true }
     );
 }
 
