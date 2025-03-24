@@ -27,6 +27,17 @@
         margin: 20px auto;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
+
+      #backButton {
+        background-color: #ff0000;
+        margin: 0 auto;
+        padding: 5px;
+        color: white;
+      }
+
+      #backButton:hover {
+        background-color: #c12121;
+      }
     </style>
   </head>
   
@@ -39,10 +50,14 @@
       background-attachment: fixed;
     "
   >
+
     <div class="container mt-4 mb-4 d-flex justify-content-center">
       <div class="w-75">
+            
+        
+
         <!--ADDRESS & LOCATION NAME-->
-        <div class="row g-4">
+        <div class="row g-4 mt-2">
           <div class="col-md-6">
             <div class="form-floating">
               <input
@@ -171,6 +186,14 @@
           >
             Generate Graph
           </button>
+        </div>
+      </div>
+    </div>
+    <!--BACK BUTTON-->
+    <div class="row g-4 mt-2 justify-content-center">
+      <div class="col-md-4">
+        <div class="form-floating">
+          <a id="backButton" class="btn w-100" href="{% url 'admin_dashboard' %}">Go Back</a>
         </div>
       </div>
     </div>

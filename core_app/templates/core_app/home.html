@@ -34,7 +34,6 @@
         justify-content: center; 
         color: #ffffff;
         text-shadow: 4px 4px 8px rgba(0,0,0,0.9);
-        -webkit-text-stroke: 2px black;
         flex-direction: column;
         margin-bottom: 50px;
     }
@@ -45,8 +44,6 @@
         flex-wrap: wrap;
         justify-content: space-between;
         color: #ffffff;
-        
-        
     }
 
     .card { 
@@ -125,6 +122,21 @@
         padding: 0px 20px;
         font-family: 'Trebuchet MS', sans-serif;
     }
+
+    .no-tasks-message {
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        margin: 0 auto;
+    }
+
+    .no-tasks-message > p {
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        font-family: 'Trebuchet MS', sans-serif;
+    }
 </style>
 {% endblock %}
 
@@ -144,7 +156,7 @@
     {% if user.is_authenticated %} <!--If the user is logged in-->
         <p class="h3 fw-bold" style="text-align: center;">Reward Points: {{ user.reward_pts }}</p>
     {% else %} <!--If the user is not logged in-->
-        <p class="h4 fw-bold" style="text-align: center;">Log In To Play The Game</p>
+        <p class="h4 fw-bold" style="text-align: center;">Log In To View Your Tasks</p>
     {% endif %}     
 </div>
 
@@ -162,9 +174,10 @@
             </div>
         {% endfor %}
     {% elif user.is_authenticated %}
-        <div class="no-games-message">
-            <p>Visit Locations on the map to unlock games</p>
-            <button class="no-games-button" onclick="window.location.href='{% url 'home' %}'">Go to Map</button>
+        <div class="no-tasks-message">
+            <!-- Please stop calling tasks "games". -->
+            <p>To unlock more tasks, head over to the Maps page<br> and check into some locations.</p> 
+            <a class="btn btn-sm btn-primary fw-bold rounded-pill" href="{% url 'locations:user_map_view' %}">Go To Map</a>
         </div>
     {% endif %}
 </div>
@@ -204,7 +217,7 @@
                                 <td>{{ task.2 }}</td>
                                 <td>{{ task.3 }}</td>
                                 {% url task.4 as go_url %}
-                                <td><a class="btn btn-sm btn-secondary fw-bold rounded-pill" href="{{ go_url }}">Go</a></td>
+                                <td></td>
                             </tr>
                         {% endfor %}
                     </tbody>
