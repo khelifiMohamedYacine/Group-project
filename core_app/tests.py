@@ -278,7 +278,7 @@ class NavbarTests(TestCase):
         Otherwise, it should be hidden.
         Note that this does not test access to the Admin page itself.
         """
-         # First, access the Home page while not logged in.
+        # First, access the Home page while not logged in.
         url = reverse("home")
         response1 = self.client.get(url)
 
@@ -310,34 +310,35 @@ class NavbarTests(TestCase):
         Tests that each navbar button leading to page X does not appear when the user is on page X.
         This behaviour was manually implemented in navbar.html using Django template coding. 
         """
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value)
+        self.client.login(username="user002", password="password002")
+        # Must be logged into an admin account for these to work
+
         response1 = self.client.get(reverse("home"))
 
-        self.assertNotContains(response1, '<a class="nav-link" href="/home/"><i class="fas fa-home"></i> Home</a>')
+        self.assertNotContains(response1, '</i> Home')
         # The HTML for the home button should not be present on the Home page
 
         response2 = self.client.get(reverse("games_page"))
 
-        self.assertNotContains(response2, '<a class="nav-link" href="/games/"><i class="fas fa-play-circle"></i> Games</a>')
+        self.assertNotContains(response2, '</i> Games')
         # The HTML for the games button should not be present on the Games page
 
         response3 = self.client.get(reverse("videos"))
 
-        self.assertNotContains(response3, '<a class="nav-link" href="/videos/"><i class="fas fa-play-circle"></i> Videos</a>')
+        self.assertNotContains(response3, '</i> Videos')
         # The HTML for the videos button should not be present on the Sustainability Videos page
 
         # The navbar was removed from the map page, so there is no point checking for it there.
 
         response5 = self.client.get(reverse("leaderboard"))
 
-        self.assertNotContains(response5, '<a class="nav-link" href="/leaderboard/"><i class="fas fa-mobile-alt"></i> Leaderboard</a>')
+        self.assertNotContains(response5, '</i> Leaderboard')
         # The HTML for the leaderboard button should not be present on the Leaderboard page
-
-        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value)
-        self.client.login(username="user002", password="password002")
 
         response6 = self.client.get(reverse("admin_dashboard"))
 
-        self.assertNotContains(response6, '<a class="nav-link active" href="/game_admin/"><i class="fas fa-user-cog"></i> Admin Dashboard</a>')
+        self.assertNotContains(response6, '</i> Admin Dashboard')
         # The HTML for the admin button should not be present on the Admin Dashboard page
 
 
@@ -355,7 +356,7 @@ class HomeViewTests(TestCase):
         response1 = self.client.get(url)
         
         self.assertContains(response1, 'Welcome!')
-        self.assertContains(response1, 'Log In To Play The Game')
+        self.assertContains(response1, 'Log In To View Your Tasks')
         # The Home page should display "Welcome" and "Log In To Play The Game"
 
         # Then, access the Home page while logged into an account.
@@ -443,3 +444,143 @@ class LeaderboardViewTests(TestCase):
         self.assertContains(response1, '<tr>\n                    <td>4</td>\n                    <td>user001</td>\n                    <td>20</td>\n                </tr>')
         self.assertContains(response1, '<tr>\n                    <td>5</td>\n                    <td>user004</td>\n                    <td>10</td>\n                </tr>')
         # The users should be ordered based on their reward points, not based on the order they were created
+
+
+class AdminViewsTests(TestCase):
+    """
+    This is the class for testing the following:
+    - admin_view()
+    - admin_content_view()
+    - admin_users_view()
+    - admin_analytics_view()
+    - admin_quiz_view()
+    - admin_jumping_view()
+    """
+
+    def test_admin_dashboard_access(self):
+        """
+        Tests that only admin accounts can access the Admin Dashboard page.
+        Users logged into non-admin accounts should be redirected to the Home Page, while users not logged
+        in at all should be redirected to the Login page.
+        """
+        # First, access the page while not logged in.
+        url = reverse("admin_dashboard")
+        response1 = self.client.get(url)
+
+        self.assertRedirects(response1, "/login/?next=/game_admin/dashboard/", status_code=302, target_status_code=200)
+        # The user should be redirected to the Login page in this case.
+
+        # Then, access the page while logged into a non-admin account.
+        create_user("user001", "001@email.com", "password001", AccountType.USER.value)
+        self.client.login(username="user001", password="password001")
+
+        response2 = self.client.get(url)
+
+        self.assertRedirects(response2, "/home/", status_code=302, target_status_code=200)
+        # The user should be redirected to the Home page in this case.
+
+        # Finally, access the page while logged into an admin account.
+        self.client.logout()
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value)
+        self.client.login(username="user002", password="password002")
+
+        response3 = self.client.get(url)
+
+        self.assertEqual(response3.status_code, 200)
+        # The user should be allowed through to the Admin Dashboard page, and the status code should be 200.
+
+    def test_manage_content_access(self):
+        """
+        Tests that only admin accounts can access the Content Management page.
+        Users logged into non-admin accounts should be redirected to the Home Page, while users not logged
+        in at all should be redirected to the Login page.
+        """
+        # First, access the page while not logged in.
+        url = reverse("admin_content")
+        response1 = self.client.get(url)
+
+        self.assertRedirects(response1, "/login/", status_code=302, target_status_code=200)
+        # The user should be redirected to the Login page in this case.
+
+        # Then, access the page while logged into a non-admin account.
+        create_user("user001", "001@email.com", "password001", AccountType.USER.value)
+        self.client.login(username="user001", password="password001")
+
+        response2 = self.client.get(url)
+
+        self.assertRedirects(response2, "/home/", status_code=302, target_status_code=200)
+        # The user should be redirected to the Home page in this case.
+
+        # Finally, access the page while logged into an admin account.
+        self.client.logout()
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value)
+        self.client.login(username="user002", password="password002")
+
+        response3 = self.client.get(url)
+
+        self.assertEqual(response3.status_code, 200)
+        # The user should be allowed through to the Content Management page, and the status code should be 200.
+
+    def test_manage_user_access(self):
+        """
+        Tests that only admin accounts can access the User Management page.
+        Users logged into non-admin accounts should be redirected to the Home Page, while users not logged
+        in at all should be redirected to the Login page.
+        """
+        # First, access the page while not logged in.
+        url = reverse("admin_users")
+        response1 = self.client.get(url)
+
+        self.assertRedirects(response1, "/login/", status_code=302, target_status_code=200)
+        # The user should be redirected to the Login page in this case.
+
+        # Then, access the page while logged into a non-admin account.
+        create_user("user001", "001@email.com", "password001", AccountType.USER.value)
+        self.client.login(username="user001", password="password001")
+
+        response2 = self.client.get(url)
+
+        self.assertRedirects(response2, "/home/", status_code=302, target_status_code=200)
+        # The user should be redirected to the Home page in this case.
+
+        # Finally, access the page while logged into an admin account.
+        self.client.logout()
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value)
+        self.client.login(username="user002", password="password002")
+
+        response3 = self.client.get(url)
+
+        self.assertEqual(response3.status_code, 200)
+        # The user should be allowed through to the User Management page, and the status code should be 200.
+
+    def test_analytics_access(self):
+        """
+        Tests that only admin accounts can access the Website Analytics page.
+        Users logged into non-admin accounts should be redirected to the Home Page, while users not logged
+        in at all should be redirected to the Login page.
+        """
+        # First, access the page while not logged in.
+        url = reverse("admin_analytics")
+        response1 = self.client.get(url)
+
+        self.assertRedirects(response1, "/login/", status_code=302, target_status_code=200)
+        # The user should be redirected to the Login page in this case.
+
+        # Then, access the page while logged into a non-admin account.
+        create_user("user001", "001@email.com", "password001", AccountType.USER.value)
+        self.client.login(username="user001", password="password001")
+
+        response2 = self.client.get(url)
+
+        self.assertRedirects(response2, "/home/", status_code=302, target_status_code=200)
+        # The user should be redirected to the Home page in this case.
+
+        # Finally, access the page while logged into an admin account.
+        self.client.logout()
+        create_user("user002", "002@email.com", "password002", AccountType.ADMIN.value)
+        self.client.login(username="user002", password="password002")
+
+        response3 = self.client.get(url)
+
+        self.assertEqual(response3.status_code, 200)
+        # The user should be allowed through to the Website Analytics page, and the status code should be 200.    
