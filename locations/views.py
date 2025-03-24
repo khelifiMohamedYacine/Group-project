@@ -138,6 +138,7 @@ def get_locations_with_lock_status(request):
 
     for loc in locations:
         user_location = UserLocation.objects.filter(userID=user, locationID=loc).first()
+        print("user_location", user_location)
 
         is_checked_in = user_location.checked_in if user_location and user_location.checked_in else False
 
@@ -147,9 +148,7 @@ def get_locations_with_lock_status(request):
         # Check if location is locked
         if not loc.locked_by:                                                                 #if location isnt locked at all
             is_locked = False
-        elif user_location is None:
-            is_locked = False
-        elif user_location.checked_in:                                                        #if user has already checked in
+        elif user_location is not None and user_location.checked_in:                          #if user has already checked in
             is_locked = False
         else:
             parent_user_location = UserLocation.objects.filter(userID=user, locationID=loc.locked_by).first()
