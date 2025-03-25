@@ -11,7 +11,7 @@
 6) Jonathan Young (JonathanY234)
 7) Joshua Masih (jmasih1234)
 
-The README file on GitHub has some minor differences to the one in our sprint 1 submission.  
+The README file on GitHub has some minor differences to the one in our sprint 2 submission.  
 
 ### Our Deployed Web App:
 https://dm7935pa.eu.pythonanywhere.com/home/  
