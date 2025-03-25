@@ -33,10 +33,8 @@ https://trello.com/b/ISL0gIqD/my-trello-board
 ### How To Set Up And Use The App:
 #### **Instructions for setting up the app locally:**  
 A copy of our prototype source code has been included in this submission.
-It can be found [here](./Technical%20Documents/Link%20To%20GitHub%20Repository.txt).  
-(This is the 'Source_Code' folder located in 'Technical Documents').
 
-Alternatively, you can download the source code from the 'main' branch of our GitHub repo (linked above).
+Alternatively, you can download the source code from the 'main' branch of our GitHub repo.
 
 Python, PIP, Django, NetworkX, and Matplotlib must be installed to run the application.  
 Given that Python and PIP are present:
