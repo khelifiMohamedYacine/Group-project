@@ -13,7 +13,12 @@
 
 The README file on GitHub has some minor differences to the one in our sprint 1 submission.  
 
-### Our GitHub Repository:  
+### Our Deployed Web App:
+https://dm7935pa.eu.pythonanywhere.com/home/  
+This is the live version of the web application, hosted on PythonAnywhere.  
+It is functionally identical to the version provided in this submission (ignoring database content).  
+
+### Our GitHub Repository:
 https://github.com/myk204-dev/Group-project
 
 Google Drive Link (for working on our documentation and designs):  
@@ -33,10 +38,13 @@ It can be found [here](./Technical%20Documents/Link%20To%20GitHub%20Repository.t
 
 Alternatively, you can download the source code from the 'main' branch of our GitHub repo (linked above).
 
-Python, PIP and Django must be installed to run the application.  
-Given that Python and PIP are present, Django can be installed using the command `python -m pip install Django`.    
+Python, PIP, Django, NetworkX, and Matplotlib must be installed to run the application.  
+Given that Python and PIP are present:
+- Django can be installed using the command `python -m pip install Django`.  
+- NetworkX can be installed using the command `python -m pip install networkx`.  
+- Matplotlib can be installed using the command `python - pip install matplotlib`.  
 
-#### **How to run the app (+ basic functionalities):**  
+#### **How to run the app locally (+ basic functionalities):**  
 First, navigate to the source code directory within a command line/terminal. This should be the one containing 'manage.py'.  
 
 Run the web application using the command `python manage.py runserver`.  
@@ -48,14 +56,16 @@ This default URL path will take you to the Create Account Page.
 
 The rest of the website should be reachable from here, but shortcuts are provided below:  
 Login page - http://127.0.0.1:8000/login/  
-Home page - http://127.0.0.1:8000/home/  
-Jumping game - http://127.0.0.1:8000/jumping_game/  
+Home page - http://127.0.0.1:8000/home/    
 Note that the Home page will appear slightly differently depending on whether or not you are logged in.  
 
 #### **How to run the Django Tests:**  
 There are seperate tests for each of our Djnago apps.  
 
-Run the tests for the 'core_app' app using the command `python manage.py tests core_app`.
+Run the tests for the 'core_app' app using the command `python manage.py tests core_app`.  
+Run the tests for the 'locations' app using the command `python manage.py tests locations`.  
+Run the tests for the 'quizzes' app using the command `python manage.py tests quizzes`.  
+Run the tests for the 'jumping_game' app using the command `python manage.py tests jumping_game`.  
 
 ---
 
@@ -63,9 +73,11 @@ Run the tests for the 'core_app' app using the command `python manage.py tests c
 We have used the Trello website to create and maintain our Kanban board:  
 https://trello.com/b/ISL0gIqD/my-trello-board
 
-We have also taken regular snapshots of our Kanban board since 6/2/25, archiving them in the 'Kanban Board Archive' powerpoint'.  
+We have also taken regular snapshots of our Kanban board since 6/2/25, archiving them in the 'Kanban Board Timeline' powerpoint.  
 
 We have kept a detailed record of our group meetings in the 'Group Meeting Record' document.  
+
+Our 'Sprint 2 Reflection' document contains our reflections on how we (as a team) did during the second sprint of this project.  
 
 ---
 
@@ -73,6 +85,8 @@ We have kept a detailed record of our group meetings in the 'Group Meeting Recor
 Our 'Architecture Overview' explains our web application's front-end, back-end, use of Django, and database structure.  
 
 Our 'Testing Documentation' explains our Django unit tests and manual validation tests.  
+
+Our 'Deployment Instructions' explain how to deploy the web application locally.  
 
 ---
 
@@ -82,3 +96,7 @@ Our 'Requirements Analysis' document contains our requirements/specification ana
 Our 'Design Plan' document contains our design plan.  
 
 Our 'UI Mockups' powerpoint contains our UI mockup designs.  
+
+Our 'User Documentation Guide' document contains user-friendly guidance on how to navigate and interact with the app.  
+
+Our 'Poster' document is an image of our project poster.  
