@@ -3,7 +3,7 @@
 ### Group Name: Syntax Squad 2
 
 ### Group Members:
-1) Khelifi Mohamed Yacine (myk204-dev / yacine)
+1) Khelifi Mohamed Yacine (KhelifiMohamedYacine / yacine)
 2) David Muoneke (DM7935-GH)
 3) Renchengkun Wu (renchengkunwu)
 4) Jerry Sharon Jenova Raju (jsharonjr)
